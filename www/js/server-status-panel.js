@@ -7,18 +7,19 @@ if ('undefined' == typeof MINION.panel) {
 
     MINION.panel.ServerStatus = function(manager)
     {
-        this._table = _buildTable(manager.getData());
+        this._table = _buildTable(manager);
+
         manager.getContainer().appendChild(this._table);
     };
 
     MINION.panel.ServerStatus.prototype.show = function()
     {
-        this._table.style.display = 'block';
+        this._table.style.display = 'table';
     }
     
     MINION.panel.ServerStatus.prototype.hide = function()
     {
-        this._table.style.display = 'display';
+        this._table.style.display = 'none';
     }
 
     MINION.panel.ServerStatus.prototype.filter = function(selected)
@@ -43,8 +44,13 @@ if ('undefined' == typeof MINION.panel) {
             YD.addClass(lastRow, 'last');
         }
     };
+
+    MINION.panel.ServerStatus.prototype.getId = function()
+    {
+        return 'server-status';
+    };
     
-    _buildTable = function(data)
+    var _buildTable = function(manager, domainPanel)
     {
         var table = document.createElement('table');
         table.id          = 'minion-listing';
@@ -52,7 +58,7 @@ if ('undefined' == typeof MINION.panel) {
         
         table.appendChild(_buildThead());
 
-        var body = _buildTbody(data);
+        var body = _buildTbody(manager, domainPanel);
         table.appendChild(body);
 
         return table;
@@ -80,9 +86,15 @@ if ('undefined' == typeof MINION.panel) {
         return thead;
     }
 
-    var _buildTbody = function(data)
+    var _buildTbody = function(manager)
     {
         var tbody = document.createElement('tbody');
+        var data  = manager.getData();
+
+        var callback = function(e) {
+            manager.getPanel('domain').setDomain(this);
+            manager.showPanel('domain');
+        }
 
         for (var i = 0; i < data.length; i++) {
             var domain = data[i];
@@ -98,6 +110,8 @@ if ('undefined' == typeof MINION.panel) {
             tr.appendChild(_renderName(domain));            
             tr.appendChild(_renderStatus(domain));            
             tr.appendChild(_renderLastChecked(domain));
+
+            YE.on(tr, 'click', callback, domain, true);
 
             _rows.push(tr);
         }

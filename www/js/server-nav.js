@@ -3,15 +3,15 @@ if ('undefined' == typeof MINION.nav) {
 }
 
 (function(MINION, YD, YE) {
-    MINION.nav.Servers = function(manager, serverStatusPanel) {
+    MINION.nav.Servers = function(manager) {
         var header = _buildHeader(manager);
         manager.getNavContainer().appendChild(header);
 
-        var list = _buildList(manager.getServers(), serverStatusPanel);
+        var list = _buildList(manager);
         manager.getNavContainer().appendChild(list);
     };
 
-    _buildHeader = function()
+    var _buildHeader = function()
     {
         var header = document.createElement('h3');
        
@@ -22,9 +22,22 @@ if ('undefined' == typeof MINION.nav) {
         return header;
     };
 
-    _buildList = function(servers, panel)
+    var _buildList = function(manager)
     {
         var ul = document.createElement('ul');
+
+        var servers  = manager.getServers();
+        var callback = function(e) {
+            this.checked = true;
+            _applySelected(this.parentNode, liNodes);
+
+            if ('all' !== this.value) {
+                manager.setActiveServer(this.value);
+            }
+
+            manager.getPanel('server-status').filter(this);
+            manager.showPanel('server-status');
+        };
 
         var liNodes = [];
 
@@ -35,12 +48,6 @@ if ('undefined' == typeof MINION.nav) {
 
         liNodes.push(li);
 
-        YE.on(li, 'click', function(e) {
-            this.checked = true;
-            _applySelected(this.parentNode, liNodes);
-            panel.filter(this);
-        }, li.firstChild, true);
-
         for (var index in servers) {
             var server = servers[index];
 
@@ -48,18 +55,17 @@ if ('undefined' == typeof MINION.nav) {
             ul.appendChild(li);
 
             liNodes.push(li);
+        }
 
-            YE.on(li, 'click', function(e) {
-                this.checked = true;
-                _applySelected(this.parentNode, liNodes);
-                panel.filter(this)
-            }, li.firstChild, true);
+        for (var i = 0; i < liNodes.length; i++) {
+            var li = liNodes[i];
+            YE.on(li, 'click', callback, li.firstChild, true);
         }
 
         return ul;
     }
 
-    _applySelected = function(li, nodes)
+    var _applySelected = function(li, nodes)
     {
         for (var i = 0; i < nodes.length; i++) {
             YD.removeClass(nodes[i], 'selected');
@@ -68,7 +74,7 @@ if ('undefined' == typeof MINION.nav) {
         YD.addClass(li, 'selected');
     };
 
-    _buildLi = function(text, id, value, server)
+    var _buildLi = function(text, id, value, server)
     {
         var li = document.createElement('li');
 
@@ -89,7 +95,7 @@ if ('undefined' == typeof MINION.nav) {
         return li;
     }
 
-    _buildStatusProgress = function(server)
+    var _buildStatusProgress = function(server)
     {
         var failures = 0;
 
@@ -120,7 +126,7 @@ if ('undefined' == typeof MINION.nav) {
         return outer;
     };
 
-    _buildInput = function(id, value)
+    var _buildInput = function(id, value)
     {
         var input = document.createElement('input');
         input.type  = 'radio';
@@ -130,7 +136,7 @@ if ('undefined' == typeof MINION.nav) {
         return input;
     };
 
-    _buildLabel = function(htmlFor, text)
+    var _buildLabel = function(htmlFor, text)
     {
         var label = document.createElement('label');
         

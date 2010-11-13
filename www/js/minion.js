@@ -10,16 +10,31 @@ var MINION = {};
         this._container    = container;
         this._data         = _initData(data);
 
+        var domainPanel = new MINION.panel.Domain(this);
+        _addPanel(domainPanel);
+
         var panel = new MINION.panel.ServerStatus(this);
         _addPanel(panel);
 
-        var serverNavigation = new MINION.nav.Servers(this, panel);
+        this._serverNavigation = new MINION.nav.Servers(this);
+
+        this.showPanel('server-status');
     };
 
     MINION.manager.prototype.getContainer = function()
     {
         return this._container;
     };
+
+    MINION.manager.prototype.getActiveServer = function()
+    {
+        return this._activeServer;
+    };
+
+    MINION.manager.prototype.setActiveServer = function(server)
+    {
+        this._activeServer = server;
+    }
 
     MINION.manager.prototype.getNavContainer = function()
     {
@@ -31,28 +46,39 @@ var MINION = {};
         return this._data;
     };
 
-    MINION.manager.prototype.showPanel = function(panel)
+    MINION.manager.prototype.showPanel = function(id)
     {
         for (var i = 0; i < _panels.length; i++) {
-            if (_panel[i] === panel) {
-                panel.show();
+            if (_panels[i].getId() === id) {
+                _panels[i].show();
             } else {
-                panel.hide();
+                _panels[i].hide();
             }
         }
     };
+
+    MINION.manager.prototype.getPanel = function(id)
+    {
+        for (var i = 0; i < _panels.length; i++) {
+            if (_panels[i].getId() === id) {
+                return _panels[i];
+            }
+        }
+
+        return false;
+    }
 
     MINION.manager.prototype.getServers = function()
     {
         return _servers;
     }
 
-    _addPanel = function(panel) 
+    var _addPanel = function(panel) 
     {
         _panels.push(panel);
     };
 
-    _initData = function(data)
+    var _initData = function(data)
     {
         for (var i = 0; i < data.length; i++) {
             if (! data[i].tasks) {
