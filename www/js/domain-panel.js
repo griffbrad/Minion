@@ -5,23 +5,23 @@ if ('undefined' == typeof MINION.panel) {
 (function(MINION, YD, YE, YS, YDT) {
     var _rows = [];
 
-    MINION.panel.Domain = function(manager)
+    MINION.panel.ServerStatus = function(manager)
     {
         this._table = _buildTable(manager.getData());
         manager.getContainer().appendChild(this._table);
     };
 
-    MINION.panel.Domain.prototype.show = function()
+    MINION.panel.ServerStatus.prototype.show = function()
     {
         this._table.style.display = 'block';
     }
     
-    MINION.panel.Domain.prototype.hide = function()
+    MINION.panel.ServerStatus.prototype.hide = function()
     {
         this._table.style.display = 'display';
     }
 
-    MINION.panel.Domain.prototype.filter = function(selected)
+    MINION.panel.ServerStatus.prototype.filter = function(selected)
     {
         var lastRow = null;
 

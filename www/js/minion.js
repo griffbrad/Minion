@@ -10,7 +10,7 @@ var MINION = {};
         this._container    = container;
         this._data         = _initData(data);
 
-        var panel = new MINION.panel.Domain(this);
+        var panel = new MINION.panel.ServerStatus(this);
         _addPanel(panel);
 
         var serverNavigation = new MINION.nav.Servers(this, panel);
