@@ -55,6 +55,8 @@ var MINION = {};
                 _panels[i].hide();
             }
         }
+
+        window.scroll(0, 0);
     };
 
     MINION.manager.prototype.getPanel = function(id)
