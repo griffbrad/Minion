@@ -1,0 +1,61 @@
+
+<div class="yui-gf">
+    <div class="yui-u">
+        <div class="minion-listing-container">
+            <div id="minion-domain-display">
+                <div class="minion-toolbar">
+                    <a href="#"></a>
+                </div>
+                <div class="minion-content">
+                    <h2></h2>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="yui-u first">
+        <h3>Overview</h3>
+        <ul>
+            <li>Recent Activity</li>
+            <li>Failed Checks</li>
+        </ul>
+    </div>
+</div>
+
+<script type="text/javascript">
+var servers = YAHOO.util.Selector.query('#minion-servers input');
+var domains = YAHOO.util.Selector.query('#minion-listing tbody tr');
+
+for (var i = 0; i < domains.length; i++) {
+    YAHOO.util.Event.on(domains[i], 'click', function(e) {
+        YAHOO.util.Dom.get('minion-listing').style.display = "none";
+        YAHOO.util.Dom.get('minion-domain-display').style.display = "block";
+
+        var backLink = YAHOO.util.Selector.query('#minion-domain-display .minion-toolbar a')[0];
+
+        backLink.appendChild(
+            document.createTextNode('« Back to system8')
+        );
+
+        YAHOO.util.Event.on(backLink, 'click', function(e) {
+            YAHOO.util.Event.preventDefault(e);
+
+            
+        });
+        
+        var header = YAHOO.util.Selector.query('#minion-domain-display h2')[0];
+
+        header.appendChild(
+            document.createTextNode('iynaus.org')
+        );
+
+        var server = document.createElement('span');
+        server.className = 'minion-server';
+        server.appendChild(
+            document.createTextNode('system8')
+        );
+
+        header.appendChild(server);
+    }, domains[i], true);
+}
+
+</script>

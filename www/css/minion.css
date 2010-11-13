@@ -1,0 +1,182 @@
+html {
+    font-family: Helvetica, Arial, "Droid Sans", sans-serif;
+}
+
+html, body {
+    min-height: 90%;
+    padding: 0;
+    margin: 0;
+}
+
+h1 {
+    color: #555753;
+}
+
+h1 span {
+    text-transform: none;
+}
+
+h2 {
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    overflow-y: scroll;
+}
+
+.minion-server {
+    background: #eeeeec;
+    color: #555753;
+    font-size: 65%;
+    margin: 0 .5em;
+    padding: .2em .5em;
+    vertical-align: middle;
+}
+
+.yui-gf .yui-u {
+    text-align: left;
+    width: 75%;
+}
+
+.yui-gf .yui-u.first {
+    width: 25%;
+}
+
+#minion-content {
+    border: 4px solid #bbccff;
+    border-right: none;
+    min-height: 600px;
+}
+
+h3 {
+    color: #999;
+    font-size: 80%;    
+    margin: 2em 0 .25em 0;
+    padding-left: 1.5em;
+    text-transform: uppercase;
+}
+
+#minion-domain-display {
+    display: none;
+}
+
+table {
+    width: 100%;
+}
+
+th {
+    background: #e3e9ff;
+    border-bottom: 1px solid #ccd2e6;
+    padding: .25em .5em;
+    text-align: left;
+}
+
+.minion-content {
+    padding: .5em;
+}
+
+.minion-toolbar {
+    background: #e3e9ff;
+    border-bottom: 1px solid #ccd2e6;
+    padding: .25em .5em;
+}
+
+td {
+    border-bottom: 1px solid #ccd2e6;
+    padding: .25em .5em;
+}
+
+tr:last-child td,
+tr.last td {
+    border-bottom: none;
+}
+
+.minion-status-failure {
+    background: -moz-linear-gradient(-90deg, #ef2929, #cc0000);
+    background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(#ef2929), to(#cc0000));
+    -moz-box-shadow: inset 0 0 5px #fff;
+    -webkit-box-shadow: inset 0 0 5px #fff;
+    -moz-border-radius: 4px;
+    -webkit-border-radius: 4px;
+    border: 1px solid #a40000;
+    color: #fff;
+    padding-left: .5em;
+    text-shadow: #a40000 1px 1px 2px;
+}
+
+.minion-status-success {
+    color: #aaa;
+    font-size: 70%;
+}
+
+.minion-status-null {
+    font-weight: bold;
+}
+
+ul {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+}
+
+li:first-child {
+    margin-top: 0;
+}
+
+li:hover {
+    cursor: pointer;
+}
+
+li {
+    margin: .25em 0;
+    padding: .25em .5em .25em 1.5em;
+    vertical-align: middle;
+}
+
+li.selected {
+    background: #bbccff;
+    font-weight: bold;
+}
+
+li input {
+    display: none;
+}
+
+li input,
+li label {
+    vertical-align: middle;
+}
+
+li label {
+    cursor: pointer;
+}
+
+.minion-server-failure {
+    background: #fff;
+    -moz-box-shadow: inset 0 0 5px #fff;
+    -webkit-box-shadow: inset 0 0 5px #fff;
+    border: 1px solid #a40000;
+    display: inline-block;
+    text-shadow: #a40000 1px 1px 2px;
+    margin: .3em 0 0 1em;
+    height: .4em;
+    width: 60px;
+}
+
+.minion-server-failure-fill {
+    background: -moz-linear-gradient(top, #ef2929, #cc0000);
+    background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(#ef2929), to(#cc0000));
+    display: block;
+    height: .4em;
+}
+
+tbody tr:hover {
+    background: #edf0f9;
+    cursor: pointer;
+}
+
+tr a {
+    color: #000;
+    text-decoration: none;
+}

@@ -1,0 +1,27 @@
+<?php echo $this->doctype('XHTML1_STRICT') ?>
+<html>
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+        <?php
+        $this->headTitle($this->title);
+        $this->headTitle()->setSeparator(' - ');
+        echo $this->headTitle('Minion');
+        ?>
+
+        <?php
+        $this->headLink()->appendStylesheet('yui/grids/grids-min.css')
+                         ->appendStylesheet('css/minion.css');
+        echo $this->headLink();
+        ?>
+
+        <?php echo $this->headScript();?>
+    </head>
+    <body>
+        <h1>
+            <?php echo $this->title;?>
+        </h1>
+
+        <?php echo $this->layout()->content ?>
+    </body>
+</html>
