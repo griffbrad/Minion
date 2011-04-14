@@ -62,6 +62,8 @@ class Minion_Domain implements Minion_Task_ParentInterface
 
     private $_db;
 
+    private $_status = array();
+
     /**
      * Constructor.  Initializes domain and stores it in the database.
      *
@@ -126,14 +128,13 @@ class Minion_Domain implements Minion_Task_ParentInterface
             $task = Minion_Task::factory(
                 $name, 
                 Minion_Config::merge($this->_config, $config),
-                $this->_db
+                $this->_db,
+                $this
             );
 
             if ($task instanceof Minion_Task_Abstract_Server) {
                 throw new Minion_Exception('Server task assigned to domain.');
             }
-
-            $task->setParent($this);
 
             $resultNotifier->add($task->run());
         }
@@ -201,5 +202,30 @@ class Minion_Domain implements Minion_Task_ParentInterface
                 )
             )
         ); 
+    }
+
+    public function getStatus(Minion_Task_Abstract $task)
+    {
+        if (! count($this->_status)) {
+            $query = array(
+                'name' => $this->_name
+            );
+
+            $tasks = $this->_db->domains->findOne($query, array('tasks'));
+
+            if (isset($tasks['tasks'])) {
+                foreach ($tasks['tasks'] as $taskName => $status) {
+                    $this->_status[$taskName] = $status;
+                }
+            }
+        }
+
+        $status = null;
+
+        if (isset($this->_status[$task->getName()])) {
+            $status = $this->_status[$task->getName()];
+        }
+
+        return $status;
     }
 }

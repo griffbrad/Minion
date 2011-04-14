@@ -50,10 +50,10 @@ class Minion_Task
      *
      * @return Minion_Task_Abstract
      */
-    public static function factory($task, Zend_Config $config, MongoDB $db)
+    public static function factory($task, Zend_Config $config, MongoDB $db, $parent)
     {
         $className = "Minion_Task_" . ucfirst($task);
-        return new $className($db, $config);
+        return new $className($db, $config, $parent);
     }
 
     /** 

@@ -64,6 +64,8 @@ abstract class Minion_Task_Abstract
      */
     private $_parent;
 
+    private $_schedule;
+
     /**
      * The result of running this task.
      *
@@ -71,7 +73,7 @@ abstract class Minion_Task_Abstract
      */
     private $_result;
 
-    private $_db;
+    protected $_db;
 
     private static $_initConfig;
 
@@ -81,14 +83,24 @@ abstract class Minion_Task_Abstract
      *
      * @param Zend_Config $config
      */
-    public function __construct(MongoDb $db, Zend_Config $config)
-    {
+    public function __construct(MongoDb $db, Zend_Config $config, $parent)
+    { 
+        $this->_db = $db;
+
+        $this->setParent($parent);
+
         $this->_config = Minion_Config::merge(
             new Zend_Config($this->_defaults),
             $config
         );
 
-        $this->_db = $db;
+        foreach ($this->_config as $key => $value) {
+            $method = 'set' . ucfirst($key);
+
+            if (method_exists($this, $method)) {
+                $this->$method($value);
+            }
+        }
 
         $this->_result = Minion_Result::failure($db);
 
@@ -184,6 +196,18 @@ abstract class Minion_Task_Abstract
         return $this->_result;
     }
 
+    public function setSchedule($text)
+    {
+        $status = $this->getParent()->getStatus($this);
+
+        $this->_schedule = new Minion_Schedule(
+            $text, 
+            $status
+        );
+
+        return $this;
+    }
+
     /**
      * Get the task's name, the lower-case version of the portion of the class
      * name following the final underscore.
@@ -235,21 +259,23 @@ abstract class Minion_Task_Abstract
             $results  = $this->_getRecentResults($offset);
             $offset  += 100;
 
-            foreach ($results as $result) {
-                if ($result->success === $current) {
-                    $repeats++;
-                } else {
-                    $current = $result->success;
-                    $repeats = 1;
-                }
-                
-                if ($repeats === (int) $limit) {
-                    $hardState = $result->success;
-                    break;
+            if (isset($results)) {
+                foreach ($results as $result) {
+                    if ($result->success === $current) {
+                        $repeats++;
+                    } else {
+                        $current = $result->success;
+                        $repeats = 1;
+                    }
+                    
+                    if ($repeats === (int) $limit) {
+                        $hardState = $result->success;
+                        break;
+                    }
                 }
             }
 
-            if (100 > count($results)) {
+            if (! isset($results) || 100 > count($results)) {
                 break;
             }
         }

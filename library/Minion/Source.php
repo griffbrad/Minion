@@ -49,6 +49,10 @@ class Minion_Source
     public static function factory($source, Minion_Server $server, 
         MongoDB $db, Zend_Config $config)
     {
+        $inflector = new Zend_Filter_Inflector(':source');
+        $source    = $inflector->addRules(array(':source' => 'Word_DashToCamelCase'))
+                               ->filter(array('source' => $source));
+
         $className = "Minion_Source_" . ucfirst($source);
         return new $className($server, $db, $config);
     }

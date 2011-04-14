@@ -49,10 +49,12 @@ class Minion_Client_Www extends Minion_Client_Abstract
      */
     public function getView()
     {
-        $this->_view = new Zend_View(array(
-            'scriptPath' => getcwd()
-        ));
-
+        if (! $this->_view) {
+            $this->_view = new Zend_View(array(
+                'scriptPath' => getcwd()
+            ));
+        }
+        
         return $this->_view;
     }
 
@@ -66,7 +68,7 @@ class Minion_Client_Www extends Minion_Client_Abstract
     {
         $layout = new Zend_Layout();
         
-        $layout->content = $this->_view->render($viewScript);
+        $layout->content = $this->getView()->render($viewScript);
 
         $layout->setLayoutPath(getcwd())
                ->setLayout('layout');
@@ -89,8 +91,7 @@ class Minion_Client_Www extends Minion_Client_Abstract
 
     protected function _handleException(Exception $e)
     {
-        $this->_view = new Zend_View();
-        $this->_view->message = $e->getMessage();
+        $this->getView()->message = $e->getMessage();
         $this->renderLayout('error.phtml');
         exit;
     }

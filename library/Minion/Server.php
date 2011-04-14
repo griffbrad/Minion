@@ -48,6 +48,7 @@ class Minion_Server implements Minion_Task_ParentInterface
      *
      * @var Minion_ResultNotifier
      */
+    protected $_resultNotifier;
 
     /**
      * The server's name.  Any string that helps you remember the server.  Could
@@ -169,13 +170,13 @@ class Minion_Server implements Minion_Task_ParentInterface
             $task = Minion_Task::factory(
                 $name, 
                 Minion_Config::merge($this->_config, $config),
-                $db
+                $db,
+                $this
             );
 
             if ($task instanceof Minion_Task_Abstract_Server) {
                 $name = $task->getName();
                 $this->_tasks[$name] = $task;
-                $task->setParent($this);
             }
         }
     }
@@ -200,8 +201,7 @@ class Minion_Server implements Minion_Task_ParentInterface
 
                 $result = new Minion_Result($db, true, $message);
 
-                $task = new Minion_Task_Source($db, new Zend_Config(array()));
-                $task->setParent($this);
+                $task = new Minion_Task_Source($db, new Zend_Config(array()), $this);
 
                 $result->setTask($task)
                        ->log();
@@ -240,5 +240,15 @@ class Minion_Server implements Minion_Task_ParentInterface
                 )
             )
         );        
+    }
+    
+    public function getStatus(Minion_Task_Abstract $task)
+    {
+        $query = array(
+            'task'          => $task->getName(),
+            'parent.server' => $this->getName()
+        );
+
+        return $this->_db->log->findOne($query);
     }
 }

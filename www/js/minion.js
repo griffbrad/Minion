@@ -1,8 +1,9 @@
 var MINION = {};
 
 (function(MINION, YD, YE, YS) {
-    var _panels  = [];
-    var _servers = {};
+    var _panels       = [];
+    var _servers      = {};
+    var _activeServer = null;
 
     MINION.manager = function(container, navContainer, data) 
     {
@@ -28,12 +29,12 @@ var MINION = {};
 
     MINION.manager.prototype.getActiveServer = function()
     {
-        return this._activeServer;
+        return _activeServer;
     };
 
     MINION.manager.prototype.setActiveServer = function(server)
     {
-        this._activeServer = server;
+        _activeServer = server;
     }
 
     MINION.manager.prototype.getNavContainer = function()
