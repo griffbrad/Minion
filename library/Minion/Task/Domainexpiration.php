@@ -20,16 +20,31 @@ class Minion_Task_Domainexpiration extends Minion_Task_Abstract_Domain
 
         $lines      = explode(PHP_EOL, $data);
         $expiration = null;
-        $pattern    = '/^\s*expiration date:\s*([a-z0-9\-]+)\s*'
-                    . '([0-9]{2}:[0-9]{2}:[0-9]{2} [A-Z]{3})?\s*$/i';
+
+        $patterns = array(
+            '/^\s*expiration date:\s*([a-z0-9\-]+)\s*([0-9]{2}:[0-9]{2}:[0-9]{2} [A-Z]{3})?\s*$/i',
+
+            //Domain Expiration Date:                      Wed Apr 17 23:59:59 GMT 2013
+            '/^Domain Expiration Date:\s*[a-z]+ ([a-z]{3} [0-9]+ [0-9]{2}:[0-9]{2}:[0-9]{2} [A-Z]{3} [0-9]{4})\s*$/i'
+        );
 
         foreach ($lines as $line) {
             $matches = array();
 
-            if (preg_match($pattern, $line, $matches)) {
-                $expiration = $this->_normalizeDate($matches[1]);
-                break;
+            foreach ($patterns as $pattern) {
+                if (preg_match($pattern, $line, $matches)) {
+                    $expiration = $this->_normalizeDate($matches[1]);
+                    break 2;
+                }
             }
+        }
+
+        if (! $expiration) {
+            foreach ($lines as $line) {
+                echo $line . PHP_EOL;
+            }
+
+            exit;
         }
 
         if (! $expiration) {
@@ -38,6 +53,9 @@ class Minion_Task_Domainexpiration extends Minion_Task_Abstract_Domain
 
         $dateFormatted = date('M j, Y', $expiration);
         $this->getResult()->setDetails("{$domain} expires on {$dateFormatted}");
+
+        // Have to avoid whois limits.  Lame.
+        sleep(15);
 
         return $expiration > (time() + self::ONE_MONTH);    
     }

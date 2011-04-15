@@ -2,8 +2,12 @@ if ('undefined' == typeof MINION.panel) {
     MINION.panel = {};
 }
 
-(function(MINION, YD, YE) {
-    var _header, _backLink;
+(function(MINION, YD, YE, YC, YJ, YDT) {
+    var _header, 
+        _backLink, 
+        _loading,
+        _domain,
+        _log;
 
     MINION.panel.Domain = function(manager)
     {
@@ -23,7 +27,28 @@ if ('undefined' == typeof MINION.panel) {
 
         _backLink.firstChild.nextSibling.nodeValue = server;
 
-        _header.firstChild.nodeValue = domain.name;
+        _domain = domain;
+       
+        YC.asyncRequest(
+            'GET',
+            'domain.php?domain=' + _domain.name,
+            {
+                scope: this,
+                success: function(o) {
+                    _loading.style.display = 'none';
+
+                    if (_log) {
+                        this._container.removeChild(_log);
+                    }
+
+                    _log = _displayLog(
+                        YJ.parse(o.responseText),
+                        this._container
+                    );
+                }
+            }
+        );
+
     };
 
     MINION.panel.Domain.prototype.hide = function()
@@ -65,14 +90,143 @@ if ('undefined' == typeof MINION.panel) {
         YD.addClass(content, 'minion-panel-content');
         div.appendChild(content);
 
-        _header = document.createElement('h2');
-        _header.appendChild(document.createTextNode(''));
-        content.appendChild(_header);
+        _loading = document.createElement('div');
+        YD.addClass(_loading, 'minion-loading');
+        _loading.appendChild(document.createTextNode('Loading domain information'));
+        content.appendChild(_loading);
 
         return div;
+    };
+    
+    var _buildThead = function()
+    {
+        var thead = document.createElement('thead');
+
+        var tr = document.createElement('tr');
+        thead.appendChild(tr);
+
+        var headers = [
+            { label: 'Task', width: '20%' },
+            { label: 'Status', width: '10%' },
+            { label: 'Execution Time', width: '20%' },
+            { label: 'Details', width: '50%' }
+        ];
+
+        for (var i = 0; i < headers.length; i++) {
+            var header = headers[i],
+                th     = document.createElement('th');
+
+            th.appendChild(document.createTextNode(header.label));
+            
+            th.width = header.width;
+
+            tr.appendChild(th);
+        }
+
+        return thead;
+    };
+
+    var _displayLog = function(data, container)
+    {
+        content = document.createElement('div');
+        YD.addClass(content, 'minion-panel-content');
+        container.appendChild(content);
+
+        var table = document.createElement('table');
+        YD.addClass(table, 'minion-listing');
+        table.cellSpacing = 0;
+        content.appendChild(table);
+
+        table.appendChild(_buildThead());
+
+        var tbody = document.createElement('tbody');
+        table.appendChild(tbody);
+
+        for (var i = 0; i < data.length; i++) {
+            var tr = document.createElement('tr');
+
+            tr.appendChild(_renderTask(data[i]));
+            tr.appendChild(_renderStatus(data[i]));
+            tr.appendChild(_renderExecutionTime(data[i]));
+            tr.appendChild(_renderDetails(data[i]));
+
+            tbody.appendChild(tr);
+        }
+
+        return content;
+    };
+
+    var _renderTask = function(data)
+    {
+        var td = document.createElement('td');
+        td.width = '20%';
+
+        td.appendChild(
+            document.createTextNode(data.task)
+        );
+
+        return td;
+    };
+
+    var _renderStatus = function(data)
+    {
+        var td = document.createElement('td');
+        td.width = '10%';
+
+        if (data.success) {
+            YD.addClass(td, 'minion-status-success');
+
+            td.appendChild(
+                document.createTextNode('Passed')
+            );
+        } else {
+            YD.addClass(td, 'minion-status-failure');
+
+            td.appendChild(
+                document.createTextNode('Failed')
+            );
+        }
+
+        return td;
+    };
+
+    var _renderExecutionTime = function(data)
+    {
+        var td   = document.createElement('td');
+        td.width = '20%';
+
+        var time = new Date(
+            Date.parse(data.executionTime.replace(/-/g, '/'))
+        );
+
+        var formatted = YDT.format(
+            time,
+            { format: '%b %e, %Y %R' }
+        );
+
+        td.appendChild(
+            document.createTextNode(formatted)
+        );
+
+        return td;
+    };
+
+    var _renderDetails = function(data)
+    {
+        var td = document.createElement('td');
+        td.width = '50%';
+
+        td.appendChild(
+            document.createTextNode(data.details)
+        );
+
+        return td;
     };
 })(
     MINION,
     YAHOO.util.Dom,
-    YAHOO.util.Event
+    YAHOO.util.Event,
+    YAHOO.util.Connect,
+    YAHOO.lang.JSON,
+    YAHOO.util.Date
 );

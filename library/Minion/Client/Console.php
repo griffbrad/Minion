@@ -101,7 +101,6 @@ class Minion_Client_Console extends Minion_Client_Abstract
 
     protected function _handleException(Exception $e)
     {
-        var_dump($e);exit;
         echo $e->getFile() . ':' . $e->getMessage() . PHP_EOL;
         exit;
     }

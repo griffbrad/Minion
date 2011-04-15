@@ -105,14 +105,6 @@ abstract class Minion_Task_Abstract
         $this->_result = Minion_Result::failure($db);
 
         $this->_result->setTask($this);
-
-        //$db = new Zend_Db_Table('tasks');
-
-        //if (! $db->find($this->getName())->current()) {
-            //$row = $db->createRow();
-            //$row->task = $this->getName();
-            //$row->save();
-        //}
     }
 
     public function setParent(Minion_Task_ParentInterface $parent)
@@ -194,6 +186,15 @@ abstract class Minion_Task_Abstract
     public function getResult()
     {
         return $this->_result;
+    }
+
+    public function shouldRun()
+    {
+        if (! $this->_schedule) {
+            return true;
+        }
+
+        return $this->_schedule->shouldRun();
     }
 
     public function setSchedule($text)

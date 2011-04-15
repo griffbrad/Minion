@@ -136,7 +136,9 @@ class Minion_Domain implements Minion_Task_ParentInterface
                 throw new Minion_Exception('Server task assigned to domain.');
             }
 
-            $resultNotifier->add($task->run());
+            if ($task->shouldRun()) {
+                $resultNotifier->add($task->run());
+            }
         }
     }
 

@@ -29,18 +29,7 @@
  * THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-// Init
-set_include_path(
-    dirname(dirname(__FILE__)) . '/library'
-  . PATH_SEPARATOR
-  . get_include_path()
-);
-
-require_once 'Zend/Loader/Autoloader.php';
-$autoloader = Zend_Loader_Autoloader::getInstance();
-$autoloader->registerNamespace('Minion_');
-
-$client = new Minion_Client_Www();
+require_once dirname(__FILE__) . '/bootstrap.php';
 
 $db      = $client->getDb();
 $cursor  = $db->domains->find()->sort(array('name' => 1));

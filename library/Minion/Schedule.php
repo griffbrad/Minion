@@ -12,10 +12,10 @@ class Minion_Schedule
     {
         $lastEvent = null;
 
-        if (isset($taskStatus['executionTime'])) {
-            $lastEvent = $taskStatus['executionTime'];
-        }
-        
+        if (isset($taskStatus['time'])) {
+            $lastEvent = $taskStatus['time'];
+        } 
+
         $this->setText($text)
              ->setLastEvent($lastEvent);
     }
@@ -31,7 +31,18 @@ class Minion_Schedule
 
     public function setLastEvent($lastEvent)
     {
-        $this->_lastEvent = $lastEvent;
+        if ($lastEvent) {
+            $unix = strtotime($lastEvent);
+
+            if (! $unix) {
+                throw new Minion_Exception(
+                    'Could not convert last event time to Unix timestamp:'
+                  . $lastEvent
+                );
+            }
+
+            $this->_lastEvent = $unix;
+        }
 
         return $this;
     }
@@ -41,8 +52,8 @@ class Minion_Schedule
         if (! $this->_interval) {
             $matches = array();
 
-            if (preg_match('/(\d+)\s+?([A-Z])/i', $this->_text, $matches)) {
-                $this->_interval = $matches[1] * $this->_multipleUnit($matches[2]);
+            if (preg_match('/(\d+)\s*([A-Z])/i', $this->_text, $matches)) {
+                $this->_interval = $matches[1] * $this->_multiplyUnit($matches[2]);
             } else {
                 throw new Minion_Exception(
                     "Could not parse schedule description '{$this->_text}'"

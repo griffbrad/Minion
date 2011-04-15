@@ -49,11 +49,11 @@ body {
     min-height: 600px;
 }
 
-h3 {
+#minion-navigation-container h3 {
     color: #999;
-    font-size: 80%;    
+    font-size: 13px;
     margin: 2em 0 .25em 0;
-    padding-left: 1.5em;
+    padding-left: 16px;
     text-transform: uppercase;
 }
 
@@ -70,10 +70,6 @@ th {
     border-bottom: 1px solid #ccd2e6;
     padding: .25em .5em;
     text-align: left;
-}
-
-.minion-panel-content {
-    padding: .5em;
 }
 
 .minion-toolbar {
@@ -129,7 +125,7 @@ li:hover {
 }
 
 li {
-    margin: .25em 0;
+    margin: .25em -1px;
     padding: .25em .5em .25em 1.5em;
     vertical-align: middle;
 }
@@ -179,4 +175,20 @@ tbody tr:hover {
 tr a {
     color: #000;
     text-decoration: none;
+}
+
+table {
+    table-layout: fixed;
+}
+
+th,
+td {
+    overflow: hidden;
+    white-space: nowrap;
+}
+
+.minion-loading {
+    background: url(../images/throbber.gif) left center no-repeat;
+    color: #666;
+    padding: 12px 0 12px 22px;
 }

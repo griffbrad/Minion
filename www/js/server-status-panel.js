@@ -94,7 +94,7 @@ if ('undefined' == typeof MINION.panel) {
         var callback = function(e) {
             manager.getPanel('domain').setDomain(this);
             manager.showPanel('domain');
-        }
+        };
 
         for (var i = 0; i < data.length; i++) {
             var domain = data[i];

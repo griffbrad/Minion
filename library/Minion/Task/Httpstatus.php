@@ -57,8 +57,18 @@ class Minion_Task_HttpStatus extends Minion_Task_Abstract_Domain
     public function main()
     {
         $client = new Zend_Http_Client();
-        $client->setConfig($this->_defaults['options']);
-        $client->setUri('http://' . $this->getParent()->getName() . '/');
-        return $client->request()->isSuccessful();
+        
+        $client->setConfig($this->_defaults['options'])
+               ->setUri('http://' . $this->getParent()->getName() . '/');
+
+        $response = $client->request();
+
+        $this->getResult()->setDetails(
+            "{$this->getParent()->getName()} returned {$response->getStatus()} "
+          . "status with Content-Length of "
+          . "{$response->getHeader('Content-Length')}"
+        );
+
+        return $response->isSuccessful();
     }
 }
