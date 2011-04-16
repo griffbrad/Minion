@@ -14,7 +14,7 @@ if ('undefined' == typeof MINION.nav) {
         var inner = document.createElement('div');
         _container.appendChild(inner);
         
-        _input = _buildInput(_container);
+        _input = _buildInput(manager, _container, this);
         inner.appendChild(_input);
 
         manager.getSearchContainer().appendChild(_container);
@@ -38,11 +38,11 @@ if ('undefined' == typeof MINION.nav) {
         
         var panel = manager.getPanel('server-status');
         panel.filter({ value: 'all' }, '');
-
+        
         manager.showPanel('server-status');
     };
 
-    var _buildInput = function(container) 
+    var _buildInput = function(manager, container, that) 
     {
         var input = document.createElement('input');
         YD.addClass(input, 'minion-search');
@@ -60,8 +60,8 @@ if ('undefined' == typeof MINION.nav) {
 
         YE.on(input, 'blur', function(e) {
             if (! input.value) {
-                input.value = _blurText;
-                YD.addClass(container, 'minion-search-blurred');
+                that.clear();
+                manager.getServerNavigation().select('all');
             }
         });
 
