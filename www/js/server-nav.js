@@ -14,6 +14,13 @@ if ('undefined' == typeof MINION.nav) {
         manager.getNavContainer().appendChild(list);
     };
 
+    MINION.nav.Servers.prototype.clear = function()
+    {
+        for (var i = 0; i < _liNodes.length; i++) {
+            YD.removeClass(_liNodes[i], 'selected');
+        }
+    };
+
     MINION.nav.Servers.prototype.select = function(server)
     {
         var id    = 'server-' + server,
