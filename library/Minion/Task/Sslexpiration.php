@@ -4,15 +4,14 @@ class Minion_Task_Sslexpiration extends Minion_Task_Abstract_Domain
 {
     const ONE_MONTH = 2592000;
 
+    public function shouldRun()
+    {
+        return parent::shouldRun() 
+            && $this->getParent()->getHasSsl();
+    }
+
     public function main()
     {
-        if (
-            $this->getConfig()->autodetect  
-            && ! $this->getParent()->getHasSsl()
-        ) {
-            return Minion_Result::TASK_ABORTED_CLEANLY;
-        }
-
         $cmd = sprintf(
             'echo "" | openssl s_client -connect %s:443 2> /dev/null '
           . '| openssl x509 -enddate -noout 2> /dev/null',
@@ -48,8 +47,9 @@ class Minion_Task_Sslexpiration extends Minion_Task_Abstract_Domain
         }
 
         $dateFormatted = date('M j, Y', $expiration);
+        $suffix        = ($expiration > time()) ? 'd' : 's';
         $this->getResult()->setDetails(
-            "{$this->getParent()->getName()} expires on {$dateFormatted}"
+            "{$this->getParent()->getName()} expire{$suffix} on {$dateFormatted}"
         );
 
         return $expiration > (time() + self::ONE_MONTH);

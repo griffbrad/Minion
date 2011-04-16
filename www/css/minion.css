@@ -10,6 +10,8 @@ html, body {
 
 h1 {
     color: #555753;
+    padding-left: 16px;
+    text-align: left;
 }
 
 h1 span {
@@ -191,4 +193,75 @@ td {
     background: url(../images/throbber.gif) left center no-repeat;
     color: #666;
     padding: 12px 0 12px 22px;
+}
+
+#minion-search input {
+    border: 1px solid #333;
+    color: #000;
+    width: 200px;
+}
+
+#minion-search .minion-search-blurred {
+    color: #666;
+
+}
+
+.minion-mobile .minion-inactive {
+    display: none;
+}
+
+.minion-mobile #minion-navigation-container,
+.minion-mobile #minion-content {
+    width: 100%;
+}
+
+.minion-mobile #minion-content {
+    border: none;
+}
+
+.minion-mobile ul {
+    margin: 0;
+    padding: 0;
+}
+
+.minion-mobile li,
+.minion-mobile li.selected {
+    border-bottom: 1px solid #ccd2e6;
+    margin: 0;
+    padding: 1em .5em 1em 1.5em;
+}
+
+.minion-mobile li:hover {
+    background: #edf0f9;
+}
+
+.minion-mobile td {
+    padding: 1em .5em;
+}
+
+.minion-mobile #minion-navigation-container h3 {
+    background: #e3e9ff;
+    border-bottom: 1px solid #ccd2e6;
+    color: #000;
+    font-size: 100%;
+    margin: 0;
+    padding: .25em .5em;
+    text-transform: none;
+}
+
+.minion-mobile h1 {
+    background: #204a78;
+    color: #fff;
+    font-size: 22px;
+    margin: 0;
+    padding: .5em;
+}
+
+.minion-mobile .yui-gf .yui-u {
+    text-align: left;
+    width: 100%;
+}
+
+.minion-mobile .yui-gf .yui-u.first {
+    width: 100%;
 }

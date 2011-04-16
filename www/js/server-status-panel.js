@@ -3,13 +3,18 @@ if ('undefined' == typeof MINION.panel) {
 }
 
 (function(MINION, YD, YE, YS, YDT) {
-    var _rows = [];
+    var _rows       = [],
+        _domainRows = [];
 
     MINION.panel.ServerStatus = function(manager)
     {
         this._table = _buildTable(manager);
 
         manager.getContainer().appendChild(this._table);
+
+        if (manager.isMobile()) {
+            YD.addClass(manager.getContainer(), 'minion-inactive');
+        }
     };
 
     MINION.panel.ServerStatus.prototype.show = function()
@@ -22,7 +27,7 @@ if ('undefined' == typeof MINION.panel) {
         this._table.style.display = 'none';
     }
 
-    MINION.panel.ServerStatus.prototype.filter = function(selected)
+    MINION.panel.ServerStatus.prototype.filter = function(selected, search)
     {
         var lastRow = null;
 
@@ -37,6 +42,18 @@ if ('undefined' == typeof MINION.panel) {
                 lastRow = _rows[i];
             } else {
                 _rows[i].style.display = 'none';
+            }
+        }
+
+        if (search) {
+            search = search.toLowerCase();
+
+            for (var i = 0; i < _domainRows.length; i++) {
+                var domainRow = _domainRows[i];
+
+                if (-1 === domainRow.domain.name.toLowerCase().indexOf(search)) {
+                    domainRow.row.style.display = 'none';
+                }
             }
         }
 
@@ -114,6 +131,11 @@ if ('undefined' == typeof MINION.panel) {
             YE.on(tr, 'click', callback, domain, true);
 
             _rows.push(tr);
+
+            _domainRows.push({
+                domain: domain,
+                row:    tr
+            });
         }
 
         return tbody;

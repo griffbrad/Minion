@@ -6,9 +6,14 @@ $this->headScript()->appendFile('yui/yahoo-dom-event/yahoo-dom-event.js')
                    ->appendFile('yui/json/json-min.js')
                    ->appendFile('js/minion.js')
                    ->appendFile('js/server-status-panel.js')
+                   ->appendFile('js/search.js')
                    ->appendFile('js/domain-panel.js')
                    ->appendFile('js/server-nav.js');
 ?>
+<div id="minion-search">
+
+</div>
+
 <div class="yui-gf">
     <div class="yui-u">
         <div id="minion-content">
@@ -24,6 +29,8 @@ $this->headScript()->appendFile('yui/yahoo-dom-event/yahoo-dom-event.js')
     var manager = new MINION.manager(
         YAHOO.util.Dom.get('minion-content'),
         YAHOO.util.Dom.get('minion-navigation-container'),
+        YAHOO.util.Dom.get('minion-search'),
+        <?php echo $this->mobile ? 'true' : 'false';?>,
         <?php echo json_encode($this->domains, true);?>
     );
 </script>

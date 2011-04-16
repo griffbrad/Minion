@@ -29,21 +29,16 @@
  * THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-require_once dirname(__FILE__) . '/bootstrap.php';
+// Init
+set_include_path(
+    dirname(dirname(__FILE__)) . '/library'
+  . PATH_SEPARATOR
+  . get_include_path()
+);
 
-$db      = $client->getDb();
-$cursor  = $db->domains->find()->sort(array('name' => 1));
-$domains = array();
+require_once 'Zend/Loader/Autoloader.php';
+$autoloader = Zend_Loader_Autoloader::getInstance();
+$autoloader->registerNamespace('Minion_');
 
-foreach ($cursor as $domain) {
-    $domains[] = $domain;
-}
-
-// Display
-$view = $client->getView();
-
-$view->assign('title', 'Overview')
-     ->assign('domains', $domains);
-
-$client->renderLayout('index.phtml');
+$client = new Minion_Client_Www();
 

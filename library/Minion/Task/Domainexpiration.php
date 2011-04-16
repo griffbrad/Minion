@@ -24,7 +24,7 @@ class Minion_Task_Domainexpiration extends Minion_Task_Abstract_Domain
         $patterns = array(
             '/^\s*expiration date:\s*([a-z0-9\-]+)\s*([0-9]{2}:[0-9]{2}:[0-9]{2} [A-Z]{3})?\s*$/i',
 
-            //Domain Expiration Date:                      Wed Apr 17 23:59:59 GMT 2013
+            // Domain Expiration Date: Wed Apr 17 23:59:59 GMT 2013
             '/^Domain Expiration Date:\s*[a-z]+ ([a-z]{3} [0-9]+ [0-9]{2}:[0-9]{2}:[0-9]{2} [A-Z]{3} [0-9]{4})\s*$/i'
         );
 

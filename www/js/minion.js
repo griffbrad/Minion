@@ -1,15 +1,21 @@
 var MINION = {};
 
 (function(MINION, YD, YE, YS) {
-    var _panels       = [];
-    var _servers      = {};
-    var _activeServer = null;
+    var _panels       = [],
+        _servers      = {},
+        _activeServer = null;
 
-    MINION.manager = function(container, navContainer, data) 
+    MINION.manager = function(container, navContainer, searchContainer,
+        mobile, data) 
     {
-        this._navContainer = navContainer;
-        this._container    = container;
-        this._data         = _initData(data);
+        this._navContainer    = navContainer;
+        this._container       = container;
+        this._searchContainer = searchContainer;
+
+        this._data = _initData(data);
+       
+
+        _mobile = mobile;
 
         var domainPanel = new MINION.panel.Domain(this);
         _addPanel(domainPanel);
@@ -19,13 +25,35 @@ var MINION = {};
 
         this._serverNavigation = new MINION.nav.Servers(this);
 
+        this._search = new MINION.nav.Search(this);
+
         this.showPanel('server-status');
+    };
+
+    MINION.manager.prototype.isMobile = function()
+    {
+        return _mobile;
+    };
+
+    MINION.manager.prototype.getSearch = function()
+    {
+        return this._search;
+    };
+
+    MINION.manager.prototype.getServerNavigation = function()
+    {
+        return this._serverNavigation;
     };
 
     MINION.manager.prototype.getContainer = function()
     {
         return this._container;
     };
+
+    MINION.manager.prototype.getSearchContainer = function()
+    {
+        return this._searchContainer;
+    }
 
     MINION.manager.prototype.getActiveServer = function()
     {

@@ -28,7 +28,11 @@ if ('undefined' == typeof MINION.panel) {
         _backLink.firstChild.nextSibling.nodeValue = server;
 
         _domain = domain;
-       
+        
+        if (_log) {
+            this._container.removeChild(_log);
+        }
+
         YC.asyncRequest(
             'GET',
             'domain.php?domain=' + _domain.name,
@@ -36,10 +40,6 @@ if ('undefined' == typeof MINION.panel) {
                 scope: this,
                 success: function(o) {
                     _loading.style.display = 'none';
-
-                    if (_log) {
-                        this._container.removeChild(_log);
-                    }
 
                     _log = _displayLog(
                         YJ.parse(o.responseText),

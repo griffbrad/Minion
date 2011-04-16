@@ -68,12 +68,20 @@ class Minion_Client_Www extends Minion_Client_Abstract
     {
         $layout = new Zend_Layout();
         
+        $this->getView()->assign('mobile', $this->isMobile());
+
         $layout->content = $this->getView()->render($viewScript);
 
-        $layout->setLayoutPath(getcwd())
+        $layout->setView($this->getView())
+               ->setLayoutPath(getcwd())
                ->setLayout('layout');
 
         echo $layout->render();
+    }
+
+    public function isMobile()
+    {
+        return false;
     }
 
     /**

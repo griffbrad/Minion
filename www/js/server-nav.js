@@ -3,12 +3,24 @@ if ('undefined' == typeof MINION.nav) {
 }
 
 (function(MINION, YD, YE) {
-    MINION.nav.Servers = function(manager) {
+    var _liNodes = [];
+
+    MINION.nav.Servers = function(manager) 
+    {
         var header = _buildHeader(manager);
         manager.getNavContainer().appendChild(header);
 
         var list = _buildList(manager);
         manager.getNavContainer().appendChild(list);
+    };
+
+    MINION.nav.Servers.prototype.select = function(server)
+    {
+        var id    = 'server-' + server,
+            node = YD.get(id);
+           
+        node.checked = true;
+        _applySelected(node.parentNode, _liNodes);
     };
 
     var _buildHeader = function()
@@ -29,24 +41,35 @@ if ('undefined' == typeof MINION.nav) {
         var servers  = manager.getServers();
         var callback = function(e) {
             this.checked = true;
-            _applySelected(this.parentNode, liNodes);
+            _applySelected(this.parentNode, _liNodes);
 
             if ('all' !== this.value) {
                 manager.setActiveServer(this.value);
             }
 
+            if (manager.isMobile()) {
+                YD.addClass(manager.getNavContainer(), 'minion-inactive');
+            }
+
+            manager.getSearch().clear();
             manager.getPanel('server-status').filter(this);
             manager.showPanel('server-status');
+
+            if (manager.isMobile()) {
+                YD.removeClass(manager.getContainer(), 'minion-inactive');
+            }
         };
 
-        var liNodes = [];
-
         var li = _buildLi('View All', 'server-all', 'all');
-        YD.addClass(li, 'selected');
-        li.firstChild.checked = true;
+
+        if (! manager.isMobile()) {
+            YD.addClass(li, 'selected');
+            li.firstChild.checked = true;
+        }
+
         ul.appendChild(li);
 
-        liNodes.push(li);
+        _liNodes.push(li);
 
         for (var index in servers) {
             var server = servers[index];
@@ -54,11 +77,11 @@ if ('undefined' == typeof MINION.nav) {
             var li = _buildLi(index, index, index, server);
             ul.appendChild(li);
 
-            liNodes.push(li);
+            _liNodes.push(li);
         }
 
-        for (var i = 0; i < liNodes.length; i++) {
-            var li = liNodes[i];
+        for (var i = 0; i < _liNodes.length; i++) {
+            var li = _liNodes[i];
             YE.on(li, 'click', callback, li.firstChild, true);
         }
 

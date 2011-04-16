@@ -1,6 +1,10 @@
 <?php echo $this->doctype('XHTML1_STRICT') ?>
 <html>
     <head>
+        <?php if ($this->mobile): ?>
+        <meta name="viewport" content="width=device-width; initial-scale=1.0; maximum-scale=1.0; minimum-scale=1.0; user-scalable=0;" />
+        <?php endif;?>
+
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 
         <?php
@@ -10,14 +14,18 @@
         ?>
 
         <?php
-        $this->headLink()->appendStylesheet('yui/grids/grids-min.css')
-                         ->appendStylesheet('css/minion.css');
+        if (! $this->mobile) {
+            $this->headLink()->appendStylesheet('yui/grids/grids-min.css');
+        }
+
+        $this->headLink()->appendStylesheet('css/minion.css');
+
         echo $this->headLink();
         ?>
 
         <?php echo $this->headScript();?>
     </head>
-    <body>
+    <body class="<?php if ($this->mobile) : echo 'minion-mobile'; endif;?>">
         <h1>
             <?php echo $this->title;?>
         </h1>
