@@ -27,6 +27,7 @@ $this->headScript()->appendFile('js/minion.js')
         YAHOO.util.Dom.get('minion-search'),
         YAHOO.util.Dom.get('minion-toolbar'),
         <?php echo $this->mobile ? 'true' : 'false';?>,
-        <?php echo json_encode($this->domains, true);?>
+        <?php echo json_encode($this->domains, true);?>,
+        <?php echo json_encode($this->settings, true);?>
     );
 </script>

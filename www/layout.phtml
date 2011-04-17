@@ -46,7 +46,7 @@
     </head>
     <body class="<?php if ($this->mobile) : echo 'minion-mobile'; endif;?>">
         <div id="minion-top-bar">
-            <a href="index.php">Minion</a>
+            <a href="index.php"><?php echo $this->escape($this->settings['site-name']);?></a>
 
             <ul id="minion-global-toolbar">
                 <li id="minion-user"><a href="account.php">Brad Griffith</a></li>
@@ -68,8 +68,16 @@
                 printf(
                     "var message_%d = new MINION.widget.Message('%s');" . PHP_EOL,
                     $index,
-                    $message
+                    $message['message']
                 );
+
+                if ($message['class']) {
+                    printf(
+                        "message_%d.setClass('%s');",
+                        $index,
+                        $message['class']
+                    );
+                }
 
                 echo "message_{$index}.clearAfterDelay(5000);" . PHP_EOL;
             }

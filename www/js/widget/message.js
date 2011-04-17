@@ -15,6 +15,13 @@ if ('undefined' == typeof MINION.widget) {
 
         document.body.appendChild(this._node);
     };
+    
+    MINION.widget.Message.prototype.setClass = function(className)
+    {
+        YD.addClass(this._node, className);
+
+        return this;
+    }
 
     MINION.widget.Message.prototype.setText = function(text)
     {

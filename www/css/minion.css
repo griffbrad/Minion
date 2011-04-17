@@ -449,6 +449,12 @@ td {
     margin: 3px 30%;
 }
 
+.minion-message-error {
+    background: #ffe3e0;
+    border-color: #dc6e66;
+    color: #e31b0c;
+}
+
 .minion-help {
     background: #ffffea;
     border-radius: 4px;
@@ -545,7 +551,26 @@ form label {
 }
 
 .minion-form-field {
-    padding-bottom: 32px;
+    margin-bottom: 32px;
+}
+
+.minion-form-field-with-messages {
+    background: #ffe3e0;
+    border: 1px solid #dc6e66;
+    padding: 8px;
+}
+
+.minion-form-field-errors {
+    color: #e31b0c;
+    font-size: 13px;
+    margin: 0;
+    padding: 0;
+}
+
+.minion-form-field-errors li {
+    background: url(../images/error.png) left center no-repeat;
+    margin: 0;
+    padding: 0 0 0 16px;
 }
 
 .minion-form-field-note {

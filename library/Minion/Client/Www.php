@@ -64,6 +64,11 @@ class Minion_Client_Www extends Minion_Client_Abstract
             $this->_view = new Zend_View(array(
                 'scriptPath' => getcwd()
             ));
+
+            $this->_view->addHelperPath(
+                'Minion/View/Helper', 
+                'Minion_View_Helper_'
+            );
         }
         
         return $this->_view;
@@ -78,9 +83,17 @@ class Minion_Client_Www extends Minion_Client_Abstract
     public function renderLayout($viewScript)
     {
         $layout = new Zend_Layout();
-        
+
+        $cursor   = $this->getDb()->settings->find();
+        $settings = array();
+
+        foreach ($cursor as $doc) {
+            $settings[$doc['setting-name']] = $doc['setting-value'];
+        }
+
         $this->getView()->assign('mobile', $this->isMobile())
                         ->assign('messages', $this->getMessages())
+                        ->assign('settings', $settings)
                         ->assign('client', $this);
 
         $layout->content = $this->getView()->render($viewScript);
@@ -97,9 +110,12 @@ class Minion_Client_Www extends Minion_Client_Abstract
         return false;
     }
 
-    public function addMessage($message)
+    public function addMessage($message, $class = null)
     {
-        $this->_messageSession->messages[] = $message;
+        $this->_messageSession->messages[] = array(
+            'message' => $message,
+            'class'   => $class
+        );
 
         return $this;
     }

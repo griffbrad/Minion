@@ -8,53 +8,7 @@
 
 <div id="minion-settings-container">
     <form id="minion-form-settings" action="settings.php" method="post">
-        <div class="minion-form-field">
-            <label for="site-name">Your Minion site name</label>
-            <div class="minion-form-field-note">
-                The Minion site name appears at the top of each page and in notifications.
-            </div>
-            <div class="minion-form-field-contents">
-                <input type="text" id="site-name" name="site-name" value="Delta Systems Group" />
-            </div>
-        </div>
-        
-        <div class="minion-form-field">
-            <label for="desktop-date-format">Desktop date and time format</label>
-            <a id="minion-help-desktop-date" href="#" class="minion-help-link">Help</a>
-            <div class="minion-form-field-note">
-                The desktop date format is used for all dates displayed in desktop web browsers.
-            </div>
-            <div class="minion-form-field-contents">
-                <input type="text" id="desktop-date-format" name="desktop-date-format" value="%Y %m %d" class="minion-input-medium" />
-            </div>
-        </div>
-        
-        <div class="minion-form-field">
-            <label for="mobile-date-format">Mobile date and time format</label>
-            <a id="minion-help-mobile-date" href="#" class="minion-help-link">Help</a>
-            <div class="minion-form-field-note">
-                The mobile date format will be used for dates displayed on mobile devices where
-                space is often more constrained.
-            </div>
-            <div class="minion-form-field-contents">
-                <input type="text" id="mobile-date-format" name="mobile-date-format" value="%Y %m %d" class="minion-input-medium" />
-            </div>
-        </div>
-        
-        <div class="minion-form-field">
-            <label for="log-size">Log size</label>
-            <span class="minion-warning">Changing log size will erase existing log entries</span>
-            <div class="minion-form-field-note">
-                The amount of storage space to dedicate to the monitoring log    
-            </div>
-            <div class="minion-form-field-contents">
-                <input class="minion-input-small" type="text" id="log-size" name="log-size" value="100" />
-                <select id="log-size-unit" name="log-size-unit">
-                    <option value="m" selected="selected">Megabytes</option>
-                    <option value="g">Gigabytes</option>
-                </select>
-            </div>
-        </div>
+        <?php $this->formHandler()->display(); ?> 
 
         <div class="minion-form-footer">
             <a id="minion-form-submit" class="minion-button">Save Settings</a>

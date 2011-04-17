@@ -32,17 +32,18 @@
 require_once dirname(__FILE__) . '/bootstrap.php';
 
 $request = new Zend_Controller_Request_Http();
+$handler = new Minion_Form_Settings_General($request, $client);
 
-if ($request->isPost()) {
+if ($handler->isValid()) {
+    $handler->save($client->getDb());
+
     $client->addMessage('Settings successfully saved');
 
     header('Location: settings.php');
     exit;
 }
 
-// Display
-$view = $client->getView();
-
-$view->assign('title', 'Settings');
+$client->getView()->assign('title', 'Settings');
 
 $client->renderLayout('settings.phtml');
+

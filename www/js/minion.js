@@ -8,14 +8,15 @@ if ('undefined' == typeof MINION) {
         _activeServer = null;
 
     MINION.manager = function(container, navContainer, searchContainer,
-        toolbarContainer, mobile, data) 
+        toolbarContainer, mobile, data, settings) 
     {
         this._navContainer     = navContainer;
         this._container        = container;
         this._searchContainer  = searchContainer;
         this._toolbarContainer = toolbarContainer;
 
-        this._data = _initData(data);
+        this._data     = _initData(data);
+        this._settings = settings;
        
 
         _mobile = mobile;
@@ -37,13 +38,7 @@ if ('undefined' == typeof MINION) {
 
     MINION.manager.prototype.getSetting = function(key)
     {
-        var settings = {
-            'site-name' : 'Minion',
-            'desktop-date-format': '%c',
-            'mobile-date-format': '%c'
-        };
-
-        return settings[key];
+        return this._settings[key];
     }
 
     MINION.manager.prototype.refresh = function()
