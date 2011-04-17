@@ -1,0 +1,163 @@
+<ul id="minion-settings-navigation">
+    <li class="selected"><a href="settings.php">General</a></li>
+    <li><a href="settings/notifications.php">Notifications</a></li>
+    <li><a href="settings/users.php">Users</a></li>
+    <li><a href="settings/tasks.php">Tasks</a></li>
+    <li><a href="settings/servers.php">Servers</a></li>
+</ul>
+
+<div id="minion-settings-container">
+    <form id="minion-form-settings" action="settings.php" method="post">
+        <div class="minion-form-field">
+            <label for="site-name">Your Minion site name</label>
+            <div class="minion-form-field-note">
+                The Minion site name appears at the top of each page and in notifications.
+            </div>
+            <div class="minion-form-field-contents">
+                <input type="text" id="site-name" name="site-name" value="Delta Systems Group" />
+            </div>
+        </div>
+        
+        <div class="minion-form-field">
+            <label for="desktop-date-format">Desktop date and time format</label>
+            <a id="minion-help-desktop-date" href="#" class="minion-help-link">Help</a>
+            <div class="minion-form-field-note">
+                The desktop date format is used for all dates displayed in desktop web browsers.
+            </div>
+            <div class="minion-form-field-contents">
+                <input type="text" id="desktop-date-format" name="desktop-date-format" value="%Y %m %d" class="minion-input-medium" />
+            </div>
+        </div>
+        
+        <div class="minion-form-field">
+            <label for="mobile-date-format">Mobile date and time format</label>
+            <a id="minion-help-mobile-date" href="#" class="minion-help-link">Help</a>
+            <div class="minion-form-field-note">
+                The mobile date format will be used for dates displayed on mobile devices where
+                space is often more constrained.
+            </div>
+            <div class="minion-form-field-contents">
+                <input type="text" id="mobile-date-format" name="mobile-date-format" value="%Y %m %d" class="minion-input-medium" />
+            </div>
+        </div>
+        
+        <div class="minion-form-field">
+            <label for="log-size">Log size</label>
+            <span class="minion-warning">Changing log size will erase existing log entries</span>
+            <div class="minion-form-field-note">
+                The amount of storage space to dedicate to the monitoring log    
+            </div>
+            <div class="minion-form-field-contents">
+                <input class="minion-input-small" type="text" id="log-size" name="log-size" value="100" />
+                <select id="log-size-unit" name="log-size-unit">
+                    <option value="m" selected="selected">Megabytes</option>
+                    <option value="g">Gigabytes</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="minion-form-footer">
+            <a id="minion-form-submit" class="minion-button">Save Settings</a>
+        </div>
+    </form>
+</div>
+
+<div id="date-help-body" class="minion-hidden">
+    Specify the format you'd like to use when displaying dates with the template
+    tags listed below.  For example, enter "%b %e, %Y, %R" for the following format:
+    <?php echo strftime('%b, %e, %Y, %R');?>.
+
+    <div class="yui-g">
+        <div class="yui-u first">
+            <dl>
+                <dt>%a</dt>
+                <dd>Abbreviated weekday name</dd>
+
+                <dt>%b</dt>
+                <dd>Abbreviated month name</dd>
+                
+                <dt>%c</dt>
+                <dd>Standard for current locale</dd>
+                
+                <dt>%R</dt>
+                <dd>Full time on 24-hour clock</dd>
+
+                <dt>%k</dt>
+                <dd>Hour on 24-hour clock</dd>
+                
+                <dt>%M</dt>
+                <dd>Minutes</dd>
+
+                <dt>%p</dt>
+                <dd>AM or PM</dd>
+
+                <dt>%y</dt>
+                <dd>Year without the century</dd>
+
+                <dt>%x</dt>
+                <dd>Standard format without time</dd>
+            </dl>
+        </div>
+        <div class="yui-u">
+            <dl>
+                <dt>%A</dt>
+                <dd>Full weekday name</dd>
+                
+                <dt>%B</dt>
+                <dd>Full month name</dd>
+
+                <dt>%e</dt>
+                <dd>Day of month as number</dd>
+
+                <dt>%r</dt>
+                <dd>Full time on 12-hour clock</dd>
+
+                <dt>%l</dt>
+                <dd>Hour on 12-hour clock</dd>
+
+                <dt>%S</dt>
+                <dd>Seconds</dd>
+
+                <dt>%P</dt>
+                <dd>Like %p, but lower-case</dd>
+
+                <dt>%Y</dt>
+                <dd>Full year</dd>
+                
+                <dt>%X</dt>
+                <dd>Standard format without date</dd>
+            </dl>
+        </div>
+
+        <a target="_blank" class="minion-external" href="http://www.php.net/strftime">Learn more at php.net</a>
+    </div>
+</div>
+
+<script type="text/javascript">
+    var dateHelpLinks = [
+        YAHOO.util.Dom.get('minion-help-desktop-date'),
+        YAHOO.util.Dom.get('minion-help-mobile-date')
+    ]; 
+
+    for (var i = 0; i < dateHelpLinks.length; i++) {
+        var link = dateHelpLinks[i];
+
+        YAHOO.util.Event.on(link, 'click', function(e) {
+            YAHOO.util.Event.preventDefault(e);
+
+            var help = new MINION.widget.Help();
+
+            help.setHeader('Date formatting')
+                .setBody(YAHOO.util.Dom.get('date-help-body').innerHTML)
+                .render();
+        });
+    }
+
+    var submit = YAHOO.util.Dom.get('minion-form-submit');
+
+    YAHOO.util.Event.on(submit, 'click', function(e) {
+        YAHOO.util.Event.preventDefault(e);
+        
+        YAHOO.util.Dom.get('minion-form-settings').submit();
+    });
+</script>

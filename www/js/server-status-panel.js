@@ -64,14 +64,14 @@ if ('undefined' == typeof MINION.panel) {
 
     MINION.panel.ServerStatus.prototype.show = function()
     {
-        this._table.style.display = 'table';
+        this._tableContainer.style.display = 'block';
         this._footer.container.style.display = 'block';
         this._toolbar.style.display = 'block';
     }
     
     MINION.panel.ServerStatus.prototype.hide = function()
     {
-        this._table.style.display = 'none';
+        this._tableContainer.style.display = 'none';
         this._footer.container.style.display = 'none';
         this._toolbar.style.display = 'none';
     }
@@ -133,6 +133,10 @@ if ('undefined' == typeof MINION.panel) {
             suffix = ''; 
         }
 
+        if (0 > displayed) {
+            displayed = 0;
+        }
+
         this._footer.countCell.innerHTML = displayed + ' Domain' + suffix;
     };
 
@@ -180,6 +184,12 @@ if ('undefined' == typeof MINION.panel) {
             var active = this._manager.getActiveServer();
 
             this._onlyFailures = check.checked;
+
+            if (check.checked) {
+                YD.addClass(failures, 'minion-button-pressed');
+            } else {
+                YD.removeClass(failures, 'minion-button-pressed');
+            }
 
             if (this._manager.getSearch().isFocused()) {
                 this.filter({value: 'all'}, this._manager.getSearch().getValue());
@@ -250,9 +260,15 @@ if ('undefined' == typeof MINION.panel) {
 
             tbody.appendChild(tr);
 
+            var format = manager.getSetting('desktop-date-format');
+
+            if (manager.isMobile()) {
+                format = manager.getSetting('mobile-date-format');
+            }
+
             tr.appendChild(_renderName(domain));            
             tr.appendChild(_renderStatus(domain));            
-            tr.appendChild(_renderLastChecked(domain));
+            tr.appendChild(_renderLastChecked(domain, format));
 
             YE.on(tr, 'click', callback, domain, true);
 
@@ -324,7 +340,7 @@ if ('undefined' == typeof MINION.panel) {
         return td;
     };
 
-    var _renderLastChecked = function(domain)
+    var _renderLastChecked = function(domain, format)
     {
         var td = document.createElement('td');
     
@@ -343,7 +359,7 @@ if ('undefined' == typeof MINION.panel) {
         if (null !== time) {
             var dateFormatted = YDT.format(
                 time, 
-                { format: '%b %e, %Y %R' }
+                { 'format': format }
             );
 
             td.appendChild(

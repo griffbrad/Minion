@@ -23,13 +23,61 @@
         echo $this->headLink();
         ?>
 
+        <?php
+        $dependencies = array(
+            'yui/yahoo-dom-event/yahoo-dom-event.js',
+            'yui/selector/selector-min.js',
+            'yui/connection/connection-min.js',
+            'yui/datasource/datasource-min.js',
+            'yui/animation/animation-min.js',
+            'yui/json/json-min.js',
+            'js/widget/help.js',
+            'js/widget/message.js'
+        );
+
+        krsort($dependencies);
+
+        foreach ($dependencies as $js) {
+            $this->headScript()->prependFile($js);
+        }
+        ?>
+
         <?php echo $this->headScript();?>
     </head>
     <body class="<?php if ($this->mobile) : echo 'minion-mobile'; endif;?>">
+        <div id="minion-top-bar">
+            <a href="index.php">Minion</a>
+
+            <ul id="minion-global-toolbar">
+                <li id="minion-user"><a href="account.php">Brad Griffith</a></li>
+                <li id="minion-settings"><a href="settings.php">Settings</a></li>
+            </ul>    
+        </div>
+
         <?php echo $this->layout()->content ?>
 
         <div id="minion-copyright">
-            Minion &bull; Simple web application monitoring &bull; New BSD license &bull; &copy;2009-<?php echo date('Y');?> Brad Griffith
+            Minion &bull; Simple web application monitoring &bull; <a href="license.php">New BSD license</a> &bull; &copy;2009-<?php echo date('Y');?> <a href="mailto:griffbrad@gmail.com">Brad Griffith</a>
         </div>
+
+        <?php
+        if (count($this->messages)) {
+            echo '<script type="text/javascript">';
+
+            foreach ($this->messages as $index => $message) {
+                printf(
+                    "var message_%d = new MINION.widget.Message('%s');" . PHP_EOL,
+                    $index,
+                    $message
+                );
+
+                echo "message_{$index}.clearAfterDelay(5000);" . PHP_EOL;
+            }
+
+            echo '</script>';
+
+            $this->client->clearMessages();
+        }
+        ?>
     </body>
 </html>

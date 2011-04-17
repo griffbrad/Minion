@@ -5,6 +5,7 @@ html {
 html, body {
     padding: 0;
     margin: 0;
+    text-align: left;
 }
 
 h1 {
@@ -53,6 +54,7 @@ body {
 #minion-navigation-container h3 {
     color: #666;
     font-size: 13px;
+    font-weight: normal;
     margin: 28px 0 8px 0;
     padding-left: 16px;
 }
@@ -106,7 +108,14 @@ body {
     font-size: 13px;
     margin-right: 4px;
     padding: 5px 10px;
-    text-shadow: 2px 2px 2px #fff;
+    text-shadow: 1px 1px 1px #eee;
+}
+
+.minion-button-pressed {
+    background: #ccc;
+    border: 1px solid #ccc;
+    border-left: 1px solid #999;
+    border-top: 1px solid #999;
 }
 
 .minion-button input,
@@ -134,6 +143,10 @@ body {
 .minion-button:hover {
     background-color: #f4f4f4;
     cursor: pointer;
+}
+
+.minion-button-pressed:hover {
+    background: #ddd;
 }
 
 table {
@@ -298,6 +311,15 @@ td {
     text-align: left;    
 }
 
+#minion-top-bar a {
+    color: #666;
+    text-decoration: none;
+}
+
+#minion-top-bar a:hover {
+    color: blue;
+}
+
 .minion-search-container {
     background: url(../images/search.png) 3px center no-repeat;
     border: 1px solid #333;
@@ -339,6 +361,15 @@ td {
     font-size: 13px;
     margin: 16px 0;
     text-align: center;
+}
+
+#minion-copyright a {
+    color: #666;
+    text-decoration: none;
+}
+
+#minion-copyright a:hover {
+    color: blue;
 }
 
 .minion-mobile .minion-inactive {
@@ -401,19 +432,189 @@ td {
 }
 
 .minion-message {
-     background: #fffbc9;
-     border-radius: 4px;
-     -moz-border-radius: 4px;
-     -webkit-border-radius: 4px;
-     -webkit-box-shadow: inset 0 0 12px #fff;
-     border: 1px solid #f0dca1;
-     color: #7b4b11;
-     font-size: 13px;
-     padding: 4px 8px;
-     position: fixed;
-     left: 0;
-     top: 0;
-     width: 40%;
-     text-align: left;
-     margin: 3px 30%;
+    background: #fffbc9;
+    border-radius: 4px;
+    -moz-border-radius: 4px;
+    -webkit-border-radius: 4px;
+    -webkit-box-shadow: inset 0 0 12px #fff;
+    border: 1px solid #f0dca1;
+    color: #7b4b11;
+    font-size: 13px;
+    padding: 4px 8px;
+    position: fixed;
+    left: 0;
+    top: 0;
+    width: 40%;
+    text-align: left;
+    margin: 3px 30%;
+}
+
+.minion-help {
+    background: #ffffea;
+    border-radius: 4px;
+    -moz-border-radius: 4px;
+    -webkit-border-radius: 4px;
+    -webkit-border-top-left-radius: 0;
+    -webkit-border-top-right-radius: 0;
+    -webkit-box-shadow: 0 3px 6px #aaa;
+    border: 1px solid #333;
+    border-top: 0;
+    font-size: 13px;
+    padding: 8px 16px 16px 16px;
+    position: fixed;
+    left: 0;
+    top: -1000px;
+    width: 50%;
+    text-align: left;
+    margin: 0 25%;
+    color: #333;
+}
+
+.minion-close {
+    background: url(../images/close.png) center center no-repeat;
+    float: right;
+    height: 16px;
+    width: 16px;
+    position: relative;
+    top: 0;
+    left: 8px;
+    display: block;
+}
+
+.minion-hidden {
+    display: none;
+}
+
+#minion-settings-navigation {
+    padding: 0;
+    margin: 24px 0 0 0;
+}
+
+#minion-settings-navigation li {
+    background: #fff;
+    color: #666;
+    display: block;
+    float: left;
+    margin: 0;
+    padding: 6px 12px 2px 12px;
+    margin: 0 16px;
+}
+
+#minion-settings-navigation a {
+    color: #666;
+    text-decoration: none;
+}
+
+#minion-settings-navigation a:hover {
+    color: blue;
+}
+
+#minion-settings-navigation li.selected a {
+    color: #625000;
+}
+
+#minion-settings-navigation li.selected a:hover {
+    color: #fff;
+}
+
+#minion-settings-navigation li.selected {
+    background: #fad163;
+    border-radius: 4px;
+    border-bottom-right-radius: 0;
+    border-bottom-left-radius: 0;
+    color: #625000;
+    float: left;
+}
+
+#minion-settings-container {
+    background: #fff7d7;
+    border-bottom: 4px solid #fad163;
+    border-top: 4px solid #fad163;
+    clear: both;
+    padding: 32px 16px;
+    text-align: left;
+}
+
+.minion-form-footer {
+    padding-top: 8px;
+}
+
+form label {
+    display: block;
+    float: left;
+}
+
+.minion-form-field {
+    padding-bottom: 32px;
+}
+
+.minion-form-field-note {
+    clear: both;
+    color: #666;
+    font-size: 13px;
+}
+
+.minion-form-field-contents {
+    padding-top: 8px;
+}
+
+form input {
+    border: 1px solid #333;
+    border-bottom: 1px solid #ccc;
+    border-right: 1px solid #ccc;
+    width: 27em;
+}
+
+form .minion-input-small {
+    width: 6em;
+}
+
+form .minion-input-medium {
+    width: 16em;
+}
+
+#minion-license {
+    padding: 32px 16px;
+}
+
+#minion-license ul {
+    list-style-type: disc;
+    margin-left: 24px;
+}
+
+#minion-license li {
+    padding-left: 0;
+}
+
+.minion-help-link {
+    background: url(../images/help.png) left center no-repeat;
+    font-size: 13px;
+    margin-left: 16px;
+    padding-left: 14px;
+    text-decoration: none;
+}
+
+.minion-help dt {
+    float: left;
+    font-weight: bold;
+    margin-right: 6px;
+}
+
+.minion-help dd {
+    color: #666;
+    margin: 0;
+    padding: 0;
+}
+
+.minion-warning {
+    background: url(../images/warning.png) left center no-repeat;
+    color: #e31b0c;
+    font-size: 13px;
+    margin-left: 16px;
+    padding-left: 14px;
+}
+
+.minion-external {
+    background: url(../images/external.png) right center no-repeat;
+    padding-right: 16px;
 }

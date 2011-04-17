@@ -8,7 +8,7 @@ $query = array(
 
 $db     = $client->getDb();
 $cursor = $db->log->find($query)
-                  ->sort(array('executionTime' => -1))
+                  ->sort(array('$natural' => -1))
                   ->limit(100);
 
 $log = array();

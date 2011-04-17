@@ -1,4 +1,6 @@
-var MINION = {};
+if ('undefined' == typeof MINION) {
+    var MINION = {};
+}
 
 (function(MINION, YD, YE, YS, YC, YJ) {
     var _panels       = [],
@@ -32,6 +34,17 @@ var MINION = {};
 
         this._bindKeyboardShortcuts();
     };
+
+    MINION.manager.prototype.getSetting = function(key)
+    {
+        var settings = {
+            'site-name' : 'Minion',
+            'desktop-date-format': '%c',
+            'mobile-date-format': '%c'
+        };
+
+        return settings[key];
+    }
 
     MINION.manager.prototype.refresh = function()
     {
@@ -120,6 +133,10 @@ var MINION = {};
 
     MINION.manager.prototype.setActiveServer = function(server)
     {
+        if ('all' === server) {
+            server = null;
+        }
+
         _activeServer = server;
     }
 

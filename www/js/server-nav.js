@@ -33,9 +33,7 @@ if ('undefined' == typeof MINION.nav) {
                 next.firstChild.checked = true;
                 _applySelected(next, _liNodes);
             
-                if ('all' !== next.firstChild.value) {
-                    this._manager.setActiveServer(next.firstChild.value);
-                }
+                this._manager.setActiveServer(next.firstChild.value);
             
                 this._manager.getPanel('server-status').filter(next.firstChild);
                 this._manager.showPanel('server-status');
@@ -54,9 +52,7 @@ if ('undefined' == typeof MINION.nav) {
                 prev.firstChild.checked = true;
                 _applySelected(prev, _liNodes);
                 
-                if ('all' !== prev.firstChild.value) {
-                    this._manager.setActiveServer(prev.firstChild.value);
-                }
+                this._manager.setActiveServer(prev.firstChild.value);
                 
                 this._manager.getPanel('server-status').filter(prev.firstChild);
                 this._manager.showPanel('server-status');
@@ -94,9 +90,7 @@ if ('undefined' == typeof MINION.nav) {
             this.checked = true;
             _applySelected(this.parentNode, _liNodes);
 
-            if ('all' !== this.value) {
-                manager.setActiveServer(this.value);
-            }
+            manager.setActiveServer(this.value);
 
             if (manager.isMobile()) {
                 YD.addClass(manager.getNavContainer(), 'minion-inactive');

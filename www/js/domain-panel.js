@@ -45,9 +45,15 @@ if ('undefined' == typeof MINION.panel) {
                 success: function(o) {
                     _loading.style.display = 'none';
 
+                    var format = this._manager.getSetting('desktop-date-format');
+
+                    if (this._manager.isMobile()) {
+                        format = this._manager.getSetting('mobile-date-format');
+                    }
                     _log = _displayLog(
                         YJ.parse(o.responseText),
-                        this._container
+                        this._container,
+                        format
                     );
                 }
             }
@@ -133,7 +139,7 @@ if ('undefined' == typeof MINION.panel) {
         return thead;
     };
 
-    var _displayLog = function(data, container)
+    var _displayLog = function(data, container, format)
     {
         content = document.createElement('div');
         YD.addClass(content, 'minion-panel-content');
@@ -154,7 +160,7 @@ if ('undefined' == typeof MINION.panel) {
 
             tr.appendChild(_renderTask(data[i]));
             tr.appendChild(_renderStatus(data[i]));
-            tr.appendChild(_renderExecutionTime(data[i]));
+            tr.appendChild(_renderExecutionTime(data[i], format));
             tr.appendChild(_renderDetails(data[i]));
 
             tbody.appendChild(tr);
@@ -197,7 +203,7 @@ if ('undefined' == typeof MINION.panel) {
         return td;
     };
 
-    var _renderExecutionTime = function(data)
+    var _renderExecutionTime = function(data, format)
     {
         var td   = document.createElement('td');
         td.width = '20%';
@@ -208,7 +214,7 @@ if ('undefined' == typeof MINION.panel) {
 
         var formatted = YDT.format(
             time,
-            { format: '%b %e, %Y %R' }
+            { 'format': format }
         );
 
         td.appendChild(

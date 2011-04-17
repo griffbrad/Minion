@@ -41,6 +41,17 @@ class Minion_Client_Www extends Minion_Client_Abstract
      * @var Zend_View
      */
     protected $_view;
+
+    protected $_messageSession;
+
+    public function init()
+    {
+        $this->_messageSession = new Zend_Session_Namespace('messages');
+
+        if (! isset($this->_messageSession->messages)) {
+            $this->_messageSession->messages = array();
+        }
+    }
    
     /**
      * Retrieve a view object for this request.
@@ -68,7 +79,9 @@ class Minion_Client_Www extends Minion_Client_Abstract
     {
         $layout = new Zend_Layout();
         
-        $this->getView()->assign('mobile', $this->isMobile());
+        $this->getView()->assign('mobile', $this->isMobile())
+                        ->assign('messages', $this->getMessages())
+                        ->assign('client', $this);
 
         $layout->content = $this->getView()->render($viewScript);
 
@@ -82,6 +95,25 @@ class Minion_Client_Www extends Minion_Client_Abstract
     public function isMobile()
     {
         return false;
+    }
+
+    public function addMessage($message)
+    {
+        $this->_messageSession->messages[] = $message;
+
+        return $this;
+    }
+
+    public function getMessages()
+    {
+        return $this->_messageSession->messages;
+    }
+
+    public function clearMessages()
+    {
+        unset($this->_messageSession->messages);
+
+        return $this;
     }
 
     /**

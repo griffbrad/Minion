@@ -1,3 +1,7 @@
+if ('undefined' == typeof MINION) {
+    var MINION = {};
+}
+
 if ('undefined' == typeof MINION.widget) {
     MINION.widget = {};
 }
@@ -23,9 +27,13 @@ if ('undefined' == typeof MINION.widget) {
         return this;
     };
 
-    MINION.widget.Message.prototype.clearAfterDelay = function()
+    MINION.widget.Message.prototype.clearAfterDelay = function(delay)
     {
         var that = this;
+
+        if (! delay) {
+            delay = 1000;
+        }
 
         setTimeout(function() {
             var anim = new YA(
@@ -43,7 +51,7 @@ if ('undefined' == typeof MINION.widget) {
             });
 
             anim.animate();
-        }, 1000);
+        }, delay);
     };
 })(
     MINION,
