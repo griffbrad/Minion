@@ -27,5 +27,9 @@
     </head>
     <body class="<?php if ($this->mobile) : echo 'minion-mobile'; endif;?>">
         <?php echo $this->layout()->content ?>
+
+        <div id="minion-copyright">
+            Minion &bull; Simple web application monitoring &bull; New BSD license &bull; &copy;2009-<?php echo date('Y');?> Brad Griffith
+        </div>
     </body>
 </html>

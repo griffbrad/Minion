@@ -3,22 +3,34 @@ $this->headScript()->appendFile('yui/yahoo-dom-event/yahoo-dom-event.js')
                    ->appendFile('yui/selector/selector-min.js')
                    ->appendFile('yui/connection/connection-min.js')
                    ->appendFile('yui/datasource/datasource-min.js')
+                   ->appendFile('yui/animation/animation-min.js')
                    ->appendFile('yui/json/json-min.js')
                    ->appendFile('js/minion.js')
                    ->appendFile('js/server-status-panel.js')
+                   ->appendFile('js/message.js')
                    ->appendFile('js/search.js')
                    ->appendFile('js/domain-panel.js')
                    ->appendFile('js/server-nav.js');
 ?>
-<div class="yui-gf">
-    <div class="yui-u">
-        <div id="minion-content">
+<div id="minion-top-bar">
+    Delta Systems Group
 
-        </div>
-    </div>
+    <ul id="minion-global-toolbar">
+        <li id="minion-user"><a href="account.php">Brad Griffith</a></li>
+        <li id="minion-settings"><a href="settings.php">Settings</a></li>
+    </ul>    
+</div>
+<div class="yui-gf">
     <div id="minion-navigation-container" class="yui-u first">
         <div id="minion-search">
 
+        </div>
+    </div>
+    <div class="yui-u">
+        <div id="minion-toolbar">
+            
+        </div>
+        <div id="minion-content">
         </div>
     </div>
 </div>
@@ -28,6 +40,7 @@ $this->headScript()->appendFile('yui/yahoo-dom-event/yahoo-dom-event.js')
         YAHOO.util.Dom.get('minion-content'),
         YAHOO.util.Dom.get('minion-navigation-container'),
         YAHOO.util.Dom.get('minion-search'),
+        YAHOO.util.Dom.get('minion-toolbar'),
         <?php echo $this->mobile ? 'true' : 'false';?>,
         <?php echo json_encode($this->domains, true);?>
     );

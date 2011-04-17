@@ -46,38 +46,127 @@ body {
 
 #minion-content {
     border: 4px solid #bbccff;
-    border-top: none;
     border-right: none;
-    min-height: 600px;
+    min-height: 400px;
 }
 
 #minion-navigation-container h3 {
-    color: #999;
+    color: #666;
     font-size: 13px;
-    margin: 2em 0 .25em 0;
+    margin: 28px 0 8px 0;
     padding-left: 16px;
-    text-transform: uppercase;
+}
+
+#minion-global-toolbar {
+    float: right;
+    margin: 0;
+    padding: 0;
+}
+
+#minion-global-toolbar li {
+    display: block;
+    float: left;
+    font-weight: normal;
+    margin: 0;
+    padding: 0;
+}
+
+#minion-global-toolbar a {
+    background-position: 28px center;
+    background-repeat: no-repeat;
+    color: #666;
+    display: block;
+    padding: 0 0 0 48px; 
+    text-decoration: none;
+}
+
+#minion-global-toolbar a:hover {
+    color: blue;
+}
+
+#minion-user a {
+    background-image: url(../images/user.png);
+}
+
+#minion-settings a {
+    background-image: url(../images/settings.png);
 }
 
 #minion-domain-display {
     display: none;
 }
 
+.minion-button {
+    background: #eee;
+    background-position: 6px center;
+    background-repeat: no-repeat;
+    border: 1px solid #ccc;
+    border-bottom: 1px solid #999;
+    border-right: 1px solid #999;
+    font-size: 13px;
+    margin-right: 4px;
+    padding: 5px 10px;
+    text-shadow: 2px 2px 2px #fff;
+}
+
+.minion-button input,
+.minion-button label {
+    cursor: pointer;
+}
+
+.minion-button input {
+    padding-left: 0;
+    margin-left: -2px;
+    margin-right: 6px;
+    vertical-align: top;
+}
+
+#minion-refresh {
+    background-image: url(../images/refresh.png);
+    padding-left: 26px;
+}
+
+.minion-back {
+    background-image: url(../images/back.png);
+    padding-left: 26px;
+}
+
+.minion-button:hover {
+    background-color: #f4f4f4;
+    cursor: pointer;
+}
+
 table {
     width: 100%;
+}
+
+.minion-table-container {
+    min-height: 400px;
 }
 
 th {
     background: #e3e9ff;
     border-bottom: 1px solid #ccd2e6;
+    color: #333;
+    font-weight: normal;
     padding: .25em .5em;
     text-align: left;
 }
 
-.minion-toolbar {
+.minion-server-footer {
     background: #e3e9ff;
-    border-bottom: 1px solid #ccd2e6;
+    border-top: 1px solid #ccd2e6;
     padding: .25em .5em;
+}
+
+.minion-server-domain-count {
+    float: right;
+    text-align: right;
+    width: 50%;
+}
+
+#minion-toolbar {
+    padding: 28px 16px 24px 0;
 }
 
 td {
@@ -196,7 +285,17 @@ td {
 }
 
 #minion-search {
-    padding: 16px 16px 0 16px;
+    padding: 24px 16px 0 16px;
+}
+
+#minion-top-bar {
+    background: -webkit-gradient(linear, 0% 50%, 0% 100%, from(#fff), to(#eee));
+    border-bottom: 1px solid #ccc;
+    color: #666;
+    font-size: 13px;
+    font-weight: bold;
+    padding: 8px 16px;
+    text-align: left;    
 }
 
 .minion-search-container {
@@ -204,9 +303,9 @@ td {
     border: 1px solid #333;
     border-bottom: 1px solid #ccc;
     border-right: 1px solid #ccc;
-    box-shadow: 0 0 4px #bcf;
-    -moz-box-shadow: 0 0 6px #bcf;
-    -webkit-box-shadow: 0 0 6px #bcf;
+    box-shadow: 0 0 6px #204a87;
+    -moz-box-shadow: 0 0 6px #204a87;
+    -webkit-box-shadow: 0 0 6px #204a87;
     width: 100%;
 }
 
@@ -233,6 +332,13 @@ td {
 
 .minion-search-blurred input {
     color: #666;
+}
+
+#minion-copyright {
+    color: #666;
+    font-size: 13px;
+    margin: 16px 0;
+    text-align: center;
 }
 
 .minion-mobile .minion-inactive {
@@ -275,7 +381,6 @@ td {
     font-size: 100%;
     margin: 0;
     padding: .25em .5em;
-    text-transform: none;
 }
 
 .minion-mobile h1 {
@@ -293,4 +398,22 @@ td {
 
 .minion-mobile .yui-gf .yui-u.first {
     width: 100%;
+}
+
+.minion-message {
+     background: #fffbc9;
+     border-radius: 4px;
+     -moz-border-radius: 4px;
+     -webkit-border-radius: 4px;
+     -webkit-box-shadow: inset 0 0 12px #fff;
+     border: 1px solid #f0dca1;
+     color: #7b4b11;
+     font-size: 13px;
+     padding: 4px 8px;
+     position: fixed;
+     left: 0;
+     top: 0;
+     width: 40%;
+     text-align: left;
+     margin: 3px 30%;
 }

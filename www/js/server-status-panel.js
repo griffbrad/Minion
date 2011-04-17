@@ -8,38 +8,92 @@ if ('undefined' == typeof MINION.panel) {
 
     MINION.panel.ServerStatus = function(manager)
     {
-        this._table = _buildTable(manager);
+        this._table        = _buildTable(manager);
+        this._footer       = _buildFooter();
+        this._toolbar      = _buildToolbar(manager, this);
+        this._manager      = manager;
+        this._onlyFailures = false;
 
-        manager.getContainer().appendChild(this._table);
+        this._tableContainer = document.createElement('div');
+        YD.addClass(this._tableContainer, 'minion-table-container');
+        this._tableContainer.appendChild(this._table);
+
+        manager.getContainer().appendChild(this._tableContainer);
+        manager.getContainer().appendChild(this._footer.container);
+        manager.getToolbarContainer().appendChild(this._toolbar);
 
         if (manager.isMobile()) {
             YD.addClass(manager.getContainer(), 'minion-inactive');
         }
+
+        this.filter({ value: 'all' });
+    };
+
+    MINION.panel.ServerStatus.prototype.refresh = function()
+    {
+        this._manager.getContainer().removeChild(this._tableContainer);
+        this._manager.getContainer().removeChild(this._footer.container);
+
+        delete this._table;
+        delete this._tableContainer;
+
+        _rows = [];
+        _domainRows = [];
+
+        this._manager.refresh();
+
+        this._table = _buildTable(this._manager);
+
+        this._tableContainer = document.createElement('div');
+        YD.addClass(this._tableContainer, 'minion-table-container');
+        this._tableContainer.appendChild(this._table);
+
+        var active = this._manager.getActiveServer();
+
+        if (this._manager.getSearch().isFocused()) {
+            this.filter({value: 'all'}, this._manager.getSearch().getValue());
+        } else if (active) {
+            this.filter({value: active});
+        } else {
+            this.filter({value: 'all'});
+        }
+        
+        this._manager.getContainer().appendChild(this._tableContainer);
+        this._manager.getContainer().appendChild(this._footer.container);
     };
 
     MINION.panel.ServerStatus.prototype.show = function()
     {
         this._table.style.display = 'table';
+        this._footer.container.style.display = 'block';
+        this._toolbar.style.display = 'block';
     }
     
     MINION.panel.ServerStatus.prototype.hide = function()
     {
         this._table.style.display = 'none';
+        this._footer.container.style.display = 'none';
+        this._toolbar.style.display = 'none';
     }
 
     MINION.panel.ServerStatus.prototype.filter = function(selected, search)
     {
-        var lastRow = null;
+        var lastRow   = null,
+            displayed = 0;
 
         for (var i = 0; i < _rows.length; i++) {
             YD.removeClass(_rows[i], 'last');
 
             if ('all' === selected.value) {
                 _rows[i].style.display = 'table-row';
+
+                displayed++;
             } else if (YD.hasClass(_rows[i], selected.value)) {
                 _rows[i].style.display = 'table-row';
 
                 lastRow = _rows[i];
+
+                displayed++;
             } else {
                 _rows[i].style.display = 'none';
             }
@@ -53,6 +107,18 @@ if ('undefined' == typeof MINION.panel) {
 
                 if (-1 === domainRow.domain.name.toLowerCase().indexOf(search)) {
                     domainRow.row.style.display = 'none';
+                    displayed--;
+                }
+            }
+        }
+
+        if (this._onlyFailures) {
+            for (var i = 0; i < _domainRows.length; i++) {
+                var domainRow = _domainRows[i];
+
+                if (domainRow.domain.status) {
+                    domainRow.row.style.display = 'none';
+                    displayed--;
                 }
             }
         }
@@ -60,11 +126,71 @@ if ('undefined' == typeof MINION.panel) {
         if (lastRow) {
             YD.addClass(lastRow, 'last');
         }
+     
+        var suffix = 's';
+
+        if (1 === displayed) {
+            suffix = ''; 
+        }
+
+        this._footer.countCell.innerHTML = displayed + ' Domain' + suffix;
     };
 
     MINION.panel.ServerStatus.prototype.getId = function()
     {
         return 'server-status';
+    };
+
+    var _buildToolbar = function(manager, that)
+    {
+        var toolbar = document.createElement('div');
+
+        var refresh = document.createElement('a');
+        refresh.id = 'minion-refresh';
+        YD.addClass(refresh, 'minion-button');
+        refresh.appendChild(document.createTextNode('Refresh'));
+        toolbar.appendChild(refresh);
+       
+        YE.on(refresh, 'click', function(e) {
+            this.refresh();
+        }, that, true);
+
+
+        var failures = document.createElement('a');
+        YD.addClass(failures, 'minion-button');
+        YD.addClass(failures, 'minion-failures');
+
+        var check = document.createElement('input');
+        check.type = 'checkbox';
+        check.id = 'failures';
+        failures.appendChild(check);
+
+        var label = document.createElement('label');
+        label.htmlFor = 'failures';
+        label.appendChild(document.createTextNode('Only Show Failures'));
+        failures.appendChild(label);
+
+        toolbar.appendChild(failures);
+
+        YE.on(failures, 'click', function(e) {
+            if (e.target == failures) {
+                check.checked = (! (check.checked));
+            }
+            
+            var active = this._manager.getActiveServer();
+
+            this._onlyFailures = check.checked;
+
+            if (this._manager.getSearch().isFocused()) {
+                this.filter({value: 'all'}, this._manager.getSearch().getValue());
+            } else if (active) {
+                this.filter({value: active});
+            } else {
+                this.filter({value: 'all'});
+            }
+        }, that, true);
+
+        return toolbar;
     };
     
     var _buildTable = function(manager, domainPanel)
@@ -232,6 +358,25 @@ if ('undefined' == typeof MINION.panel) {
         }
 
         return td;
+    };
+
+    var _buildFooter = function()
+    {
+        var container = document.createElement('div');
+        YD.addClass(container, 'minion-server-footer');
+
+        var left = document.createElement('div');
+        YD.addClass(left, 'first');
+        container.appendChild(left);
+
+        var countCell = document.createElement('div');
+        YD.addClass(countCell, 'minion-domain-count');
+        container.appendChild(countCell);
+        
+        return {
+            'container': container,
+            'countCell': countCell
+        };
     };
  })(
     MINION,

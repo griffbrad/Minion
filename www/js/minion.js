@@ -1,16 +1,17 @@
 var MINION = {};
 
-(function(MINION, YD, YE, YS) {
+(function(MINION, YD, YE, YS, YC, YJ) {
     var _panels       = [],
         _servers      = {},
         _activeServer = null;
 
     MINION.manager = function(container, navContainer, searchContainer,
-        mobile, data) 
+        toolbarContainer, mobile, data) 
     {
-        this._navContainer    = navContainer;
-        this._container       = container;
-        this._searchContainer = searchContainer;
+        this._navContainer     = navContainer;
+        this._container        = container;
+        this._searchContainer  = searchContainer;
+        this._toolbarContainer = toolbarContainer;
 
         this._data = _initData(data);
        
@@ -28,6 +29,58 @@ var MINION = {};
         this._search = new MINION.nav.Search(this);
 
         this.showPanel('server-status');
+
+        this._bindKeyboardShortcuts();
+    };
+
+    MINION.manager.prototype.refresh = function()
+    {
+        var message = new MINION.widget.Message('Refreshing server and domain data...');
+
+        YC.asyncRequest(
+            'GET',
+            'data.php',
+            {
+                scope: this,
+                success: function(o) {
+                    this._data = _initData(YJ.parse(o.responseText));
+
+                    message.setText('Data successfully refreshed')
+                           .clearAfterDelay();
+                },
+                failure: function(o) {
+                    message.setText('Could not refresh data.  Please try again.')
+                           .clearAfterDelay();
+                }
+            }
+        );
+
+    };
+
+    MINION.manager.prototype._bindKeyboardShortcuts = function()
+    {
+        YE.on(window, 'keyup', function(e) {
+            YE.preventDefault(e);
+
+            switch (e.which) {
+                case 191 : // Front slash
+                    this._search.focus();
+                    break;
+                case 74 : // j
+                    this._serverNavigation.next();
+                    break;
+                case 75 : // k
+                    this._serverNavigation.prev();
+                    break;
+                case 82 : // r
+                    this.getPanel('server-status').refresh();
+                    break;
+                case 27 : // escape
+                    this._search.clear();
+                    this._serverNavigation.select('all');
+                    break;
+            }
+        }, this, true);
     };
 
     MINION.manager.prototype.isMobile = function()
@@ -48,6 +101,11 @@ var MINION = {};
     MINION.manager.prototype.getContainer = function()
     {
         return this._container;
+    };
+
+    MINION.manager.prototype.getToolbarContainer = function()
+    {
+        return this._toolbarContainer;
     };
 
     MINION.manager.prototype.getSearchContainer = function()
@@ -126,6 +184,8 @@ var MINION = {};
                 }
             }
 
+            data[i].status = status;
+
             for (var n = 0; n < domain.servers.length; n++) {
                 var server = domain.servers[n];
 
@@ -144,5 +204,7 @@ var MINION = {};
     MINION,
     YAHOO.util.Dom, 
     YAHOO.util.Event,
-    YAHOO.util.Selector
+    YAHOO.util.Selector,
+    YAHOO.util.Connect,
+    YAHOO.lang.JSON
 );

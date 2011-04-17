@@ -20,6 +20,11 @@ if ('undefined' == typeof MINION.nav) {
         manager.getSearchContainer().appendChild(_container);
 
         YE.on(_input, 'keyup', function(e) {
+            // Allow "escape" key to propagate
+            if (27 != e.which) {
+                YE.stopPropagation(e);
+            }
+
             manager.getPanel('server-status').filter(
                 { value: 'all' }, 
                 _input.value
@@ -31,6 +36,21 @@ if ('undefined' == typeof MINION.nav) {
         });
     };
 
+    MINION.nav.Search.prototype.getValue = function()
+    {
+        return _input.value;
+    };
+
+    MINION.nav.Search.prototype.focus = function()
+    {
+        _input.focus();
+    };
+
+    MINION.nav.Search.prototype.isFocused = function()
+    {
+        return (! (YD.hasClass(_container, 'minion-search-blurred')));
+    };
+
     MINION.nav.Search.prototype.clear = function()
     {
         _input.value = _blurText;
@@ -38,8 +58,10 @@ if ('undefined' == typeof MINION.nav) {
         
         var panel = manager.getPanel('server-status');
         panel.filter({ value: 'all' }, '');
-        
+
         manager.showPanel('server-status');
+
+        _input.blur();
     };
 
     var _buildInput = function(manager, container, that) 

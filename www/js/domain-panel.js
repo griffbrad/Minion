@@ -12,16 +12,20 @@ if ('undefined' == typeof MINION.panel) {
     MINION.panel.Domain = function(manager)
     {
         this._container = _buildDisplay(manager);
+        this._toolbar   = _buildToolbar(manager);
         this._manager   = manager;
 
         manager.getContainer().appendChild(this._container);
+        manager.getToolbarContainer().appendChild(this._toolbar);
     };
 
     MINION.panel.Domain.prototype.setDomain = function(domain)
     {
         var server = this._manager.getActiveServer();
 
-        if (! server) {
+        if (this._manager.getSearch().isFocused()) {
+            server = 'Search Results';
+        } else if (! server) {
             server = 'Servers';
         }
 
@@ -48,17 +52,18 @@ if ('undefined' == typeof MINION.panel) {
                 }
             }
         );
-
     };
 
     MINION.panel.Domain.prototype.hide = function()
     {
         this._container.style.display = 'none';
+        this._toolbar.style.display = 'none';
     };
     
     MINION.panel.Domain.prototype.show = function()
     {
         this._container.style.display = 'block';
+        this._toolbar.style.display = 'inline';
     };
 
     MINION.panel.Domain.prototype.getId = function()
@@ -66,25 +71,27 @@ if ('undefined' == typeof MINION.panel) {
         return 'domain';
     };
 
-    var _buildDisplay = function(manager)
+    var _buildToolbar = function(manager)
     {
-        var div = document.createElement('div');
-        YD.addClass(div, 'minion-domain-display');
-        
-        var toolbar = document.createElement('div');
-        YD.addClass(toolbar, 'minion-toolbar');
-        div.appendChild(toolbar);
-
         _backLink = document.createElement('a');
-        _backLink.href = '#';
-        _backLink.appendChild(document.createTextNode('« Back to '));
+        _backLink.appendChild(document.createTextNode('Back to '));
         _backLink.appendChild(document.createTextNode(''));
-        toolbar.appendChild(_backLink);
-        
+       
+        YD.addClass(_backLink, 'minion-button');
+        YD.addClass(_backLink, 'minion-back');
+
         YE.on(_backLink, 'click', function(e) {
             YE.preventDefault(e);
             manager.showPanel('server-status');
         });
+
+        return _backLink;
+    };
+
+    var _buildDisplay = function(manager)
+    {
+        var div = document.createElement('div');
+        YD.addClass(div, 'minion-domain-display');
 
         var content = document.createElement('div');
         YD.addClass(content, 'minion-panel-content');

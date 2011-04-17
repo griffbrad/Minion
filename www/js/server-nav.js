@@ -12,12 +12,56 @@ if ('undefined' == typeof MINION.nav) {
 
         var list = _buildList(manager);
         manager.getNavContainer().appendChild(list);
+
+        this._manager = manager;
     };
 
     MINION.nav.Servers.prototype.clear = function()
     {
         for (var i = 0; i < _liNodes.length; i++) {
             YD.removeClass(_liNodes[i], 'selected');
+        }
+    };
+
+    MINION.nav.Servers.prototype.next = function()
+    {
+        for (var i = 0; i < _liNodes.length; i++) {
+            var node = _liNodes[i];
+
+            if (YD.hasClass(node, 'selected') && _liNodes[i + 1]) {
+                var next = _liNodes[i + 1];
+                next.firstChild.checked = true;
+                _applySelected(next, _liNodes);
+            
+                if ('all' !== next.firstChild.value) {
+                    this._manager.setActiveServer(next.firstChild.value);
+                }
+            
+                this._manager.getPanel('server-status').filter(next.firstChild);
+                this._manager.showPanel('server-status');
+                break;
+            }
+        }
+    };
+    
+    MINION.nav.Servers.prototype.prev = function()
+    {
+        for (var i = 0; i < _liNodes.length; i++) {
+            var node = _liNodes[i];
+
+            if (YD.hasClass(node, 'selected') && _liNodes[i - 1]) {
+                var prev = _liNodes[i - 1];
+                prev.firstChild.checked = true;
+                _applySelected(prev, _liNodes);
+                
+                if ('all' !== prev.firstChild.value) {
+                    this._manager.setActiveServer(prev.firstChild.value);
+                }
+                
+                this._manager.getPanel('server-status').filter(prev.firstChild);
+                this._manager.showPanel('server-status');
+                break;
+            }
         }
     };
 

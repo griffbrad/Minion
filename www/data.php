@@ -29,51 +29,16 @@
  * THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-/**
- * Ensure that the HTTP server returns a 200-level status code.
- */
-class Minion_Task_HttpStatus extends Minion_Task_Abstract_Domain
-{
-    /**
-     * Configuration defaults.  Options for this task in your configuration
-     * file with override these defaults.
-     *
-     * @var array
-     */
-    protected $_defaults = array(
-        // Options to pass to Zend_Http_Client
-        'options' => array(
-            'timeout' => 30
-        )
-    );
+require_once dirname(__FILE__) . '/bootstrap.php';
 
-    /**
-     * Check the provided domain to ensure it returns a 200-level status.
-     *
-     * @param string $domain The domain to check.
-     *
-     * @return boolean Whether HTTP status is 200-level.
-     */
-    public function main()
-    {
-        $client = new Zend_Http_Client();
-        
-        $client->setConfig($this->_defaults['options'])
-               ->setUri('http://' . $this->getParent()->getName() . '/');
+$db      = $client->getDb();
+$cursor  = $db->domains->find()->sort(array('name' => 1));
+$domains = array();
 
-        try {
-            $response = $client->request();
-        } catch (Exception $e) {
-            $this->getResult()->setDetails($e->getMessage());
-            return false;
-        }
-
-        $this->getResult()->setDetails(
-            "{$this->getParent()->getName()} returned {$response->getStatus()} "
-          . "status with Content-Length of "
-          . "{$response->getHeader('Content-Length')}"
-        );
-
-        return $response->isSuccessful();
-    }
+foreach ($cursor as $domain) {
+    $domains[] = $domain;
 }
+
+echo json_encode($domains);
+exit;
+
