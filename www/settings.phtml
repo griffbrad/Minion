@@ -1,10 +1,4 @@
-<ul id="minion-settings-navigation">
-    <li class="selected"><a href="settings.php">General</a></li>
-    <li><a href="settings/notifications.php">Notifications</a></li>
-    <li><a href="settings/users.php">Users</a></li>
-    <li><a href="settings/tasks.php">Tasks</a></li>
-    <li><a href="settings/servers.php">Servers</a></li>
-</ul>
+<?php echo $this->settingsNav('settings');?>
 
 <div id="minion-settings-container">
     <form id="minion-form-settings" action="settings.php" method="post">

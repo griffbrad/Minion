@@ -515,12 +515,9 @@ td {
     color: blue;
 }
 
-#minion-settings-navigation li.selected a {
-    color: #625000;
-}
-
+#minion-settings-navigation li.selected a,
 #minion-settings-navigation li.selected a:hover {
-    color: #fff;
+    color: #625000;
 }
 
 #minion-settings-navigation li.selected {
