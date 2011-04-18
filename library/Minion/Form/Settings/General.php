@@ -1,30 +1,12 @@
 <?php
 
-class Minion_Form_Settings_General
+class Minion_Form_Settings_General extends Minion_Form_Abstract
 {
-    private $_request;
-
-    private $_view;
-
-    private $_messages = array();
-
     private $_data = array();
-
-    public function __construct(Zend_Controller_Request_Http $request,
-        Minion_Client_Www $client)
-    {
-        $this->_request = $request;
-        $this->_client  = $client;
-        $this->_view    = $client->getView();
-
-        $this->_view->formHandler($this);
-
-        $this->init();
-    }
 
     public function init()
     {
-        foreach ($this->_client->getDb()->settings->find() as $doc) {
+        foreach ($this->getClient()->getDb()->settings->find() as $doc) {
             $key   = $doc['setting-name'];
             $value = $doc['setting-value'];
 
@@ -34,7 +16,7 @@ class Minion_Form_Settings_General
 
     public function getValue($id)
     {
-        return $this->_request->getPost($id, $this->_data[$id]);
+        return $this->getRequest()->getPost($id, $this->_data[$id]);
     }
 
     public function getElementDefinition()
@@ -46,7 +28,8 @@ class Minion_Form_Settings_General
                 'note'   => 'The Minion site name appears at the top of each
                                page and in notifications.',
                 'inputs' => array(
-                    'formText' => array(
+                    array(
+                        'helper' => 'formText',
                         'validators' => array(
                             'Zend_Validate_NotEmpty' => array()
                         )
@@ -60,7 +43,8 @@ class Minion_Form_Settings_General
                              displayed in desktop web browsers.',
                 'help'   => 'minion-help-desktop-date',
                 'inputs' => array(
-                    'formText' => array(
+                    array(
+                        'helper'  => 'formText',
                         'attribs' => array(
                             'class' => 'minion-input-medium'
                         ),
@@ -78,7 +62,8 @@ class Minion_Form_Settings_General
                              more constrained.',
                 'help'   => 'minion-help-mobile-date',
                 'inputs' => array(
-                    'formText' => array(
+                    array(
+                        'helper'  => 'formText',
                         'attribs' => array(
                             'class' => 'minion-input-medium'
                         ),
@@ -97,7 +82,8 @@ class Minion_Form_Settings_General
                     'label' => 'Changing log size will erase existing log entries'
                 ),
                 'inputs' => array(
-                    'formText' => array(
+                    array(
+                        'helper'  => 'formText',
                         'attribs' => array(
                             'class' => 'minion-input-small'
                         ),
@@ -106,7 +92,8 @@ class Minion_Form_Settings_General
                             'Zend_Validate_Float'    => array()
                         )
                     ),
-                    'formSelect' => array(
+                    array(
+                        'helper'  => 'formSelect',
                         'id'      => 'log-size-unit',
                         'options' => array(
                             'm' => 'Megabytes',
@@ -124,112 +111,7 @@ class Minion_Form_Settings_General
         );
     }
 
-    public function display()
-    {
-        foreach ($this->getElementDefinition() as $element) {
-            $this->_view->formField(array(
-                'for'   => $element['id'],
-                'label' => $element['label']
-            ));
-
-            if (isset($element['note'])) {
-                $this->_view->formField()->setNote($element['note']);
-            }
-            
-            if (isset($element['help'])) {
-                $this->_view->formField()->setHelp($element['help']);
-            }
-            
-            if (isset($element['warn'])) {
-                $this->_view->formField()->setWarn($element['warn']);
-            }
-
-            $this->_view->formField()->open();
-
-            foreach ($element['inputs'] as $helper => $input) {
-                $id = $element['id'];
-            
-                if (isset($input['id'])) {
-                    $id = $input['id'];
-                }
-
-                echo $this->_view->$helper(
-                    $id,
-                    $this->getValue($id),
-                    (isset($input['attribs']) ? $input['attribs'] : null),
-                    (isset($input['options']) ? $input['options'] : null)
-                );
-            }
-
-            $this->_view->formField()->close();
-        }
-    }
-
-    public function getRequest()
-    {
-        return $this->_request;
-    }
-
-    public function isValid()
-    {
-        if (! $this->_request->isPost()) {
-            return false;
-        }
-
-        $valid = true;
-
-        foreach ($this->getElementDefinition() as $element) {
-            $messages = array();
-
-            foreach ($element['inputs'] as $input) {
-                $chain = new Zend_Validate();
-
-                foreach ($input['validators'] as $class => $options) {
-                    $validator = new $class($options);
-                    $chain->addValidator($validator);
-                }
-                
-                $id = $element['id'];
-
-                if (isset($input['id'])) {
-                    $id = $input['id'];
-                }
-
-                $value = $this->_request->getPost($id);
-
-                if (! $chain->isValid($value)) {
-                    $valid = false; 
-
-                    foreach ($chain->getMessages() as $message) {
-                        $messages[] = $message;
-                    }
-                }
-            }
-
-            $id = $element['id'];
-            $this->_messages[$id] = $messages;
-        }
-
-        if (! $valid) {
-            $this->_client->addMessage(
-                'Please correct the highlighted mistakes and try again',
-                'minion-message-error'
-            );
-        }
-
-        return $valid;
-    }
-
-    public function getMessages($id)
-    {
-        if (isset($this->_messages[$id])) {
-            return $this->_messages[$id];
-        }
-
-        return array();
-    }
-
-    public function save(MongoDB $db)
+    public function save()
     {
         foreach ($this->getElementDefinition() as $element) {
             foreach ($element['inputs'] as $input) {
@@ -239,9 +121,9 @@ class Minion_Form_Settings_General
                     $id = $input['id'];
                 }
 
-                $value = $this->_request->getPost($id);
+                $value = $this->getRequest()->getPost($id);
 
-                $db->settings->update(
+                $this->getClient()->getDb()->settings->update(
                     array('setting-name' => $id),
                     array('$set' => array('setting-value' => $value)),
                     array('upsert' => true)

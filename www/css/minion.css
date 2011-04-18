@@ -482,7 +482,7 @@ td {
     height: 16px;
     width: 16px;
     position: relative;
-    top: 0;
+    top: -4px;
     left: 8px;
     display: block;
 }
@@ -539,7 +539,7 @@ td {
 }
 
 .minion-form-footer {
-    padding-top: 8px;
+    padding: 16px 0 0 0;
 }
 
 form label {
@@ -548,7 +548,7 @@ form label {
 }
 
 .minion-form-field {
-    margin-bottom: 32px;
+    margin-bottom: 24px;
 }
 
 .minion-form-field-with-messages {
@@ -577,7 +577,8 @@ form label {
 }
 
 .minion-form-field-contents {
-    padding-top: 8px;
+    clear: both;
+    padding-top: 4px;
 }
 
 form input {
@@ -639,4 +640,160 @@ form .minion-input-medium {
 .minion-external {
     background: url(../images/external.png) right center no-repeat;
     padding-right: 16px;
+}
+
+.minion-settings-listing-toolbar,
+.minion-settings-sidebar-header {
+    background: #fad163;
+    border-radius: 4px;
+    border-bottom-right-radius: 0;
+    border-bottom-left-radius: 0;
+    margin: 0;
+    padding: 0;
+}
+
+.minion-settings-listing-toolbar ul {
+    margin: 0;
+    padding: 0;
+}
+
+.minion-settings-sidebar-header {
+    color: #625000;
+    font-weight: bold;
+    padding: 4px 16px;
+}
+
+.minion-settings-sidebar-body {
+    background: #fff;
+    padding: 16px;
+}
+
+.minion-settings-listing-toolbar li {
+    cursor: default;
+    display: block;
+    float: left;
+    margin: 4px 0;
+    padding: 4px 16px;
+}
+
+.minion-settings-listing-toolbar a {
+    color: #625000;
+    display: block;
+    font-size: 13px;
+    font-weight: bold;
+    text-decoration: none;
+}
+
+.minion-settings-listing {
+    table-layout: auto;
+}
+
+.minion-settings-listing tr:hover {
+    cursor: default;
+}
+
+.minion-settings-listing td {
+    background: #fff;
+    padding: 8px 16px;
+}
+
+.minion-settings-listing-footer,
+.minion-settings-sidebar-footer {
+    background: #fad163;
+    border-radius: 4px;
+    border-top-right-radius: 0;
+    border-top-left-radius: 0;
+    height: 6px;
+    padding: 0;
+}
+
+.minion-settings-add {
+    background: url(../images/add.png) left center no-repeat;
+    padding-left: 14px;
+}
+
+.minion-settings-default {
+    background: url(../images/default.png) left center no-repeat;
+    padding-left: 14px;
+}
+
+.minion-settings-actions {
+    font-size: 13px;
+    text-align: right;
+}
+
+td.minion-settings-info {
+    vertical-align: top;
+}
+
+td.minion-center {
+    vertical-align: middle;
+}
+
+.minion-settings-info {
+    font-size: 13px;
+}
+
+.minion-settings-info span {
+    color: #666;
+    padding-right: 6px;
+}
+
+.minion-settings-actions a {
+    color: blue;
+    margin-left: 14px;
+}
+
+.minion-settings-edit {
+    background: url(../images/edit.png) left center no-repeat;
+    padding-left: 14px;
+}
+
+.minion-settings-test-message {
+    background: url(../images/mail-send.png) left center no-repeat;
+    padding-left: 14px;
+}
+
+.minion-settings-vacation {
+    background: url(../images/vacation.png) left center no-repeat;
+    padding-left: 14px;
+}
+
+.minion-settings-password {
+    background: url(../images/password.png) left center no-repeat;
+    padding-left: 14px;
+}
+
+#minion-settings-container h2 {
+    background: #fad163;
+    border-radius: 4px;
+    clear: both;
+    color: #625000;
+    font-size: 100%;
+    margin: 12px 0;
+    padding: 4px 8px;
+    width: 80%;
+}
+
+#minion-settings-container h2 span {
+    color: #fff;
+    float: right;
+    text-shadow: 0 0 2px #000;
+}
+
+#office-phone.minion-input-medium,
+#cell-phone.minion-input-medium,
+#im-name.minion-input-medium {
+    margin-right: 13px;
+    width: 10em;
+}
+
+#office-phone-ext.minion-input-small {
+    width: 4em;
+}
+
+.minion-clear {
+    clear: both;
+    height: 0;
+    overflow: hidden;
 }

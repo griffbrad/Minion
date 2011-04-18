@@ -105,7 +105,8 @@ if ('undefined' == typeof MINION.panel) {
             for (var i = 0; i < _domainRows.length; i++) {
                 var domainRow = _domainRows[i];
 
-                if (-1 === domainRow.domain.name.toLowerCase().indexOf(search)) {
+                if (-1 === domainRow.domain.name.toLowerCase().indexOf(search)
+                    && 'table-row' === domainRow.row.style.display) {
                     domainRow.row.style.display = 'none';
                     displayed--;
                 }
@@ -116,7 +117,9 @@ if ('undefined' == typeof MINION.panel) {
             for (var i = 0; i < _domainRows.length; i++) {
                 var domainRow = _domainRows[i];
 
-                if (domainRow.domain.status) {
+                if (domainRow.domain.status
+                    && 'table-row' === domainRow.row.style.display) {
+
                     domainRow.row.style.display = 'none';
                     displayed--;
                 }

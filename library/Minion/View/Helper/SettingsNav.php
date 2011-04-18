@@ -17,7 +17,6 @@ class Minion_View_Helper_SettingsNav extends Zend_View_Helper_Abstract
             'settings'               => 'General',
             'settings-users'         => 'Users',
             'settings-notifications' => 'Notifications',
-            'settings-tasks'         => 'Tasks',
             'settings-servers'       => 'Servers'
         );
 
