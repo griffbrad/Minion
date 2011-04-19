@@ -48,44 +48,10 @@
         <div id="minion-top-bar">
             <a href="index.php"><?php echo $this->escape($this->settings['site-name']);?></a>
 
+            <?php if ($this->user): ?>
             <ul id="minion-global-toolbar">
-                <li id="minion-user"><a href="account.php">Brad Griffith</a></li>
+                <li id="minion-user"><a href="account.php"><?php echo $this->escape($this->user->getFullName());?></a></li>
                 <li id="minion-settings"><a href="settings.php">Settings</a></li>
-            </ul>    
+            </ul>
+            <?php endif;?>
         </div>
-
-        <?php echo $this->layout()->content ?>
-
-        <div id="minion-copyright">
-            Minion &bull; Simple web application monitoring &bull; <a href="license.php">New BSD license</a> &bull; &copy;2009-<?php echo date('Y');?> <a href="mailto:griffbrad@gmail.com">Brad Griffith</a>
-        </div>
-
-        <?php
-        if (count($this->messages)) {
-            echo '<script type="text/javascript">';
-
-            foreach ($this->messages as $index => $message) {
-                printf(
-                    "var message_%d = new MINION.widget.Message('%s');" . PHP_EOL,
-                    $index,
-                    $message['message']
-                );
-
-                if ($message['class']) {
-                    printf(
-                        "message_%d.setClass('%s');",
-                        $index,
-                        $message['class']
-                    );
-                }
-
-                echo "message_{$index}.clearAfterDelay(5000);" . PHP_EOL;
-            }
-
-            echo '</script>';
-
-            $this->client->clearMessages();
-        }
-        ?>
-    </body>
-</html>

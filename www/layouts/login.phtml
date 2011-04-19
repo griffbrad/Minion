@@ -1,0 +1,9 @@
+<?php
+
+$this->headLink()->prependStylesheet('css/login.css');
+
+require dirname(__FILE__) . '/partials/header.phtml';
+
+echo $this->layout()->content;
+
+require dirname(__FILE__) . '/partials/footer.phtml';

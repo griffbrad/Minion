@@ -44,6 +44,8 @@ class Minion_Client_Www extends Minion_Client_Abstract
 
     protected $_messageSession;
 
+    protected $_user;
+
     public function init()
     {
         $this->_messageSession = new Zend_Session_Namespace('messages');
@@ -80,7 +82,7 @@ class Minion_Client_Www extends Minion_Client_Abstract
      *
      * @param string $viewScript
      */
-    public function renderLayout($viewScript)
+    public function renderLayout($viewScript, $layoutFile = 'default')
     {
         $layout = new Zend_Layout();
 
@@ -94,13 +96,14 @@ class Minion_Client_Www extends Minion_Client_Abstract
         $this->getView()->assign('mobile', $this->isMobile())
                         ->assign('messages', $this->getMessages())
                         ->assign('settings', $settings)
-                        ->assign('client', $this);
+                        ->assign('client', $this)
+                        ->assign('user', $this->_user);
 
         $layout->content = $this->getView()->render($viewScript);
 
         $layout->setView($this->getView())
-               ->setLayoutPath(getcwd())
-               ->setLayout('layout');
+               ->setLayoutPath(getcwd() . '/layouts')
+               ->setLayout($layoutFile);
 
         echo $layout->render();
     }

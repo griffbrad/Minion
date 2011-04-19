@@ -1,0 +1,37 @@
+<?php echo $this->settingsNav('settings-users');?>
+
+<div id="minion-settings-container">
+    <div class="yui-gc">
+        <div class="yui-u first">
+            <form id="minion-form-settings" action="settings-users-edit.php" method="post">
+                <?php $this->formHandler()->display(); ?> 
+
+                <div class="minion-form-footer">
+                    <a id="minion-form-submit" class="minion-button">Save User</a>
+                </div>
+            </form>
+        </div>
+        <div class="yui-u">
+            <div class="minion-settings-sidebar-header">
+                Completing account setup
+            </div>
+            <div class="minion-settings-sidebar-body">
+                After entering the new user's basic information using
+                the form on the left, they'll be sent an email invitation
+                asking them to click a link and then choose a username
+                and password for their account.
+            </div>
+            <div class="minion-settings-sidebar-footer">&nbsp;</div>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+    var submit = YAHOO.util.Dom.get('minion-form-submit');
+
+    YAHOO.util.Event.on(submit, 'click', function(e) {
+        YAHOO.util.Event.preventDefault(e);
+        
+        YAHOO.util.Dom.get('minion-form-settings').submit();
+    });
+</script>
