@@ -40,26 +40,32 @@ if ('undefined' == typeof MINION.panel) {
         _rows = [];
         _domainRows = [];
 
-        this._manager.refresh();
+        var that = this;
 
-        this._table = _buildTable(this._manager);
+        this._manager.refresh(function() {
+            this._table = _buildTable(that._manager);
 
-        this._tableContainer = document.createElement('div');
-        YD.addClass(this._tableContainer, 'minion-table-container');
-        this._tableContainer.appendChild(this._table);
+            this._tableContainer = document.createElement('div');
+            YD.addClass(this._tableContainer, 'minion-table-container');
+            this._tableContainer.appendChild(this._table);
 
-        var active = this._manager.getActiveServer();
+            var active = this._manager.getActiveServer();
 
-        if (this._manager.getSearch().isFocused()) {
-            this.filter({value: 'all'}, this._manager.getSearch().getValue());
-        } else if (active) {
-            this.filter({value: active});
-        } else {
-            this.filter({value: 'all'});
-        }
+            if (this._manager.getSearch().isFocused()) {
+                this.filter({value: 'all'}, this._manager.getSearch().getValue());
+            } else if (active) {
+                this.filter({value: active});
+            } else {
+                this.filter({value: 'all'});
+            }
+            
+            this._manager.getContainer().appendChild(this._tableContainer);
+            this._manager.getContainer().appendChild(this._footer.container);
         
-        this._manager.getContainer().appendChild(this._tableContainer);
-        this._manager.getContainer().appendChild(this._footer.container);
+            if (this._timer) {
+                this._timer.finish();
+            }
+        }, this);
     };
 
     MINION.panel.ServerStatus.prototype.show = function()
@@ -155,6 +161,13 @@ if ('undefined' == typeof MINION.panel) {
         var refresh = document.createElement('a');
         refresh.id = 'minion-refresh';
         YD.addClass(refresh, 'minion-button');
+        YD.addClass(refresh, 'minion-button-pressed');
+
+        YD.addClass(refresh, 'minion-refresh-auto');
+        that._timer = new MINION.widget.Timer(30, 16, that.refresh, that);
+        refresh.appendChild(that._timer.getCanvas());
+        that._timer.start();
+        
         refresh.appendChild(document.createTextNode('Refresh'));
         toolbar.appendChild(refresh);
        

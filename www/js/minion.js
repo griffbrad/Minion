@@ -41,7 +41,7 @@ if ('undefined' == typeof MINION) {
         return this._settings[key];
     }
 
-    MINION.manager.prototype.refresh = function()
+    MINION.manager.prototype.refresh = function(callback, context)
     {
         var message = new MINION.widget.Message('Refreshing server and domain data...');
 
@@ -55,6 +55,8 @@ if ('undefined' == typeof MINION) {
 
                     message.setText('Data successfully refreshed')
                            .clearAfterDelay();
+
+                    callback.call(context);
                 },
                 failure: function(o) {
                     message.setText('Could not refresh data.  Please try again.')

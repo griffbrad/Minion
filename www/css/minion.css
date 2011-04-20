@@ -136,6 +136,17 @@ body {
     padding-left: 26px;
 }
 
+#minion-refresh canvas {
+    display: inline;
+    margin-right: 6px;
+    vertical-align: top;
+}
+
+#minion-refresh.minion-refresh-auto {
+    background-image: none;
+    padding-left: 6px;
+}
+
 .minion-back {
     background-image: url(../images/back.png);
     padding-left: 26px;
@@ -326,6 +337,9 @@ td {
     border: 1px solid #333;
     border-bottom: 1px solid #ccc;
     border-right: 1px solid #ccc;
+    padding: 2px 0;
+    position: relative;
+    top: -2px;
     box-shadow: 0 0 6px #204a87;
     -moz-box-shadow: 0 0 6px #204a87;
     -webkit-box-shadow: 0 0 6px #204a87;
@@ -339,7 +353,6 @@ td {
 .minion-search-container input {
     color: #000;
     border: none;
-    font-size: 16px;
     width: 100%;
 }
 
