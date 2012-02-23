@@ -36,9 +36,9 @@
 abstract class Minion_Client_Abstract
 {
     /**
-     * Zend_Db adapter
+     * Mongo adapter
      *
-     * @var Zend_Db_Adapter
+     * @var Mongo
      */
     private $_db;
 
@@ -64,6 +64,13 @@ abstract class Minion_Client_Abstract
             $mongo = new Mongo($this->_config->db->host);
 
             $this->_db = $mongo->minion;
+
+            if (isset($this->_config->db->username)) {
+                $this->_db->authenticate(
+                    $this->_config->db->username,
+                    $this->_config->db->password
+                );
+            }
 
             $collections = $this->_db->listCollections();
 
