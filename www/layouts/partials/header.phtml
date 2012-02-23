@@ -10,7 +10,7 @@
         <?php
         $this->headTitle($this->title);
         $this->headTitle()->setSeparator(' - ');
-        echo $this->headTitle($this->settings['site-name']);
+        //echo $this->headTitle($this->settings['site-name']);
         ?>
 
         <?php
@@ -47,7 +47,11 @@
     </head>
     <body class="<?php if ($this->mobile) : echo 'minion-mobile'; endif;?>">
         <div id="minion-top-bar">
+            <?php
+            /*
             <a href="index.php"><?php echo $this->escape($this->settings['site-name']);?></a>
+            */
+            ?>
 
             <?php if ($this->user): ?>
             <ul id="minion-global-toolbar">
