@@ -93,6 +93,10 @@ class Minion_Client_Www extends Minion_Client_Abstract
             $settings[$doc['setting-name']] = $doc['setting-value'];
         }
 
+        if (! isset($settings['site-name'])) {
+            $settings['site-name'] = 'Minion';
+        }
+
         $this->getView()->assign('mobile', $this->isMobile())
                         ->assign('messages', $this->getMessages())
                         ->assign('settings', $settings)
