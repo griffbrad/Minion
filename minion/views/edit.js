@@ -30,7 +30,7 @@
 var View       = require('./abstract'),
     util       = require('util'),
     url        = require('url'),
-    Handlebars = require('Handlebars'),
+    Handlebars = require('handlebars'),
     Edit;
 
 Edit = function(minion, request, response) {
