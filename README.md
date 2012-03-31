@@ -3,7 +3,8 @@ Minion
 
 Minion is a simple website monitoring system written in Node.js.  The project
 is in its early stages.  It currently provides HTTP monitoring, a basic web
-frontend, and support for email notifications.
+frontend, and support for email notifications.  Minion is released under the
+New BSD License.
 
 
 Dependencies
