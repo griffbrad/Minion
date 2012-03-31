@@ -1,0 +1,204 @@
+html, body {
+    background: #fff;
+    font-family: Helvetica, Calibri, sans-serif;
+    font-size: 14px;
+    margin: 0;
+    padding: 0;
+}
+
+h1 a {
+    color: #fff;
+    font-size: 18px;
+    text-decoration: none;
+}
+
+h2 {
+    border-bottom: 1px solid #aaa;
+    color: #333;
+    margin: 0 0 16px 0;
+    padding: 0 0 5px 0;
+    text-transform: uppercase;
+}
+
+#shell {
+    margin: 10px;
+}
+
+#hd {
+    border-radius: 8px;
+    border: 1px solid #000;
+    background-color: #333;
+    background-image: -webkit-gradient(linear, left top, left bottom, from(#4b4b4b), to(#1b1b1b)); /* Saf4+,        Chrome */
+    background-image: -webkit-linear-gradient(top, #4b4b4b, #1b1b1b); /* Chrome 10+, Saf5.1+, iOS 5+ */
+    background-image:    -moz-linear-gradient(top, #4b4b4b, #1b1b1b); /* FF3.6 */
+    background-image:     -ms-linear-gradient(top, #4b4b4b, #1b1b1b); /* IE10 */
+    background-image:      -o-linear-gradient(top, #4b4b4b, #1b1b1b); /* Opera 11.10+ */
+    background-image:         linear-gradient(to bottom, #4b4b4b, #1b1b1b);
+    color: #fff;
+    font-weight: bold;
+    text-shadow: -1px -1px 0px #000;
+    box-shadow: 0 1px 0 #676767 inset;
+    overflow: hidden;                                                          
+    padding: 12px;
+    line-height: 18px;
+}
+
+.hd_controls {
+    float: right;
+    font-size: 13px;
+}
+
+h1 {
+    font-size: 100%;
+    margin: 0;
+    padding: 0;
+}
+
+#bd {
+    border-bottom-left-radius: 8px;
+    border-bottom-right-radius: 8px;
+    background: #fff;
+    padding: 12px 0;
+}
+
+#ft {
+    color: #666;
+    margin-top: 12px;
+    text-align: center;
+}
+
+.all_clear {
+    color: #999;
+    font-size: 12px;
+}
+
+.error {
+    background: #f33;
+    color: #fff;
+    padding: 0 12px;
+    font-weight: normal;
+    font-size: 12px;
+    border-radius: 16px;
+    border: 1px solid #a00;
+    box-shadow: 0px 2px 4px #f99 inset;
+    display: inline-block;
+    width: 80%;
+    margin: 0 10%;
+    text-align: center;
+    box-sizing: border-box;
+}
+
+.status {
+    width: 160px;
+}
+
+table {
+    font-size: 14px;
+    width: 100%;
+}
+
+table td {
+    padding: 12px;
+}
+
+table th {
+    padding: 6px 0;
+}
+
+table tr:nth-child(even) {
+    background: #eee;
+}
+
+table th {
+    color: #666;
+    text-align: left;
+}
+
+.field {
+    margin-bottom: 16px;
+}
+
+.field label {
+    color: #666;
+    font-weight: bold;
+}
+
+.field_errors {
+    color: #e31b0c;
+    list-style-type: none;
+    padding: 0;
+    margin: 6px 0 0 0;
+}
+
+.field_with_errors {
+    border: 1px solid #dc6e66;
+    border-radius: 8px;
+    box-shadow: inset 2px 2px 2px #fff;
+    background: #ffe3e0;
+    padding: 8px;
+}
+
+.field_note {
+    color: #666;
+    font-size: 12px;
+}
+
+.form_footer {
+    border-top: 1px solid #ccc;
+    padding: 16px 0 0 0;
+}
+
+fieldset {
+    border: none;
+    border-top: 1px solid #ccc;
+    margin-top: 32px;
+}
+
+legend {
+    color: #333;
+    font-size: 18px;
+}
+
+#nav {
+    float: left;
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    width: 200px;
+}
+
+#nav li {
+    background: #eee;
+    border: 1px solid #aaa;
+    border-bottom: 0;
+    margin: 0;
+    padding: 0;
+    box-shadow: inset 1px 1px 3px #fff;
+}
+
+#nav li:first-child {
+    border-top-left-radius: 8px;
+    border-top-right-radius: 8px;
+}
+
+#nav li:last-child {
+    border-bottom-left-radius: 8px;
+    border-bottom-right-radius: 8px;
+    border-bottom: 1px solid #aaa;
+}
+
+#nav li a {
+    color: #333;
+    display: block; 
+    padding: 8px;
+    text-decoration: none;
+}
+
+#content {
+    margin-left: 225px;
+    min-height: 600px;
+}
+
+.toolbar {
+    margin-bottom: 12px;
+}

@@ -1,0 +1,6 @@
+{
+    "name": "minion",
+    "main": "minion",
+    "description": "A simple website monitoring tool.",
+    "author": "Delta Systems <bgriffith@deltasys.com>"
+}

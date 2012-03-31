@@ -1,0 +1,188 @@
+.primary_button,
+.tag_button, 
+.list_body li.active .cell,
+.nav_bar li.active a,
+.nav_bar li.active a:hover  { 
+    background-color: #f1b935;
+      background-image: -webkit-gradient(linear, left top, left bottom, from(#f1b935), to(#eda127)); /* Saf4+, Chrome */
+      background-image: -webkit-linear-gradient(top, #f1b935, #eda127); /* Chrome 10+, Saf5.1+, iOS 5+ */
+      background-image:    -moz-linear-gradient(top, #f1b935, #eda127); /* FF3.6 */
+      background-image:     -ms-linear-gradient(top, #f1b935, #eda127); /* IE10 */
+      background-image:      -o-linear-gradient(top, #f1b935, #eda127); /* Opera 11.10+ */
+      background-image:         linear-gradient(to bottom, #f1b935, #eda127);
+    border-color: #a4761f;
+    border-style: solid;
+    border-width: 0px;
+    box-shadow: 0px 1px 0px #f7d23f inset;
+}
+
+.primary_button, .primary_button:hover,
+.tag_button, .tag_button:hover {
+    white-space: nowrap;
+    color: #fff;
+    font-weight: 700;
+    text-decoration: none;
+    display: inline-block;
+    height: 28px;
+    line-height: 28px;
+    padding: 0px 20px;
+    border-width: 1px;
+    border-radius: 16px;
+    text-shadow: 0px 1px 1px #af3600;
+    text-align: center;
+    font-size: 14px;
+    vertical-align: middle;
+}
+
+.secondary_button, .secondary_button.disabled, .secondary_button.disabled:hover, .secondary_button.disabled:active {
+    background-color: #e6e6e6;
+    background-image: -webkit-gradient(linear, left top, left bottom, from(#ffffff), to(#e6e6e6)); /* Saf4+, Chrome */
+      background-image: -webkit-linear-gradient(top, #ffffff, #e6e6e6); /* Chrome 10+, Saf5.1+, iOS 5+ */
+      background-image:    -moz-linear-gradient(top, #ffffff, #e6e6e6); /* FF3.6 */
+      background-image:     -ms-linear-gradient(top, #ffffff, #e6e6e6); /* IE10 */
+      background-image:      -o-linear-gradient(top, #ffffff, #e6e6e6); /* Opera 11.10+ */
+      background-image:         linear-gradient(to bottom, #ffffff, #e6e6e6);
+    display: inline-block;
+    font-weight: normal;
+    vertical-align: middle;
+    border: 1px solid #ccc;
+    text-decoration: none;
+    color: #666;
+    text-shadow: 0px 1px 0px #fff;
+    border-radius: 9px;
+    box-shadow: 0px 1px 0px #fff, 0px 0px 10px #fff inset;
+    margin: 0px 3px;
+}
+
+.secondary_button:hover {
+    color: #222;
+    background-image: -webkit-gradient(linear, left top, left bottom, from(#ffffff), to(#f1f1f1)); /* Saf4+, Chrome */
+      background-image: -webkit-linear-gradient(top, #ffffff, #f1f1f1); /* Chrome 10+, Saf5.1+, iOS 5+ */
+      background-image:    -moz-linear-gradient(top, #ffffff, #f1f1f1); /* FF3.6 */
+      background-image:     -ms-linear-gradient(top, #ffffff, #f1f1f1); /* IE10 */
+      background-image:      -o-linear-gradient(top, #ffffff, #f1f1f1); /* Opera 11.10+ */
+      background-image:         linear-gradient(to bottom, #ffffff, #f1f1f1);
+    border-color: #aaa;
+}
+
+.secondary_button:active {
+    box-shadow: 0px 1px 2px rgba(0,0,0,0.3) inset;
+    border-color: #aaa;
+    padding-top: 4px;
+    padding-bottom: 2px;
+}
+
+.secondary_button.disabled, .secondary_button.disabled:hover, .secondary_button.disabled:active {
+    cursor: default;
+    color: #bbb;    
+}
+
+.disabled .icon {
+    opacity: 0.4;
+}
+
+.button.small {
+    font-size: 10px;
+    line-height: 12px;
+    padding: 3px 8px;
+    height: auto;
+    font-family: Arial, sans-serif;
+}
+
+.primary_button.small {
+    font-weight: bold;
+    text-shadow: 0px -1px 0px #e3720f;
+    box-shadow: 0px 1px 0px #fff, 0px 1px 0px #f7d23f inset;
+    letter-spacing: 0px;
+}
+
+.tag_button.small {
+    margin: 5px;
+    color: #5f3d16;
+    font-weight: bold;
+    text-shadow: 0px 1px 0px #f7d33f;
+}
+
+.remove_button {
+    height: 21px;
+    width: 21px;
+    background-position: -22px -264px;
+}
+
+.remove_button_text,
+.remove_button_text:hover {
+    display: block;
+    margin-top: 5px;
+    color: #fff;
+    text-shadow: 0px -1px 0px #660000;
+    background-color: #ad1f1f;
+    background-image: -webkit-gradient(linear, left top, left bottom, from(#c53737), to(#ad1f1f)); /* Saf4+, Chrome */
+      background-image: -webkit-linear-gradient(top, #c53737, #ad1f1f); /* Chrome 10+, Saf5.1+, iOS 5+ */
+      background-image:    -moz-linear-gradient(top, #c53737, #ad1f1f); /* FF3.6 */
+      background-image:     -ms-linear-gradient(top, #c53737, #ad1f1f); /* IE10 */
+      background-image:      -o-linear-gradient(top, #c53737, #ad1f1f); /* Opera 11.10+ */
+      background-image:         linear-gradient(to bottom, #c53737, #ad1f1f);
+      border-color: #990000;
+      -webkit-box-shadow: 0px 1px 0px #e35656 inset;
+       -moz-box-shadow: 0px 1px 0px #e35656 inset;
+            box-shadow: 0px 1px 0px #e35656 inset;
+}
+
+.add_button {
+    height: 21px;
+    width: 21px;
+    background-position: 0 -264px;
+}
+
+.button.team_captain {
+    display: inline-block;
+    padding-left: 18px;
+    text-indent: 0;
+    background-position: -58px -271px;
+}
+
+.standard_button {
+    display: inline-block;
+    white-space: nowrap;
+    font-size: 12px;
+    line-height: 30px;
+    padding: 0px 20px;
+    border-radius: 4px;
+    vertical-align: middle;
+    text-align: center;
+    border-color: #a1b5c8;
+    border-style: solid;
+    border-width: 1px;
+    background-color: #f7f7f7;
+      background-image: -webkit-gradient(linear, left top, left bottom, from(#ffffff), to(#ececec)); /* Saf4+, Chrome */
+      background-image: -webkit-linear-gradient(top, #ffffff, #ececec); /* Chrome 10+, Saf5.1+, iOS 5+ */
+      background-image: -moz-linear-gradient(top, #ffffff, #ececec); /* FF3.6 */
+      background-image: -ms-linear-gradient(top, #ffffff, #ececec); /* IE10 */
+      background-image: -o-linear-gradient(top, #ffffff, #ececec); /* Opera 11.10+ */
+      background-image: linear-gradient(to bottom, #ffffff, #ececec);
+    -webkit-box-shadow: 0px 1px 1px rgba(0,0,0,0.1); /* Saf3-4, iOS 4.0.2 - 4.2, Android 2.3+ */
+       -moz-box-shadow: 0px 1px 1px rgba(0,0,0,0.1); /* FF3.5 - 3.6 */
+            box-shadow: 0px 1px 1px rgba(0,0,0,0.1);
+    text-decoration: none;
+    font-weight: bold;
+    color: #666;
+    text-shadow: 0px 1px 0px #fff;
+}
+
+.standard_button:hover {
+    color: #222;
+    background-color: #fff;
+      background-image: -webkit-gradient(linear, left top, left bottom, from(#ffffff), to(#f5f5f5)); /* Saf4+, Chrome */
+      background-image: -webkit-linear-gradient(top, #ffffff, #f5f5f5); /* Chrome 10+, Saf5.1+, iOS 5+ */
+      background-image: -moz-linear-gradient(top, #ffffff, #f5f5f5); /* FF3.6 */
+      background-image: -ms-linear-gradient(top, #ffffff, #f5f5f5); /* IE10 */
+      background-image: -o-linear-gradient(top, #ffffff, #f5f5f5); /* Opera 11.10+ */
+      background-image: linear-gradient(to bottom, #ffffff, #f5f5f5);
+}
+
+.standard_button .icon, .standard_button .sprite {
+    margin-left: -10px;
+    display: inline-block;
+    vertical-align: middle;
+}
+

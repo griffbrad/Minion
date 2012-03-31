@@ -1,0 +1,29 @@
+<html>
+    <head>
+        <title>Minion</title>
+
+        <link rel="stylesheet" type="text/css" href="/static/css/main.css" />
+        <link rel="stylesheet" type="text/css" href="/static/css/buttons.css" />
+    </head>
+    <body>
+        <div id="shell">
+            <div id="hd">
+                <h1><a href="/">Minion</a></h1>
+            </div>
+            <div id="bd">
+                <ul id="nav">
+                    <li><a href="/">Dashboard</a></li>
+                </ul>
+
+                <div id="content">
+                    {{> page}}
+                </div>
+            </div>
+        </div>
+        <div id="ft">
+            Developed by <a href="http://deltasys.com">Delta Systems</a>
+            &bull;
+            New BSD License
+        </div>
+    </body>
+</html>

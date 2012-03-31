@@ -1,0 +1,21 @@
+<div class="toolbar">
+    <a href="/edit" class="primary_button">Add Check</a>
+</div>
+<table cellspacing="0">
+    <thead>
+        <tr>
+            <th>Site</th>
+            <th>Status</th>
+            <th>Last Error</th>
+        </tr>
+    </thead>
+    <tbody>
+        {{#sites}}
+        <tr>
+            <td><a href="edit?url={{{this.url}}}">{{{this.url}}}</a></td>
+            <td class="status">{{{status this}}}</td>
+            <td>{{{lastError this}}}</td>
+        </tr>
+        {{/sites}}
+    </tbody>
+</table>
