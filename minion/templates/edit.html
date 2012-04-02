@@ -1,45 +1,17 @@
 <h2>{{title}}</h2>
 
-<form method="post">
-    <div class="field {{errorClass "url"}}">
-        <label for="url">URL</label>
-        <div class="field_content">
-            <input type="text" name="url" id="url" size="42" value="{{url}}" />
-        </div>
-        {{errors "url"}}
-    </div>
-    <div class="field {{errorClass "contentString"}}">
-        <label for="contentString">Check for String on Page</label>
-        <div class="field_content">
-            <input type="text" name="contentString" id="contentString" value="{{contentString}}" />
-        </div>
-        <div class="field_note">
-            Specify a string you expect to find in the page being checked.  If
-            the string is not present, the check will fail.
-        </div>
-        {{errors "contentString"}}
-    </div>
-    <div class="field {{errorClass "repeatsBeforeNotification"}}">
-        <label for="repeatsBeforeNotification">Repeats Before Sending Notifications</label>
-        <div class="field_content">
-            <input type="num" name="repeatsBeforeNotification" id="repeatsBeforeNotification" size="8" value="{{repeatsBeforeNotification}}" />
-        </div>
-        <div class="field_note">
-            The number of consecutive failures or successes needed before
-            notifications are sent.
-        </div>
-        {{errors "repeatsBeforeNotification"}}
-    </div>
+{{#form}}
+    {{#field "url" "URL" ""}}
+        {{entry "url" 42}}
+    {{/field}}
+    
+    {{#field "contentString" "Check for String on Page" "Specify a string you expect to find in the page being checked.  If the string is not present, the check will fail." }}
+        {{entry "contentString" 27}}
+    {{/field}}
 
-    <!--
-    <fieldset>
-        <legend>Notifications</legend>
+    {{#field "repeatsBeforeNotification" "Repeats Before Sending Notification" "The number of consecutive failures or successes needed before notifications are sent."}}
+        {{entry "repeatsBeforeNotification" 10 }}
+    {{/field}}
 
-
-    </fieldset>
-    -->
-
-    <div class="form_footer">
-        <input type="submit" value="Save" class="primary_button" />
-    </div>
-</form>
+    {{footer}}
+{{/form}}

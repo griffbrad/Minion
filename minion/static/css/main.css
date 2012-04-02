@@ -152,6 +152,7 @@ fieldset {
     border: none;
     border-top: 1px solid #ccc;
     margin-top: 32px;
+    padding: 12px 0;
 }
 
 legend {

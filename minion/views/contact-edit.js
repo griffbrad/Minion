@@ -29,70 +29,70 @@
 
 var AbstractEdit = require('./abstract-edit'),
     util         = require('util'),
-    url          = require('url'),
-    Edit;
+    ContactEdit;
 
-Edit = function (minion, request, response) {
+ContactEdit = function (minion, request, response) {
     AbstractEdit.apply(this, arguments);
 };
 
-util.inherits(Edit, AbstractEdit);
+util.inherits(ContactEdit, AbstractEdit);
 
-module.exports = Edit;
+module.exports = ContactEdit;
 
-Edit.prototype.getTemplateName = function () {
-    return 'edit';
+ContactEdit.prototype.getTemplateName = function () {
+    return 'contact-edit';
 };
 
-Edit.prototype.getBlankTitle = function () {
-    return 'Check';
-};
-
-Edit.prototype.getAddMethod = function () {
-    return this._minion.addSite;
-};
-
-Edit.prototype.getDefaultValues = function () {
+ContactEdit.prototype.getDefaultValues = function () {
     return {
-        repeatsBeforeNotification: 5 
+        allowTextMessages: true,
+        allowCalls: true
     };
 };
 
-Edit.prototype.getEditFields = function () {
-    return ['url', 'contentString', 'repeatsBeforeNotification'];
+ContactEdit.prototype.getBlankTitle = function () {
+    return 'Contact';
 };
 
-Edit.prototype.getDbCollection = function () {
-    return 'sites';
+ContactEdit.prototype.getAddMethod = function () {
+    return this._minion.addContact;
 };
 
-Edit.prototype.findDataObject = function (id) {
-    return this._minion.findSiteById(id);
+ContactEdit.prototype.getEditFields = function () {
+    return [
+        'firstName',
+        'lastName',
+        'emailAddress',
+        'phoneNumber',
+        'allowTextMessages',
+        'allowCalls'
+    ];
 };
 
-Edit.prototype.validate = function () {
-    if (!this.getPost('url')) {
-        this.addError('url', 'This field is required.');
-    }
-    
-    if (!this.getPost('repeatsBeforeNotification')) {
-        this.addError('repeatsBeforeNotification', 'This field is required.');
-    }
+ContactEdit.prototype.getDbCollection = function () {
+    return 'contacts';
+};
 
-    var urlInfo = url.parse('http://' + this.getPost('url')),
-        repeats = parseInt(this.getPost('repeatsBeforeNotification'));
+ContactEdit.prototype.findDataObject = function (id) {
+    return this._minion.findContactById(id);
+};
 
-    if (!urlInfo.hostname) {
-        this.addError('url', 'Please enter a valid hostname.');
-    } else {
-        this._post.url = urlInfo.hostname;
-    }
+ContactEdit.prototype.validate = function () {
+    this._validateRequiredFields(['firstName', 'lastName', 'emailAddress', 'phoneNumber']);
 
-    if (isNaN(repeats) || repeats < 0 || repeats > 60) {
+    if (! this._validateEmailAddress(this.getPost('emailAddress'))) {
         this.addError(
-            'repeatsBeforeNotification',
-            'Please enter a positive integer less than 60.'
+            'emailAddress',
+            'Please enter a valid email address.'
         );
     }
 };
 
+ContactEdit.prototype.getRedirectPath = function () {
+    return '/contacts';
+};
+
+ContactEdit.prototype._validateEmailAddress = function (input) {
+    var re = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+    return re.test(input);
+};

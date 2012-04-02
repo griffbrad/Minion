@@ -27,14 +27,16 @@
  * THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-var Site  = require('./site'),
-    Web   = require('./web'),
-    mongo = require('mongodb');
+var Site    = require('./site'),
+    Contact = require('./contact'),
+    Web     = require('./web'),
+    mongo   = require('mongodb');
 
 var Minion = function (config) {
-    this._config = config;
-    this._debug  = false;
-    this._sites  = [];
+    this._config   = config;
+    this._debug    = false;
+    this._sites    = [];
+    this._contacts = [];
 
     this._cappedCollections = ['log', 'notifications'];
 
@@ -43,6 +45,8 @@ var Minion = function (config) {
         console.log('Debugging enabled...');
     }
 };
+
+module.exports = Minion;
 
 Minion.prototype.getConfig = function () {
     return this._config;
@@ -88,7 +92,7 @@ Minion.prototype._initCappedCollections = function (db) {
         });
 
         if (!missing.length) {
-            self._initSitesFromDb(db);
+            self._initContactsFromDb(db);
         } else {
             name  = missing.pop();
             index = self._cappedCollections.indexOf(name);
@@ -110,9 +114,19 @@ Minion.prototype._initSitesFromDb = function (db) {
     });
 };
 
+Minion.prototype._initContactsFromDb = function (db) {
+    var self = this;
+
+    db.collection('contacts', function (err, collection) {
+        collection.find().toArray(function (err, items) {
+            self._handleContacts(items, db);
+        });
+    });
+};
+
 Minion.prototype._createCappedCollection = function (db, name) {
     var self    = this,
-        options = { capped: true, size: 1024000000 };
+        options = { capped: true, size: 1073741824 }; // 1GB
        
     db.createCollection(name, options, function (err, collection) {
         self._initCappedCollections(db);
@@ -132,14 +146,24 @@ Minion.prototype._handleSites = function (siteData) {
         function () {
             self.check();
         }, 
-        60000
+        60000 // 60 Seconds
     );
 
     this._web = new Web(this._config.web, this);
     this._web.run();
 };
 
-Minion.prototype.addSite = function(options) {
+Minion.prototype._handleContacts = function (contactData, db) {
+    var self = this;
+
+    contactData.forEach(function (contact) {
+        this._contacts.push(new Contact(contact, this));
+    }, this);
+
+    this._initSitesFromDb(db);
+};
+
+Minion.prototype.addSite = function (options) {
     this._sites.push(new Site(options, this));
 
     return this;
@@ -149,16 +173,22 @@ Minion.prototype.getSites = function () {
     return this._sites;
 };
 
-Minion.prototype.findSiteByUrl = function (url) {
-    var match = null;
+Minion.prototype.findSiteById = function (id) {
+    return this._findById(this._sites, id);
+};
 
-    this._sites.forEach(function (site) {
-        if (site.getUrl() === url) {
-            match = site;
-        }
-    }, this);
+Minion.prototype.addContact = function (options) {
+    this._contacts.push(new Contact(options, this));
 
-    return match;
+    return this;
+};
+
+Minion.prototype.getContacts = function () {
+    return this._contacts;
+};
+
+Minion.prototype.findContactById = function (id) {
+    return this._findById(this._contacts, id);
 };
 
 Minion.prototype.check = function () {
@@ -167,4 +197,14 @@ Minion.prototype.check = function () {
     });
 };
 
-module.exports = Minion;
+Minion.prototype._findById = function (items, id) {
+    var match = null;
+
+    items.forEach(function (item) {
+        if (item.getId() === id) {
+            match = item;
+        }
+    }, this);
+
+    return match;
+};

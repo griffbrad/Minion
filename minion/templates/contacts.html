@@ -1,0 +1,28 @@
+<h2>Contacts</h2>
+
+<div class="toolbar">
+    <a class="primary_button" href="/contact-edit">Add Contact</a>
+</div>
+
+<table cellspacing="0">
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Email Address</th>
+            <th>Phone Number</th>
+            <th>Allow Calls</th>
+            <th>Allow Text Messages</th>
+        </tr>
+    </thead>
+    <tbody>
+        {{#contacts}}
+        <tr>
+            <td><a href="contact-edit?id={{this.id}}">{{this.fullName}}</a></td>
+            <td><a href="mailto:{{this.emailAddress}}">{{this.emailAddress}}</a></td>
+            <td>{{this.phoneNumber}}</td>
+            <td>{{boolean this.allowCalls}}</td>
+            <td>{{boolean this.allowTextMessages}}</td>
+        </tr>
+        {{/contacts}}
+    </tbody>
+</table>

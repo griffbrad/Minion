@@ -28,6 +28,8 @@
  */
 
 var request      = require('request'),
+    util         = require('util'),
+    Base         = require('./base'),
     Notification = require('./notification');
 
 var Site = function (options, minion) {
@@ -35,11 +37,12 @@ var Site = function (options, minion) {
     this._repeatsBeforeNotification = 5;
     this._status                    = Site.STATUS_SUCCESS;
     this._repeats                   = 6;
-    this._minion                    = minion;
     this._lastError                 = null;
 
-    this.setOptions(options);
+    Base.apply(this, arguments);
 };
+
+util.inherits(Site, Base);
 
 module.exports = Site;
 
@@ -47,25 +50,18 @@ Site.STATUS_FAIL = false;
 
 Site.STATUS_SUCCESS = true;
 
-Site.prototype.setOptions = function (options) {
-    for (var key in options) {
-        if (options.hasOwnProperty(key)) {
-            this.setOption(key, options[key]);
-        }
-    }
+Site.prototype.setId = function (id) {
+    this._id = String(id);
+
+    return this;
 };
-    
-Site.prototype.setOption = function (option, value) {
-    var method = 'set' + option.charAt(0).toUpperCase() + option.substr(1);
 
-    if (!this[method]) {
-        if (this._minion.isDebug()) {
-            console.log('Calling undefined setter: ' + method);
-        }
-        return;
-    }
+Site.prototype.getId = function () {
+    return this._id;
+};
 
-    this[method].call(this, value);
+Site.prototype.getTitle = function () {
+    return this.getUrl();
 };
 
 Site.prototype.setRepeatsBeforeNotification = function (repeats) {
@@ -295,6 +291,7 @@ Site.prototype.syncDb = function () {
     this._minion.getDb().collection('log', function(err, collection) {
         collection.insert({
             url: self._url,
+            siteId: self._id,
             repeats: self._repeats,
             status: self._status,
             reason: self._reason,

@@ -32,7 +32,7 @@ var https       = require('https'),
 
 var Notification = function (minion) {
     this._minion     = minion;
-    this._recipients = minion.getConfig().recipients;
+    this._recipients = minion.getContacts();
 };
 
 module.exports = Notification;
@@ -52,11 +52,11 @@ Notification.prototype.setBody = function (body) {
 Notification.prototype.send = function () {
     this._recipients.forEach(function(recipient) {
         if (this._minion.isDebug()) {
-            console.log('Sending notification to ' + recipient);
+            console.log('Sending notification to ' + recipient.getEmailAddress());
             return;
         }
 
-        this.sendToRecipient(recipient);
+        this.sendToRecipient(recipient.getEmailAddress());
     }, this);
 };
 

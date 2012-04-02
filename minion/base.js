@@ -27,72 +27,47 @@
  * THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-var AbstractEdit = require('./abstract-edit'),
-    util         = require('util'),
-    url          = require('url'),
-    Edit;
+var Base = function (options, minion) {
+    this._minion = minion;
 
-Edit = function (minion, request, response) {
-    AbstractEdit.apply(this, arguments);
+    this.setOptions(options);
 };
 
-util.inherits(Edit, AbstractEdit);
+module.exports = Base;
 
-module.exports = Edit;
-
-Edit.prototype.getTemplateName = function () {
-    return 'edit';
-};
-
-Edit.prototype.getBlankTitle = function () {
-    return 'Check';
-};
-
-Edit.prototype.getAddMethod = function () {
-    return this._minion.addSite;
-};
-
-Edit.prototype.getDefaultValues = function () {
-    return {
-        repeatsBeforeNotification: 5 
-    };
-};
-
-Edit.prototype.getEditFields = function () {
-    return ['url', 'contentString', 'repeatsBeforeNotification'];
-};
-
-Edit.prototype.getDbCollection = function () {
-    return 'sites';
-};
-
-Edit.prototype.findDataObject = function (id) {
-    return this._minion.findSiteById(id);
-};
-
-Edit.prototype.validate = function () {
-    if (!this.getPost('url')) {
-        this.addError('url', 'This field is required.');
+Base.prototype.setOptions = function (options) {
+    for (var key in options) {
+        if (options.hasOwnProperty(key)) {
+            this.setOption(key, options[key]);
+        }
     }
+};
     
-    if (!this.getPost('repeatsBeforeNotification')) {
-        this.addError('repeatsBeforeNotification', 'This field is required.');
+Base.prototype.setOption = function (option, value) {
+    var method = this._buildPropertyMethodName('set', option);
+
+    if (!this[method]) {
+        if (this._minion.isDebug()) {
+            console.log('Calling undefined setter: ' + method);
+        }
+        return;
     }
 
-    var urlInfo = url.parse('http://' + this.getPost('url')),
-        repeats = parseInt(this.getPost('repeatsBeforeNotification'));
-
-    if (!urlInfo.hostname) {
-        this.addError('url', 'Please enter a valid hostname.');
-    } else {
-        this._post.url = urlInfo.hostname;
-    }
-
-    if (isNaN(repeats) || repeats < 0 || repeats > 60) {
-        this.addError(
-            'repeatsBeforeNotification',
-            'Please enter a positive integer less than 60.'
-        );
-    }
+    this[method].call(this, value);
 };
 
+Base.prototype.get = function (key) {
+    var method = this._buildPropertyMethodName('get', key);
+    return this[method].call(this);
+};
+
+Base.prototype._buildPropertyMethodName = function (verb, option) {
+    var method = verb;
+    option  = option.replace('_', '');
+    method += option.charAt(0).toUpperCase() + option.substr(1);
+    return method;
+};
+
+Base.prototype.getTitle = function () {
+    throw "All data objects must implement a getTitle() method";
+};

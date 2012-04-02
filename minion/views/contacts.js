@@ -30,76 +30,51 @@
 var View       = require('./abstract'),
     Handlebars = require('handlebars'),
     util       = require('util'),
-    Index;
+    Contacts;
 
-Index = function(minion, request, response) {
-    this._minion   = minion;
-    this._response = response;
-    this._request  = request;
+Contacts = function(minion, request, response) {
+    View.apply(this, arguments);
 };
 
-util.inherits(Index, View);
+util.inherits(Contacts, View);
 
-module.exports = Index;
+module.exports = Contacts;
 
-Index.prototype.getTemplateName = function () {
-    return 'index';
+Contacts.prototype.getTemplateName = function () {
+    return 'contacts';
 };
 
-Index.prototype.getTemplateData = function () {
-    var sites = [];
+Contacts.prototype.getTemplateData = function () {
+    var contacts = [];
 
-    this._minion.getSites().forEach(function (site) {
-        sites.push({
-            url:       site.getUrl(),
-            id:        site.getId(),
-            status:    site.getStatus(),
-            repeats:   site.getRepeats(),
-            lastError: site.getLastError()
+    this._minion.getContacts().forEach(function (contact) {
+        contacts.push({
+            id:                contact.getId(),
+            fullName:          contact.getFullName(),
+            lastName:          contact.getLastName().toLowerCase(),
+            emailAddress:      contact.getEmailAddress(),
+            phoneNumber:       contact.getPhoneNumber(),
+            allowCalls:        contact.getAllowCalls(),
+            allowTextMessages: contact.getAllowTextMessages()
         });
     }, this);
 
-    sites.sort(function(a, b) {
-        if (a.url < b.url) {
+    contacts.sort(function(a, b) {
+        if (a.lastName < b.lastName) {
             return -1;
         } else {
             return 1;
         }
     });
 
-    this.registerHelper('status', this.renderStatus);
-    this.registerHelper('lastError', this.renderLastError);
-    
+    this.registerHelper('boolean', this.renderBoolean);
+
     return {
-        sites: sites    
+        contacts: contacts    
     };
 };
 
-Index.prototype.renderStatus = function (site) {
-    if (site.status) {
-        return new Handlebars.SafeString(
-            '<span class="all_clear">No errors</span>'
-        );
-    } else {
-        var suffix = 's';
-
-        if (1 === site.repeats) {
-            suffix = '';
-        }
-
-        return new Handlebars.SafeString(
-            '<span class="error">Failed ' + site.repeats + ' Time' + suffix + '</span>'
-        );
-    }
-};
-
-Index.prototype.renderLastError = function (site) {
-    if (site.lastError) {
-        return site.lastError;
-    } else {
-        return new Handlebars.SafeString(
-            '<span class="all_clear">No errors</span>'
-        );
-    }
+Contacts.prototype.renderBoolean = function (value) {
+    return value ? 'Yes' : 'No';
 };
 

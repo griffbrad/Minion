@@ -1,0 +1,33 @@
+<h2>{{title}}</h2>
+
+{{#form}}
+    {{#field "firstName" "First Name" ""}}
+        {{entry "firstName" 27}}
+    {{/field}}
+    
+    {{#field "lastName" "Last Name" ""}}
+        {{entry "lastName" 27}}
+    {{/field}}
+
+    <fieldset>
+        <legend>Notifications</legend>
+
+        {{#field "emailAddress" "Email Address" ""}}
+            {{entry "emailAddress" 32}}
+        {{/field}}
+
+        {{#field "phoneNumber" "Phone Number" ""}}
+            {{entry "phoneNumber" 16}}
+        {{/field}}
+
+        {{#field "allowCalls" "Allow Phone Calls" "Whether phone calls can be placed to notify this contact of an issue." }}
+            {{checkbox "allowCalls"}}
+        {{/field}}
+        
+        {{#field "allowTextMessages" "Allow Text Messages" "" }}
+            {{checkbox "allowTextMessages"}}
+        {{/field}}
+    </fieldset>
+
+    {{footer}}
+{{/form}}

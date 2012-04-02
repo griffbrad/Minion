@@ -44,11 +44,11 @@ util.inherits(Log, View);
 module.exports = Log;
 
 Log.prototype.init = function () {
-    var url  = this.getQuery('url'),
+    var id   = this.getQuery('id'),
         self = this;
 
-    if (url) {
-        this._site = this._minion.findSiteByUrl(url);
+    if (id) {
+        this._site = this._minion.findSiteById(id);
     }
 
     if (! this._site) {
@@ -56,7 +56,7 @@ Log.prototype.init = function () {
     }
 
     this._minion.getDb().collection('log', function (err, collection) {
-        collection.find({ url: self._site.getUrl()}).sort('dateChecked', 'desc').toArray(function (err, items) {
+        collection.find({siteId: self._site.getId()}).sort('dateChecked', 'desc').toArray(function (err, items) {
             self._entries = items;
             self.initComplete();
         });
@@ -72,7 +72,8 @@ Log.prototype.getTemplateData = function () {
 
     return {
         entries: this._entries,
-        url:     this._site.getUrl()
+        url:     this._site.getUrl(),
+        id:      this._site.getId()
     };
 };
 

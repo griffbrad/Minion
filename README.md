@@ -39,7 +39,7 @@ Roadmap
 Usage
 -----
 
-0. Specify some notification recipients and mail transport credentials in your config.js file.  
+0. Specify mail transport credentials in your config.js file.  
 0. Navigate to the web frontend to add sites.  The web frontend listens on port 9855 by default.  
 0. Run minion either directly with `node minion.js` or, preferably, with `forever start minion.js`.
 
