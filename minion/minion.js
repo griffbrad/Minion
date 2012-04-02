@@ -112,7 +112,7 @@ Minion.prototype._initSitesFromDb = function (db) {
 
 Minion.prototype._createCappedCollection = function (db, name) {
     var self    = this,
-        options = { capped: true, size: 1024 };
+        options = { capped: true, size: 1024000000 };
        
     db.createCollection(name, options, function (err, collection) {
         self._initCappedCollections(db);
