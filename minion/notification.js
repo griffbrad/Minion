@@ -61,6 +61,8 @@ Notification.prototype.send = function () {
 };
 
 Notification.prototype.sendToRecipient = function (recipient) {
+    var self = this;
+
     var postData = {
         api_user: this._minion.getConfig().sendGrid.apiUser,
         api_key:  this._minion.getConfig().sendGrid.apiKey,
@@ -84,12 +86,27 @@ Notification.prototype.sendToRecipient = function (recipient) {
     };
 
     var postReq = https.request(options, function (response) {
+        var status = true;
+
         if (200 !== response.statusCode) {
-            console.log('Failed to send email notification.');
+            status = false; 
         }
+
+        self.log(recipient, self._subject, status);
     });
 
     postReq.write(postData);
     postReq.end();
 };
 
+
+Notification.prototype.log = function (recipient, subject, status) {
+    this._minion.getDb().collection('notifications', function (err, collection) {
+        collection.insert({
+            dateSent:  new Date(),
+            status:    status,
+            subject:   subject,
+            recipient: recipient
+        });
+    });
+};

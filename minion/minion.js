@@ -36,6 +36,8 @@ var Minion = function (config) {
     this._debug  = false;
     this._sites  = [];
 
+    this._cappedCollections = ['log', 'notifications'];
+
     if (-1 !== process.argv.indexOf('--debug')) {
         this._debug = true;
         console.log('Debugging enabled...');
@@ -67,11 +69,53 @@ Minion.prototype.run = function () {
             return;
         }
 
-        db.collection('sites', function (err, collection) {
-            collection.find().toArray(function (err, items) {
-                self._handleSites(items);
-            });
+        self._initCappedCollections(db);
+    });
+};
+
+Minion.prototype._initCappedCollections = function (db) {
+    var self = this;
+
+    db.collectionNames(function (err, names) {
+        var missing = [],
+            index,
+            name;
+
+        self._cappedCollections.forEach(function (name) {
+            if (-1 === names.indexOf(name)) {
+                missing.push(name);
+            }
         });
+
+        if (!missing.length) {
+            self._initSitesFromDb(db);
+        } else {
+            name  = missing.pop();
+            index = self._cappedCollections.indexOf(name);
+
+            delete self._cappedCollections[index];
+
+            self._createCappedCollection(db, name);
+        }
+    });
+};
+
+Minion.prototype._initSitesFromDb = function (db) {
+    var self = this;
+
+    db.collection('sites', function (err, collection) {
+        collection.find().toArray(function (err, items) {
+            self._handleSites(items);
+        });
+    });
+};
+
+Minion.prototype._createCappedCollection = function (db, name) {
+    var self    = this,
+        options = { capped: true, size: 1024 };
+       
+    db.createCollection(name, options, function (err, collection) {
+        self._initCappedCollections(db);
     });
 };
 

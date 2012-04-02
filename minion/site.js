@@ -69,7 +69,7 @@ Site.prototype.setOption = function (option, value) {
 };
 
 Site.prototype.setRepeatsBeforeNotification = function (repeats) {
-    this._repeatsBeforeNotification = repeats; 
+    this._repeatsBeforeNotification = parseInt(repeats, 10); 
 
     return this;
 };
@@ -125,7 +125,7 @@ Site.prototype.getLastError = function () {
 };
 
 Site.prototype.setRepeats = function (repeats) {
-    this._repeats = repeats;
+    this._repeats = parseInt(repeats, 10);
 
     return this;
 };
@@ -290,5 +290,15 @@ Site.prototype.syncDb = function () {
             function (err, result) {
             }
         );
+    });
+
+    this._minion.getDb().collection('log', function(err, collection) {
+        collection.insert({
+            url: self._url,
+            repeats: self._repeats,
+            status: self._status,
+            reason: self._reason,
+            dateChecked: new Date()
+        });
     });
 };

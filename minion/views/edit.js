@@ -33,7 +33,7 @@ var View       = require('./abstract'),
     Handlebars = require('handlebars'),
     Edit;
 
-Edit = function(minion, request, response) {
+Edit = function (minion, request, response) {
     this._minion   = minion;
     this._response = response;
     this._request  = request;

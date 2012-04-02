@@ -1,0 +1,20 @@
+<h2>Notification History</h2>
+
+<table cellspacing="0">
+    <thead>
+        <th>Time</th>
+        <th>Recipient</th>
+        <th>Subject</th>
+        <th>Status</th>
+    </thead>
+    <tbody>
+        {{#entries}}
+        <tr>
+            <td>{{{this.dateSent}}}</td>
+            <td>{{{this.recipient}}}</td>
+            <td>{{{this.subject}}}</td>
+            <td>{{{status this}}}</td>
+        </tr>
+        {{/entries}}
+    </tbody>
+</table>

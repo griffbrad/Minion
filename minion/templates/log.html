@@ -1,0 +1,18 @@
+<h2>{{url}}</h2>
+
+<a class="primary_button" href="edit?url={{url}}">Edit Check</a>
+
+<table cellspacing="0">
+    <thead>
+        <th>Time</th>
+        <th>Status</th>
+    </thead>
+    <tbody>
+        {{#entries}}
+        <tr>
+            <td>{{{this.dateChecked}}}</td>
+            <td>{{{status this}}}</td>
+        </tr>
+        {{/entries}}
+    </tbody>
+</table>
