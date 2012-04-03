@@ -231,6 +231,9 @@ Minion.prototype._handleContacts = function (contactData, db) {
 Minion.prototype.addSite = function (site) {
     this._sites.push(site);
 
+    // Initiate first check for newly added site.
+    site.check();
+    
     return this;
 };
 
