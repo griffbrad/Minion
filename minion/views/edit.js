@@ -30,6 +30,7 @@
 var AbstractEdit = require('./abstract-edit'),
     util         = require('util'),
     url          = require('url'),
+    Site         = require('../site'),
     Edit;
 
 Edit = function (minion, request, response) {
@@ -44,30 +45,12 @@ Edit.prototype.getTemplateName = function () {
     return 'edit';
 };
 
-Edit.prototype.getBlankTitle = function () {
-    return 'Check';
-};
-
-Edit.prototype.getAddMethod = function () {
-    return this._minion.addSite;
-};
-
-Edit.prototype.getDefaultValues = function () {
-    return {
-        repeatsBeforeNotification: 5 
-    };
+Edit.prototype.getDataObjectConstructor = function () {
+    return Site;
 };
 
 Edit.prototype.getEditFields = function () {
     return ['url', 'contentString', 'repeatsBeforeNotification'];
-};
-
-Edit.prototype.getDbCollection = function () {
-    return 'sites';
-};
-
-Edit.prototype.findDataObject = function (id) {
-    return this._minion.findSiteById(id);
 };
 
 Edit.prototype.validate = function () {

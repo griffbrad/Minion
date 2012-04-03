@@ -31,6 +31,9 @@ var Base = require('./base'),
     util = require('util');
 
 var Contact = function (options, minion) {
+    this._allowCalls        = true;
+    this._allowTextMessages = true;
+
     Base.apply(this, arguments);
 };
 
@@ -38,18 +41,24 @@ util.inherits(Contact, Base);
 
 module.exports = Contact;
 
-Contact.prototype.setId = function (id) {
-    this._id = String(id);
-    
-    return this;
+Contact.find = function (minion, id) {
+    return minion.findContactById(id);
 };
 
-Contact.prototype.getId = function () {
-    return this._id;
+Contact.prototype.getAddMethod = function () {
+    return this._minion.addContact;
+};
+
+Contact.prototype.getDbCollection = function () {
+    return 'contacts';
 };
 
 Contact.prototype.getTitle = function () {
     return this.getFullName();
+};
+
+Contact.prototype.getBlankTitle = function () {
+    return 'Contact';
 };
 
 Contact.prototype.setFirstName = function (firstName) {

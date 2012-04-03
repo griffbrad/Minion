@@ -35,6 +35,28 @@ var Base = function (options, minion) {
 
 module.exports = Base;
 
+Base.prototype.save = function (collection, data) {
+    this.setOptions(data);
+
+    if (!this.getId()) {
+        collection.insert(data);
+        this.getAddMethod().call(this._minion, this);
+    } else {
+        collection.update(
+            { _id : this.getId() },
+            { $set: data },
+            { safe: true },
+            function (err, result) {}
+        );
+    }
+
+    return this;
+};
+
+Base.find = function (minion, id) {
+    throw "Must implement find method";
+};
+
 Base.prototype.setOptions = function (options) {
     for (var key in options) {
         if (options.hasOwnProperty(key)) {
@@ -54,6 +76,20 @@ Base.prototype.setOption = function (option, value) {
     }
 
     this[method].call(this, value);
+};
+
+Base.prototype.getBlankTitle = function () {
+    throw 'Must implement getBlankTitle() method.';
+};
+
+Base.prototype.setId = function (id) {
+    this._id = String(id);
+
+    return this;
+};
+
+Base.prototype.getId = function () {
+    return this._id;
 };
 
 Base.prototype.get = function (key) {

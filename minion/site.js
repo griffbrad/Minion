@@ -33,7 +33,7 @@ var request      = require('request'),
     Notification = require('./notification');
 
 var Site = function (options, minion) {
-    this._contentString             = null;
+    this._contentString             = '';
     this._repeatsBeforeNotification = 5;
     this._status                    = Site.STATUS_SUCCESS;
     this._repeats                   = 6;
@@ -50,18 +50,24 @@ Site.STATUS_FAIL = false;
 
 Site.STATUS_SUCCESS = true;
 
-Site.prototype.setId = function (id) {
-    this._id = String(id);
-
-    return this;
-};
-
-Site.prototype.getId = function () {
-    return this._id;
+Site.find = function (minion, id) {
+    return minion.findSiteById(id);
 };
 
 Site.prototype.getTitle = function () {
     return this.getUrl();
+};
+
+Site.prototype.getBlankTitle = function () {
+    return 'Check';
+};
+
+Site.prototype.getAddMethod = function () {
+    return this._minion.addSite;
+};
+
+Site.prototype.getDbCollection = function () {
+    return 'sites';
 };
 
 Site.prototype.setRepeatsBeforeNotification = function (repeats) {

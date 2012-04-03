@@ -42,16 +42,17 @@ util.inherits(AbstractEdit, View);
 module.exports = AbstractEdit;
 
 AbstractEdit.prototype.init = function () {
-    var id  = this.getQuery('id');
+    var id          = this.getQuery('id'),
+        Constructor = this.getDataObjectConstructor();
 
     this._errors = {};
 
     if (id) {
-        this._dataObject = this.findDataObject(id);
+        this._dataObject = Constructor.find(this._minion, id);
     }
 
-    if (id && !this._dataObject) {
-        this.redirect(this.getRedirectPath());
+    if (!this._dataObject) {
+        this._dataObject = new Constructor({}, this._minion);
     }
 
     this.initComplete();
@@ -59,14 +60,6 @@ AbstractEdit.prototype.init = function () {
 
 AbstractEdit.prototype.validate = function () {
     throw "Add validate method to check input prior to save.";
-};
-
-AbstractEdit.prototype.getAddMethod = function () {
-    throw "Must return a Minion method to call when adding an object.";
-};
-
-AbstractEdit.prototype.findDataObject = function (id) {
-    throw "Must implement findDataObject() method.";
 };
 
 AbstractEdit.prototype.getRedirectPath = function () {
@@ -88,6 +81,11 @@ AbstractEdit.prototype.addError = function (field, message) {
 };
 
 AbstractEdit.prototype.getDataObject = function () {
+    if (! this._dataObject) {
+        var Constructor  = this.getDataObjectConstructor();
+        this._dataObject = new Constructor({}, this._minion);
+    }
+
     return this._dataObject;
 };
 
@@ -103,10 +101,8 @@ AbstractEdit.prototype.getTemplateData = function () {
 
     if ('POST' === this._request.method) {
         this._renderValues = this.getPost();
-    } else if (this.getDataObject()) {
-        this._renderValues = this.getEditValues();
     } else {
-        this._renderValues = this.getDefaultValues();
+        this._renderValues = this.getEditValues();
     }
 
     return this._renderValues;
@@ -122,10 +118,6 @@ AbstractEdit.prototype.getRenderValue = function (id) {
     } else {
         return this._renderValues[id]; 
     }
-};
-
-AbstractEdit.prototype.getDefaultValues = function () {
-    return {};
 };
 
 AbstractEdit.prototype.getEditFields = function () {
@@ -175,23 +167,8 @@ AbstractEdit.prototype.post = function () {
         this.get();
         return; 
     } else {
-        this._minion.getDb().collection(this.getDbCollection(), function(err, collection) {
-            var data = self.getPostValues();
-
-            if (!self.getDataObject()) {
-                collection.insert(data);
-                self.getAddMethod().call(self._minion, data);
-            } else {
-                collection.update(
-                    { _id : self.getDataObject().getId() },
-                    { $set: data },
-                    { safe: true },
-                    function (err, result) {}
-                );
-
-                self.getDataObject().setOptions(data);
-            }
-            
+        this._minion.getDb().collection(this.getDataObject().getDbCollection(), function(err, collection) {
+            self.getDataObject().save(collection, self.getPostValues());
             self._response.writeHead(302, {'Location': self.getRedirectPath()});
             self._response.end();
         });
@@ -199,10 +176,10 @@ AbstractEdit.prototype.post = function () {
 };
 
 AbstractEdit.prototype.renderTitle = function () {
-    if (this.getDataObject()) {
+    if (this.getDataObject().getId()) {
         return 'Edit ' + this.getDataObject().getTitle();
     } else {
-        return 'Add ' + this.getBlankTitle();
+        return 'Add ' + this.getDataObject().getBlankTitle();
     }
 };
 

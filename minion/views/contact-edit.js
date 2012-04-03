@@ -29,6 +29,7 @@
 
 var AbstractEdit = require('./abstract-edit'),
     util         = require('util'),
+    Contact      = require('../contact'),
     ContactEdit;
 
 ContactEdit = function (minion, request, response) {
@@ -39,23 +40,12 @@ util.inherits(ContactEdit, AbstractEdit);
 
 module.exports = ContactEdit;
 
+ContactEdit.prototype.getDataObjectConstructor = function () {
+    return Contact;
+};
+
 ContactEdit.prototype.getTemplateName = function () {
     return 'contact-edit';
-};
-
-ContactEdit.prototype.getDefaultValues = function () {
-    return {
-        allowTextMessages: true,
-        allowCalls: true
-    };
-};
-
-ContactEdit.prototype.getBlankTitle = function () {
-    return 'Contact';
-};
-
-ContactEdit.prototype.getAddMethod = function () {
-    return this._minion.addContact;
 };
 
 ContactEdit.prototype.getEditFields = function () {
@@ -67,14 +57,6 @@ ContactEdit.prototype.getEditFields = function () {
         'allowTextMessages',
         'allowCalls'
     ];
-};
-
-ContactEdit.prototype.getDbCollection = function () {
-    return 'contacts';
-};
-
-ContactEdit.prototype.findDataObject = function (id) {
-    return this._minion.findContactById(id);
 };
 
 ContactEdit.prototype.validate = function () {

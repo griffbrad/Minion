@@ -163,8 +163,8 @@ Minion.prototype._handleContacts = function (contactData, db) {
     this._initSitesFromDb(db);
 };
 
-Minion.prototype.addSite = function (options) {
-    this._sites.push(new Site(options, this));
+Minion.prototype.addSite = function (site) {
+    this._sites.push(site);
 
     return this;
 };
@@ -177,8 +177,8 @@ Minion.prototype.findSiteById = function (id) {
     return this._findById(this._sites, id);
 };
 
-Minion.prototype.addContact = function (options) {
-    this._contacts.push(new Contact(options, this));
+Minion.prototype.addContact = function (contact) {
+    this._contacts.push(contact);
 
     return this;
 };
