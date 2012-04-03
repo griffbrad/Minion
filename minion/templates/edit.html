@@ -13,5 +13,14 @@
         {{entry "repeatsBeforeNotification" 10 }}
     {{/field}}
 
+    {{#field "interval" "Run Check Every" ""}}
+        {{interval}} 
+    {{/field}}
+
+    <fieldset>
+        <legend>Notifications</legend>
+        {{contacts}}
+    </fieldset>
+
     {{footer}}
 {{/form}}

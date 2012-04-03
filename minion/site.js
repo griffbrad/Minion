@@ -37,6 +37,8 @@ var Site = function (options, minion) {
     this._repeatsBeforeNotification = 5;
     this._status                    = Site.STATUS_SUCCESS;
     this._repeats                   = 6;
+    this._interval                  = 60000; // 60 Seconds
+    this._contacts                  = [];
     this._lastError                 = null;
 
     DataObject.apply(this, arguments);
@@ -68,6 +70,59 @@ Site.prototype.getAddMethod = function () {
 
 Site.prototype.getDbCollection = function () {
     return 'sites';
+};
+
+Site.prototype.getValidIntervals = function () {
+    return [
+        {
+            value: 60000, 
+            title: '1 Minute'
+        },
+        {
+            value: 300000, 
+            title: '5 Minutes'
+        },
+        {
+            value: 600000,
+            title: '10 Minutes'
+        }, 
+        {
+            value: 900000,
+            title: '15 Minutes'
+        },
+        {
+            value: 1800000,
+            title: '30 Minutes'
+        }, 
+        {
+            value: 3600000,
+            title: '60 Minutes'
+        }
+    ];
+}
+
+Site.prototype.setInterval = function (value) {
+    var match = false;
+
+    value = parseInt(value);
+
+    this.getValidIntervals().forEach(function (interval) {
+        if (interval.value === value) {
+            match = true;
+        }
+    });
+
+    if (!match) {
+        value = 60000;
+    }
+
+    this._interval = value;
+
+    return this;
+};
+
+Site.prototype.getInterval = function () {
+    return this._interval;
 };
 
 Site.prototype.setRepeatsBeforeNotification = function (repeats) {
@@ -136,6 +191,16 @@ Site.prototype.getRepeats = function () {
     return this._repeats;
 };
 
+Site.prototype.setContacts = function (contacts) {
+    this._contacts = contacts || [];
+
+    return this;
+};
+
+Site.prototype.getContacts = function () {
+    return this._contacts;
+};
+
 Site.prototype.check = function () {
     var self    = this, 
         options = this.getRequestOptions();
@@ -147,6 +212,13 @@ Site.prototype.check = function () {
     request(options, function (error, response, body) {
         self.handleResponse.call(self, error, response, body); 
     });
+
+    setTimeout(
+        function () {
+            self.check();
+        },
+        this._interval
+    );
 };
 
 Site.prototype.getRequestOptions = function () {
@@ -253,7 +325,7 @@ Site.prototype.sendNotifications = function () {
         return;
     }
 
-    var notification = new Notification(this._minion),
+    var notification = new Notification(this._minion, this),
         subject      = '',
         body         = '';
 

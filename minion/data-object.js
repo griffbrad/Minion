@@ -27,6 +27,8 @@
  * THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+var ObjectID = require('mongodb').ObjectID;
+
 var DataObject = function (options, minion) {
     this._minion = minion;
 
@@ -36,17 +38,25 @@ var DataObject = function (options, minion) {
 module.exports = DataObject;
 
 DataObject.prototype.save = function (collection, data) {
+    var self = this;
+
     this.setOptions(data);
 
     if (!this.getId()) {
-        collection.insert(data);
-        this.getAddMethod().call(this._minion, this);
+        collection.insert(
+            data,
+            function (err, docs) {
+                self.setOptions(docs[0]);
+                self.getAddMethod().call(self._minion, self);
+            }
+        );
     } else {
         collection.update(
-            { _id : this.getId() },
+            { _id : new ObjectID(this.getId()) },
             { $set: data },
             { safe: true },
-            function (err, result) {}
+            function (err, result) {
+            }
         );
     }
 

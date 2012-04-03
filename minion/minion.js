@@ -142,13 +142,6 @@ Minion.prototype._handleSites = function (siteData) {
 
     this.check();
 
-    setInterval(
-        function () {
-            self.check();
-        }, 
-        60000 // 60 Seconds
-    );
-
     this._web = new Web(this._config.web, this);
     this._web.run();
 };
@@ -183,8 +176,20 @@ Minion.prototype.addContact = function (contact) {
     return this;
 };
 
-Minion.prototype.getContacts = function () {
-    return this._contacts;
+Minion.prototype.getContacts = function (keys) {
+    if ('undefined' === typeof keys) {
+        return this._contacts;
+    }
+
+    var out = [];
+
+    this._contacts.forEach(function (contact) {
+        if (-1 !== keys.indexOf(contact.getId())) {
+            out.push(contact);
+        }
+    });
+
+    return out;
 };
 
 Minion.prototype.findContactById = function (id) {

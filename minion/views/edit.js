@@ -31,6 +31,7 @@ var AbstractEdit = require('./abstract-edit'),
     util         = require('util'),
     url          = require('url'),
     Site         = require('../site'),
+    Handlebars   = require('handlebars'),
     Edit;
 
 Edit = function (minion, request, response) {
@@ -50,7 +51,20 @@ Edit.prototype.getDataObjectConstructor = function () {
 };
 
 Edit.prototype.getEditFields = function () {
-    return ['url', 'contentString', 'repeatsBeforeNotification'];
+    return [
+        'url', 
+        'contentString', 
+        'repeatsBeforeNotification', 
+        'contacts', 
+        'interval'
+    ];
+};
+
+Edit.prototype.getTemplateData = function () {
+    this.registerHelper('contacts', this.renderContacts)
+        .registerHelper('interval', this.renderInterval);
+
+    return AbstractEdit.prototype.getTemplateData.apply(this, arguments);
 };
 
 Edit.prototype.validate = function () {
@@ -79,3 +93,51 @@ Edit.prototype.validate = function () {
     }
 };
 
+Edit.prototype.renderContacts = function () {
+    var out = '<ul class="checkbox_list">';
+
+    this._minion.getContacts().forEach(function (contact) {
+        var checked = '';
+
+        if (-1 !== this.getRenderValue('contacts').indexOf(contact.getId())) {
+            checked = 'checked="checked"';
+        }
+
+        out += '<li>';
+        out += '<input type="checkbox" name="contacts" value="';
+        out += contact.getId() + '" id="' + contact.getId() + '" ';
+        out += checked + ' />';
+        out += '<label for="' + contact.getId() + '">';
+        out += contact.getFullName();
+        out += '<span class="note">';
+        out += '<a href="mailto:' + contact.getEmailAddress() + '">'; 
+        out += contact.getEmailAddress() + '</a>';
+        out += ' &bull; ';
+        out += contact.getPhoneNumber();
+        out += '</span>';
+        out += '</label>';
+        out += '</li>';
+    }, this);
+
+    out += '</ul>';
+
+    return new Handlebars.SafeString(out);
+};
+
+Edit.prototype.renderInterval = function () {
+    var out     = '<select name="interval" id="interval">',
+        value   = this.getRenderValue('interval'),
+        options = this.getDataObject().getValidIntervals();
+
+    options.forEach(function (option) {
+        if (parseInt(value) === option.value) {
+            out += '<option value="' + option.value + '" selected="selected">' + option.title + '</option>';
+        } else {
+            out += '<option value="' + option.value + '">' + option.title + '</option>';
+        }
+    });
+
+    out += '</select>';
+
+    return new Handlebars.SafeString(out);
+};

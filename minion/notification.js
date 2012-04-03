@@ -30,9 +30,9 @@
 var https       = require('https'),
     querystring = require('querystring');
 
-var Notification = function (minion) {
+var Notification = function (minion, site) {
     this._minion     = minion;
-    this._recipients = minion.getContacts();
+    this._recipients = minion.getContacts(site.getContacts());
 };
 
 module.exports = Notification;

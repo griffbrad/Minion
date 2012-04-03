@@ -203,3 +203,24 @@ legend {
 .toolbar {
     margin-bottom: 12px;
 }
+
+.checkbox_list {
+    padding: 0;
+    margin: 0;
+    list-style-type: none;
+}
+
+.checkbox_list li {
+    padding: 6px 0;
+}
+
+.checkbox_list li label {
+    padding-left: 6px;
+}
+
+.checkbox_list li .note {
+    display: block;
+    color: #666;
+    font-size: 12px;
+    padding-left: 22px;
+}

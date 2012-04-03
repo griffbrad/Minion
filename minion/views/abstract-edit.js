@@ -167,12 +167,20 @@ AbstractEdit.prototype.post = function () {
         this.get();
         return; 
     } else {
-        this._minion.getDb().collection(this.getDataObject().getDbCollection(), function(err, collection) {
-            self.getDataObject().save(collection, self.getPostValues());
-            self._response.writeHead(302, {'Location': self.getRedirectPath()});
-            self._response.end();
-        });
+        this._minion.getDb().collection(
+            this.getDataObject().getDbCollection(), 
+            function(err, collection) {
+                self.save(collection);
+            }
+        );
     }
+};
+
+AbstractEdit.prototype.save = function (collection) {
+    this.getDataObject().save(collection, this.getPostValues());
+    
+    this._response.writeHead(302, {'Location': this.getRedirectPath()});
+    this._response.end();
 };
 
 AbstractEdit.prototype.renderTitle = function () {
