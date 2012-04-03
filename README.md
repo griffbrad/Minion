@@ -28,7 +28,7 @@ Roadmap
 0. npm.
 0. Support for Twilio API for SMS and phone notifications.
 0. More options for HTTP check, including ability to specify an alternate path and POST fields.
-0. Ability to adjust notifications and check intervals on a per-site basis.
+0. ~~Ability to adjust notifications and check intervals on a per-site basis.~~
 
 ### 2-3 Months
 
