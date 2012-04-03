@@ -27,17 +27,17 @@
  * THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-var Base = require('./base'),
-    util = require('util');
+var DataObject = require('./data-object'),
+    util       = require('util');
 
 var Contact = function (options, minion) {
     this._allowCalls        = true;
     this._allowTextMessages = true;
 
-    Base.apply(this, arguments);
+    DataObject.apply(this, arguments);
 };
 
-util.inherits(Contact, Base);
+util.inherits(Contact, DataObject);
 
 module.exports = Contact;
 

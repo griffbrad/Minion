@@ -27,15 +27,15 @@
  * THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-var Base = function (options, minion) {
+var DataObject = function (options, minion) {
     this._minion = minion;
 
     this.setOptions(options);
 };
 
-module.exports = Base;
+module.exports = DataObject;
 
-Base.prototype.save = function (collection, data) {
+DataObject.prototype.save = function (collection, data) {
     this.setOptions(data);
 
     if (!this.getId()) {
@@ -53,11 +53,11 @@ Base.prototype.save = function (collection, data) {
     return this;
 };
 
-Base.find = function (minion, id) {
+DataObject.find = function (minion, id) {
     throw "Must implement find method";
 };
 
-Base.prototype.setOptions = function (options) {
+DataObject.prototype.setOptions = function (options) {
     for (var key in options) {
         if (options.hasOwnProperty(key)) {
             this.setOption(key, options[key]);
@@ -65,7 +65,7 @@ Base.prototype.setOptions = function (options) {
     }
 };
     
-Base.prototype.setOption = function (option, value) {
+DataObject.prototype.setOption = function (option, value) {
     var method = this._buildPropertyMethodName('set', option);
 
     if (!this[method]) {
@@ -78,32 +78,32 @@ Base.prototype.setOption = function (option, value) {
     this[method].call(this, value);
 };
 
-Base.prototype.getBlankTitle = function () {
+DataObject.prototype.getBlankTitle = function () {
     throw 'Must implement getBlankTitle() method.';
 };
 
-Base.prototype.setId = function (id) {
+DataObject.prototype.setId = function (id) {
     this._id = String(id);
 
     return this;
 };
 
-Base.prototype.getId = function () {
+DataObject.prototype.getId = function () {
     return this._id;
 };
 
-Base.prototype.get = function (key) {
+DataObject.prototype.get = function (key) {
     var method = this._buildPropertyMethodName('get', key);
     return this[method].call(this);
 };
 
-Base.prototype._buildPropertyMethodName = function (verb, option) {
+DataObject.prototype._buildPropertyMethodName = function (verb, option) {
     var method = verb;
     option  = option.replace('_', '');
     method += option.charAt(0).toUpperCase() + option.substr(1);
     return method;
 };
 
-Base.prototype.getTitle = function () {
+DataObject.prototype.getTitle = function () {
     throw "All data objects must implement a getTitle() method";
 };

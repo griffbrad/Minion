@@ -51,7 +51,7 @@ Log.prototype.init = function () {
         this._site = this._minion.findSiteById(id);
     }
 
-    if (! this._site) {
+    if (!this._site) {
         this.redirect('/');
     }
 

@@ -29,7 +29,7 @@
 
 var request      = require('request'),
     util         = require('util'),
-    Base         = require('./base'),
+    DataObject   = require('./data-object'),
     Notification = require('./notification');
 
 var Site = function (options, minion) {
@@ -39,10 +39,10 @@ var Site = function (options, minion) {
     this._repeats                   = 6;
     this._lastError                 = null;
 
-    Base.apply(this, arguments);
+    DataObject.apply(this, arguments);
 };
 
-util.inherits(Site, Base);
+util.inherits(Site, DataObject);
 
 module.exports = Site;
 
