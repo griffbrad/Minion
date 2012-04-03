@@ -192,7 +192,13 @@ Site.prototype.getRepeats = function () {
 };
 
 Site.prototype.setContacts = function (contacts) {
-    this._contacts = contacts || [];
+    contacts = contacts || [];
+
+    if (!util.isArray(contacts)) {
+        contacts = [contacts];
+    }
+
+    this._contacts = contacts;
 
     return this;
 };

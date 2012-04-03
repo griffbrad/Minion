@@ -55,7 +55,8 @@ ContactEdit.prototype.getEditFields = function () {
         'emailAddress',
         'phoneNumber',
         'allowTextMessages',
-        'allowCalls'
+        'allowCalls',
+        'notifyByDefault'
     ];
 };
 

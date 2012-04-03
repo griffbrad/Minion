@@ -37,7 +37,7 @@ var DataObject = function (options, minion) {
 
 module.exports = DataObject;
 
-DataObject.prototype.save = function (collection, data) {
+DataObject.prototype.save = function (collection, data, callback, context) {
     var self = this;
 
     this.setOptions(data);
@@ -48,6 +48,10 @@ DataObject.prototype.save = function (collection, data) {
             function (err, docs) {
                 self.setOptions(docs[0]);
                 self.getAddMethod().call(self._minion, self);
+
+                if (callback) {
+                    callback.call(context);
+                }
             }
         );
     } else {
@@ -56,6 +60,9 @@ DataObject.prototype.save = function (collection, data) {
             { $set: data },
             { safe: true },
             function (err, result) {
+                if (callback) {
+                    callback.call(context);
+                }
             }
         );
     }

@@ -33,6 +33,7 @@ var DataObject = require('./data-object'),
 var Contact = function (options, minion) {
     this._allowCalls        = true;
     this._allowTextMessages = true;
+    this._notifyByDefault   = false;
 
     DataObject.apply(this, arguments);
 };
@@ -43,6 +44,45 @@ module.exports = Contact;
 
 Contact.find = function (minion, id) {
     return minion.findContactById(id);
+};
+
+Contact.prototype.save = function (collection, data) {
+    this._preSaveNotifyByDefaultValue = this.getNotifyByDefault();
+
+    DataObject.prototype.save.call(
+        this, 
+        collection, 
+        data, 
+        this.postSave,
+        this
+    );
+};
+
+Contact.prototype.postSave = function () {
+    if (this.getNotifyByDefault() && !this._preSaveNotifyByDefaultValue) {
+        this._addToAllChecks();
+    }
+};
+
+Contact.prototype._addToAllChecks = function () {
+    var self = this;
+
+    this._minion.getDb().collection('sites', function (err, collection) {
+        self._minion.getSites().forEach(function (site) {
+            var contacts = site.getContacts();
+
+            if (-1 === contacts.indexOf(this.getId())) {
+                contacts.push(this.getId());
+
+                site.save(
+                    collection, 
+                    { contacts: contacts }
+                );
+            }
+        }, self);
+    });
+
+    return this;
 };
 
 Contact.prototype.getAddMethod = function () {
@@ -83,6 +123,16 @@ Contact.prototype.getLastName = function () {
 
 Contact.prototype.getFullName = function () {
     return this._firstName + ' ' + this._lastName;
+};
+
+Contact.prototype.setNotifyByDefault = function (notify) {
+    this._notifyByDefault = notify;
+
+    return this;
+};
+
+Contact.prototype.getNotifyByDefault = function () {
+    return this._notifyByDefault;
 };
 
 Contact.prototype.setEmailAddress = function (emailAddress) {

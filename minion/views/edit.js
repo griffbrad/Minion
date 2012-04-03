@@ -61,7 +61,7 @@ Edit.prototype.getEditFields = function () {
 };
 
 Edit.prototype.getTemplateData = function () {
-    this.registerHelper('contacts', this.renderContacts)
+    this.registerHelper('contactsCheckboxList', this.renderContacts)
         .registerHelper('interval', this.renderInterval);
 
     return AbstractEdit.prototype.getTemplateData.apply(this, arguments);
@@ -99,7 +99,9 @@ Edit.prototype.renderContacts = function () {
     this._minion.getContacts().forEach(function (contact) {
         var checked = '';
 
-        if (-1 !== this.getRenderValue('contacts').indexOf(contact.getId())) {
+        if (-1 !== this.getRenderValue('contacts').indexOf(contact.getId())
+            || (!this.getDataObject().getId() && contact.getNotifyByDefault())
+        ) {
             checked = 'checked="checked"';
         }
 
