@@ -30,6 +30,15 @@
 var https       = require('https'),
     querystring = require('querystring');
 
+/**
+ * The object manages the send and logging of event notifications.  Currently,
+ * only messages transported over SendGrid's Web API are managed.  In the near
+ * future, we plan to add support for email notifications over SMTP and IP
+ * telephony notifications (i.e. SMS and phone calls) via Twilio's APIs.
+ *
+ * @param Minion minion
+ * @param Site site
+ */
 var Notification = function (minion, site) {
     this._minion     = minion;
     this._recipients = minion.getContacts(site.getContacts());
@@ -37,18 +46,37 @@ var Notification = function (minion, site) {
 
 module.exports = Notification;
 
+/**
+ * Set the subject to use for messages.
+ *
+ * @param String subject
+ * @return Notification
+ */
 Notification.prototype.setSubject = function (subject) {
     this._subject = subject;
 
     return this;
 };
 
+/**
+ * Set the body to use for messages.
+ *
+ * @param String body
+ * @return Notification
+ */
 Notification.prototype.setBody = function (body) {
     this._body = body;
 
     return this;
 };
 
+/**
+ * Send notifications to all recipients.  When Minion is in debug mode, messages
+ * will not actually be sent, but a line will be written to the console for each
+ * of the recipients who would have otherwise received notifications.
+ *
+ * @return Notification
+ */
 Notification.prototype.send = function () {
     this._recipients.forEach(function(recipient) {
         if (this._minion.isDebug()) {
@@ -58,8 +86,25 @@ Notification.prototype.send = function () {
 
         this.sendToRecipient(recipient.getEmailAddress());
     }, this);
+
+    return this;
 };
 
+/**
+ * Send a notification to an individual recipient, specified in the first 
+ * parameter.  The SendGrid Web API is used to transport the messages.  You
+ * can configure the API credentials for your SendGrid account in the Minion
+ * configuration file.  The response status is logged to allow tracking of
+ * problems encountered while sending notifications, but we don't currently
+ * retrieve the full response body to get the reason a notification could
+ * not be sent.
+ *
+ * @todo From address should come from configuration file.
+ * @todo Recipient name should be included in message.
+ * @todo Reason for message failing to send should be captured and logged.
+ *
+ * @param String recipient
+ */
 Notification.prototype.sendToRecipient = function (recipient) {
     var self = this;
 
@@ -99,7 +144,16 @@ Notification.prototype.sendToRecipient = function (recipient) {
     postReq.end();
 };
 
-
+/**
+ * Log the results of the sendToRecipient() method to aid in troubleshooting
+ * sending errors.  The contents of this log are displayed in the web frontend.
+ *
+ * @todo Log ContactID so we can display logs per contact in the web frontend.
+ *
+ * @param String recipient
+ * @param String subject
+ * @param boolean status
+ */
 Notification.prototype.log = function (recipient, subject, status) {
     this._minion.getDb().collection('notifications', function (err, collection) {
         collection.insert({

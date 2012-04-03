@@ -34,6 +34,14 @@ var http       = require('http'),
     querystring = require('querystring'),
     Handlebars = require('handlebars');
 
+/**
+ * This object manages the low-level HTTP APIs to support the web frontend.
+ * Eventually, we plan to offer a simple HTTP-based web service to allow
+ * for automated interactions with Minion as well.
+ *
+ * @param Object config The portion of the config related to the Web component.
+ * @param Minion minion
+ */
 var Web = function (config, minion) {
     this._config = config || {};
     this._minion = minion;
@@ -41,15 +49,32 @@ var Web = function (config, minion) {
 
 module.exports = Web;
 
+/**
+ * Determine whether the web frontend should be enabled.  By default, it is
+ * enabled.  To disable it, add the key "enabled" with a value of "false" to
+ * the web section of your configuration file.
+ *
+ * @return boolean
+ */
 Web.prototype.isEnabled = function () {
     return 'undefined' === typeof this._config.enabled
         || this._config.enabled;
 };
 
+/**
+ * Get the port to listen on when accepting HTTP requests to the web frontend.
+ * By default, the port 9855 is used.
+ *
+ * @return integer
+ */
 Web.prototype.getPort = function () {
     return this._config.port || 9855;
 };
 
+/**
+ * Run the web frontend, if it is enabled.  Otherwise, just return without
+ * performing any further operations.
+ */
 Web.prototype.run = function () {
     if (!this.isEnabled()) {
         if (this._minion.isDebug()) {
@@ -70,10 +95,19 @@ Web.prototype.run = function () {
         } else {
             self.route(req, res);
         }
-
     }).listen(this.getPort());
 };
 
+/**
+ * Route an incoming request to the appropriate handler.  If no handler is
+ * found, delegate further processing to the serveStatic() method.
+ *
+ * @todo Audit to ensure files outside views folder can't be accessed.
+ *
+ * @param Request request
+ * @param Response response,
+ * @param Object postData
+ */
 Web.prototype.route = function (req, res, postData) {
     var urlInfo     = url.parse(req.url),
         requirePath = urlInfo.pathname,
@@ -102,6 +136,13 @@ Web.prototype.route = function (req, res, postData) {
     });
 };
 
+/**
+ * Gather body of POST request and parse it.  Once the POST data is in a
+ * useable form, pass it on to the route() method for further processing.
+ *
+ * @param Request request
+ * @param Response response
+ */
 Web.prototype.initPost = function (req, res) {
     var post = '',
         self = this;
@@ -117,6 +158,18 @@ Web.prototype.initPost = function (req, res) {
     });
 };
 
+/**
+ * Serve static files matching the path provided in the request.  The file
+ * extension is used to determine the mime type of the response.  All files
+ * are served out of the "static" folder included with Minion.  If you need
+ * to serve any files whose type is not represented in the mimetypes hash
+ * defined in this method, add them to the hash.
+ *
+ * @todo Audit to ensure files outside of "static" cannot be accessed.
+ *
+ * @param Request request
+ * @param Response response
+ */
 Web.prototype.serveStatic = function (req, res) {
     var uri  = url.parse(req.url).pathname,
         file = path.join(__dirname, uri);
