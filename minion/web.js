@@ -140,5 +140,3 @@ Web.prototype.serveStatic = function (req, res) {
     });
 };
 
-Web.prototype.handlePost = function (post, res, editUrl) {
-};
