@@ -59,7 +59,7 @@ Index.prototype.getTemplateData = function () {
         });
     }, this);
 
-    sites.sort(function(a, b) {
+    sites.sort(function (a, b) {
         if (a.url < b.url) {
             return -1;
         } else {

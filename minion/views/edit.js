@@ -94,9 +94,18 @@ Edit.prototype.validate = function () {
 };
 
 Edit.prototype.renderContacts = function () {
-    var out = '<ul class="checkbox_list">';
+    var out      = '<ul class="checkbox_list">',
+        contacts = this._minion.getContacts();
 
-    this._minion.getContacts().forEach(function (contact) {
+    contacts.sort(function (a, b) {
+        if (a.getLastName().toLowerCase() < b.getLastName().toLowerCase()) {
+            return -1;
+        } else {
+            return 1;
+        }
+    });
+
+    contacts.forEach(function (contact) {
         var checked = '';
 
         if (-1 !== this.getRenderValue('contacts').indexOf(contact.getId())
