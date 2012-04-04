@@ -30,6 +30,14 @@
 var DataObject = require('./data-object'),
     util       = require('util');
 
+/**
+ * A DataObject to manage contacts.  Contacts receive notifications when checks
+ * fail or recover.  These objects manage the basic contact information for
+ * the contacts.
+ *
+ * @param Object options
+ * @param Minion minion
+ */
 var Contact = function (options, minion) {
     this._allowCalls        = true;
     this._allowTextMessages = true;
@@ -42,10 +50,25 @@ util.inherits(Contact, DataObject);
 
 module.exports = Contact;
 
+/**
+ * Find a Contact assigned to the Minion instance using the MongoDB ObjectID.
+ *
+ * @param Minion minion
+ * @param String id
+ * @return Contact
+ */
 Contact.find = function (minion, id) {
     return minion.findContactById(id);
 };
 
+/**
+ * Save the contact's data to the DB.  If the "notifyByDefault" flag is 
+ * activated while saving the contact, the contact will be added to all
+ * existing checks.
+ *
+ * @param MongoDBCollection collection
+ * @param Object data
+ */
 Contact.prototype.save = function (collection, data) {
     this._preSaveNotifyByDefaultValue = this.getNotifyByDefault();
 
@@ -58,12 +81,21 @@ Contact.prototype.save = function (collection, data) {
     );
 };
 
+/**
+ * Called after saving data.  If the "notifyByDefault" flag was activated while
+ * saving, the contact will be added to all existing checks.
+ */
 Contact.prototype.postSave = function () {
     if (this.getNotifyByDefault() && !this._preSaveNotifyByDefaultValue) {
         this._addToAllChecks();
     }
 };
 
+/**
+ * Add this contact to all existing checks.
+ *
+ * @return Contact
+ */
 Contact.prototype._addToAllChecks = function () {
     var self = this;
 
@@ -85,96 +117,162 @@ Contact.prototype._addToAllChecks = function () {
     return this;
 };
 
+/**
+ * @return Function
+ */
 Contact.prototype.getAddMethod = function () {
     return this._minion.addContact;
 };
 
+/**
+ * Get the name of the collection to which this object's data is saved.
+ *
+ * @return String
+ */
 Contact.prototype.getDbCollection = function () {
     return 'contacts';
 };
 
+/**
+ * @return String
+ */
 Contact.prototype.getTitle = function () {
     return this.getFullName();
 };
 
+/**
+ * @return String
+ */
 Contact.prototype.getBlankTitle = function () {
     return 'Contact';
 };
 
+/**
+ * @param String firstName
+ * @return Contact
+ */
 Contact.prototype.setFirstName = function (firstName) {
     this._firstName = firstName;
 
     return this;
 };
 
+/**
+ * @return String
+ */
 Contact.prototype.getFirstName = function () {
     return this._firstName;
 };
 
+/**
+ * @param String lastName
+ * @return Contact
+ */
 Contact.prototype.setLastName = function (lastName) {
     this._lastName = lastName;
 
     return this;
 };
 
+/**
+ * @return String
+ */
 Contact.prototype.getLastName = function () {
     return this._lastName;
 };
 
+/**
+ * Get the contact's full name (i.e. first and last name concatenated).
+ *
+ * @return String
+ */
 Contact.prototype.getFullName = function () {
     return this._firstName + ' ' + this._lastName;
 };
 
+/**
+ * Whether to include this contact in notifications for newly created checks.
+ *
+ * @param boolean notify
+ * @return Contact
+ */
 Contact.prototype.setNotifyByDefault = function (notify) {
     this._notifyByDefault = notify;
 
     return this;
 };
 
+/**
+ * @return boolean
+ */
 Contact.prototype.getNotifyByDefault = function () {
     return this._notifyByDefault;
 };
 
+/**
+ * @param String emailAddress
+ * @return Contact
+ */
 Contact.prototype.setEmailAddress = function (emailAddress) {
     this._emailAddress = emailAddress;
 
     return this;
 };
 
+/**
+ * @return String
+ */
 Contact.prototype.getEmailAddress = function () {
     return this._emailAddress;
 };
 
-Contact.prototype.getEmailAddress = function () {
-    return this._emailAddress;
-};
-
+/**
+ * @param String phoneNumber
+ * @return Contact
+ */
 Contact.prototype.setPhoneNumber = function (phoneNumber) {
     this._phoneNumber = phoneNumber;
 
     return this;
 };
 
+/**
+ * @return String
+ */
 Contact.prototype.getPhoneNumber = function () {
     return this._phoneNumber;
 };
 
+/**
+ * @param boolean allow
+ * @return Contact
+ */
 Contact.prototype.setAllowCalls = function (allow) {
     this._allowCalls = allow;
 
     return this;
 };
 
+/**
+ * @return boolean
+ */
 Contact.prototype.getAllowCalls = function () {
     return this._allowCalls;
 };
 
+/**
+ * @param boolean allow
+ * @return Contact
+ */
 Contact.prototype.setAllowTextMessages = function (allow) {
     this._allowTextMessages = allow;
 
     return this;
 };
 
+/**
+ * @return boolean
+ */
 Contact.prototype.getAllowTextMessages = function () {
     return this._allowTextMessages;
 };

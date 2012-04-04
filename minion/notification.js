@@ -31,7 +31,7 @@ var https       = require('https'),
     querystring = require('querystring');
 
 /**
- * The object manages the send and logging of event notifications.  Currently,
+ * The object manages the sending and logging of event notifications.  Currently,
  * only messages transported over SendGrid's Web API are managed.  In the near
  * future, we plan to add support for email notifications over SMTP and IP
  * telephony notifications (i.e. SMS and phone calls) via Twilio's APIs.

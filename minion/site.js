@@ -32,6 +32,14 @@ var request      = require('request'),
     DataObject   = require('./data-object'),
     Notification = require('./notification');
 
+/**
+ * A DataObject to manage a website.  Currently, the Site object also contains
+ * the code for performing HTTP checks, though that functionality will be 
+ * refactored into an independent object as more checks are added to Minion.
+ *
+ * @param Object options
+ * @param Minion minion
+ */
 var Site = function (options, minion) {
     this._contentString             = '';
     this._repeatsBeforeNotification = 5;
@@ -48,30 +56,70 @@ util.inherits(Site, DataObject);
 
 module.exports = Site;
 
+/**
+ * Status constant for when a check fails.  Using a boolean directly can cause
+ * confusion in some situations, so it is preferable to use this more clearly
+ * labelled constants.
+ *
+ * @const
+ */
 Site.STATUS_FAIL = false;
 
+/**
+ * Status constant for when a check succeeds.  Using a boolean directly can cause
+ * confusion in some situations, so it is preferable to use this more clearly
+ * labelled constants.
+ *
+ * @const
+ */
 Site.STATUS_SUCCESS = true;
 
+/**
+ * Search Minion's array of sites for one matching the supply ObjectID.
+ *
+ * @param Minion minion
+ * @param String id
+ * @return Site
+ */
 Site.find = function (minion, id) {
     return minion.findSiteById(id);
 };
 
+/**
+ * @return String
+ */
 Site.prototype.getTitle = function () {
     return this.getUrl();
 };
 
+/**
+ * @return String
+ */
 Site.prototype.getBlankTitle = function () {
     return 'Check';
 };
 
+/**
+ * @return Function
+ */
 Site.prototype.getAddMethod = function () {
     return this._minion.addSite;
 };
 
+/**
+ * @return String
+ */
 Site.prototype.getDbCollection = function () {
     return 'sites';
 };
 
+/**
+ * Get an array of valid intervals of time between checks.  Values other than
+ * these will not be allowed.  Any value that doesn't fall in this valid
+ * group will be converted to the "1 Minute" interval instead.
+ *
+ * @return Array
+ */
 Site.prototype.getValidIntervals = function () {
     return [
         {
@@ -101,6 +149,14 @@ Site.prototype.getValidIntervals = function () {
     ];
 }
 
+/**
+ * Set the interval of time between performing checks.  The interval is stored
+ * as a number of milliseconds.  Only the values included in the array returned
+ * by getValidIntervals() are allowed.
+ *
+ * @param integer value
+ * @return Site
+ */
 Site.prototype.setInterval = function (value) {
     var match = false;
 
@@ -121,76 +177,134 @@ Site.prototype.setInterval = function (value) {
     return this;
 };
 
+/**
+ * Get the interval (in milliseconds) of time between performing checks.
+ *
+ * @return integer
+ */
 Site.prototype.getInterval = function () {
     return this._interval;
 };
 
+/**
+ * @param integer repeats
+ * @return Site
+ */
 Site.prototype.setRepeatsBeforeNotification = function (repeats) {
     this._repeatsBeforeNotification = parseInt(repeats, 10); 
 
     return this;
 };
 
+/**
+ * @return integer
+ */
 Site.prototype.getRepeatsBeforeNotification = function () {
     return this._repeatsBeforeNotification;
 };
 
+/**
+ * @param String url
+ * @return Site
+ */
 Site.prototype.setUrl = function (url) {
     this._url = url;
 
     return this;
 };
 
+/**
+ * @return String
+ */
 Site.prototype.getUrl = function () {
     return this._url;
 };
 
+/**
+ * @param String contentString
+ * @return Site
+ */
 Site.prototype.setContentString = function (contentString) {
     this._contentString = contentString;
 
     return this;
 };
 
+/**
+ * @return String
+ */
 Site.prototype.getContentString = function () {
     return this._contentString;
 };
 
+/**
+ * @param String reason
+ * @return Site
+ */
 Site.prototype.setReason = function (reason) {
     this._reason = reason;
 
     return this;
 };
 
+/**
+ * @param Date lastError
+ * @return Site
+ */
 Site.prototype.setLastError = function (lastError) {
     this._lastError = lastError;
 
     return this;
 };
 
+/**
+ * @return Date
+ */
+Site.prototype.getLastError = function () {
+    return this._lastError;
+};
+
+/**
+ * @param boolean value
+ * @return Site
+ */
 Site.prototype.setStatus = function (value) {
     this._status = value;
 
     return this;
 };
 
+/**
+ * @return boolean
+ */
 Site.prototype.getStatus = function () {
     return this._status;
 };
 
-Site.prototype.getLastError = function () {
-    return this._lastError;
-};
-
+/**
+ * @param integer repeats
+ * @return Site
+ */
 Site.prototype.setRepeats = function (repeats) {
     this._repeats = parseInt(repeats, 10);
 
     return this;
 };
 
+/**
+ * @return integer
+ */
 Site.prototype.getRepeats = function () {
     return this._repeats;
 };
 
+/**
+ * Set the contacts associated with this site.  Should be an array
+ * of Contact ObjectIDs associated with Minion.
+ *
+ * @param Array contacts
+ * @return Site
+ */
 Site.prototype.setContacts = function (contacts) {
     contacts = contacts || [];
 
@@ -203,10 +317,18 @@ Site.prototype.setContacts = function (contacts) {
     return this;
 };
 
+/**
+ * @return Array
+ */
 Site.prototype.getContacts = function () {
     return this._contacts;
 };
 
+/**
+ * Perform HTTP check for this site.  This method will also call setTimeout()
+ * to schedule the next check, after the amount of time specified in this
+ * object's "interval" property has passed.
+ */
 Site.prototype.check = function () {
     var self    = this, 
         options = this.getRequestOptions();
@@ -227,12 +349,25 @@ Site.prototype.check = function () {
     );
 };
 
+/**
+ * Get the options to pass to the request module when performing an HTTP check.
+ *
+ * @return Object
+ */
 Site.prototype.getRequestOptions = function () {
     return {
         uri: 'http://' + this._url + '/',
     }
 };
 
+/**
+ * Handle the HTTP response created by performing the HTTP status check.  This
+ * method will examine the response and set the Site's status accordingly.
+ *
+ * @param Object error
+ * @param Response response
+ * @param String body
+ */
 Site.prototype.handleResponse = function (error, response, body) {
     if ('undefined' === typeof response) {
         if (this._minion.isDebug()) {
@@ -281,6 +416,12 @@ Site.prototype.handleResponse = function (error, response, body) {
     this.updateStatus(Site.STATUS_SUCCESS, 'Success');
 };
 
+/**
+ * Check for this object's "contentString" property in the reponse body.
+ *
+ * @param String body
+ * @return boolean
+ */
 Site.prototype.responseContainsContentString = function (body) {
     if (null === this._contentString) {
         return true;
@@ -289,6 +430,16 @@ Site.prototype.responseContainsContentString = function (body) {
     return -1 !== body.toUpperCase().indexOf(this._contentString.toUpperCase());
 };
 
+/**
+ * Update this Site's status after examining the HTTP response.  If the status
+ * has repeated the number of times specified by the "repeatsBeforeNotification"
+ * property, this method will also trigger the sending of notifications to the 
+ * Site's contacts.
+ *
+ * @param boolean value
+ * @param String reason
+ * @return Site
+ */
 Site.prototype.updateStatus = function (value, reason) {
     if (this._minion.isDebug()) {
         console.log(this._url + ' status set to ' + value + ' because "' + reason + '"');
@@ -325,6 +476,9 @@ Site.prototype.updateStatus = function (value, reason) {
     return this;
 };
 
+/**
+ * Send notifications to all the contacts assigned to this Site.
+ */
 Site.prototype.sendNotifications = function () {
     if (this._minion.isDebug()) {
         console.log('Sending notifications for ' + this._url);
@@ -350,6 +504,10 @@ Site.prototype.sendNotifications = function () {
                 .send();
 };
 
+/**
+ * Sync this Site's property with MongoDB.  Also, this method will log the 
+ * results of the most recent check.
+ */
 Site.prototype.syncDb = function () {
     var self = this;
 

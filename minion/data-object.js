@@ -200,6 +200,18 @@ DataObject.prototype.getId = function () {
 };
 
 /**
+ * Objects inheriting from DataObject implement this method to supply a callback
+ * used when saving.  The callback should incorporate a new DataObject into
+ * Minion's in-memory arrays of data so that it gets incorporated into the
+ * various areas of the application without needing to re-query MongoDB.
+ *
+ * @return Function
+ */
+DataObject.prototype.getAddMethod = function () {
+    throw 'Must implement getAddMethod() for method called during save.';
+};
+
+/**
  * Get the value of a single option associated with this DataObject using the 
  * option's name.
  *
