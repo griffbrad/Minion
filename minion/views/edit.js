@@ -34,6 +34,9 @@ var AbstractEdit = require('./abstract-edit'),
     Handlebars   = require('handlebars'),
     Edit;
 
+/**
+ * Implements a page for editing a Site DataObject.
+ */
 Edit = function (minion, request, response) {
     AbstractEdit.apply(this, arguments);
 };
@@ -67,6 +70,10 @@ Edit.prototype.getTemplateData = function () {
     return AbstractEdit.prototype.getTemplateData.apply(this, arguments);
 };
 
+/**
+ * Validate user input to ensure URL is a valid hostname and repeats is an
+ * integer between 0 and 60.
+ */
 Edit.prototype.validate = function () {
     if (!this.getPost('url')) {
         this.addError('url', 'This field is required.');
@@ -93,6 +100,13 @@ Edit.prototype.validate = function () {
     }
 };
 
+/**
+ * Render contacts as a checkbox list.  The contacts are sorted by last name.  
+ * If this is a new Site being created, contacts with the "notifyByDefault"
+ * on will be checked by default.
+ *
+ * @return String
+ */
 Edit.prototype.renderContacts = function () {
     var out      = '<ul class="checkbox_list">',
         contacts = this._minion.getContacts();
@@ -135,6 +149,13 @@ Edit.prototype.renderContacts = function () {
     return new Handlebars.SafeString(out);
 };
 
+/**
+ * Render a dropdown for selecting the interval of time between performing
+ * checks.  The dropdown's options are retrieved from the data object's
+ * getValidIntervals() method.
+ *
+ * @return String
+ */
 Edit.prototype.renderInterval = function () {
     var out     = '<select name="interval" id="interval">',
         value   = this.getRenderValue('interval'),

@@ -32,6 +32,9 @@ var View       = require('./abstract'),
     util       = require('util'),
     Index;
 
+/**
+ * Implements a simple dashboard that displays the latest status for all checks.
+ */
 Index = function(minion, request, response) {
     this._minion   = minion;
     this._response = response;
@@ -46,6 +49,9 @@ Index.prototype.getTemplateName = function () {
     return 'index';
 };
 
+/**
+ * Get sites from Minion and sort them alphabetically.
+ */
 Index.prototype.getTemplateData = function () {
     var sites = [];
 

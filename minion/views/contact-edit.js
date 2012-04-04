@@ -32,6 +32,9 @@ var AbstractEdit = require('./abstract-edit'),
     Contact      = require('../contact'),
     ContactEdit;
 
+/**
+ * ContactEdit implements a page for editing Contacts.
+ */
 ContactEdit = function (minion, request, response) {
     AbstractEdit.apply(this, arguments);
 };
@@ -60,6 +63,9 @@ ContactEdit.prototype.getEditFields = function () {
     ];
 };
 
+/**
+ * Check required fields and email address field for valid input.
+ */
 ContactEdit.prototype.validate = function () {
     this._validateRequiredFields(['firstName', 'lastName', 'emailAddress', 'phoneNumber']);
 
@@ -75,6 +81,13 @@ ContactEdit.prototype.getRedirectPath = function () {
     return '/contacts';
 };
 
+/**
+ * Check that the given input matches the regular expression for valid email
+ * addresses.
+ *
+ * @param String input
+ * @return boolean
+ */
 ContactEdit.prototype._validateEmailAddress = function (input) {
     var re = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
     return re.test(input);

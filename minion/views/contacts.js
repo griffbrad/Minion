@@ -32,6 +32,9 @@ var View       = require('./abstract'),
     util       = require('util'),
     Contacts;
 
+/**
+ * This page implements a listing for Minion's contacts.
+ */
 Contacts = function(minion, request, response) {
     View.apply(this, arguments);
 };
@@ -59,6 +62,7 @@ Contacts.prototype.getTemplateData = function () {
         });
     }, this);
 
+    // Sort contacts by last name.
     contacts.sort(function(a, b) {
         if (a.lastName < b.lastName) {
             return -1;
@@ -74,6 +78,12 @@ Contacts.prototype.getTemplateData = function () {
     };
 };
 
+/**
+ * Render boolean values as Yes/No.
+ *
+ * @param boolean value
+ * @return String
+ */
 Contacts.prototype.renderBoolean = function (value) {
     return value ? 'Yes' : 'No';
 };

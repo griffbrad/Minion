@@ -33,6 +33,10 @@ var View       = require('./abstract'),
     Handlebars = require('handlebars'),
     Notifications;
 
+/**
+ * Implements a simple log of notifications to allow for auditing of 
+ * notifications via the web frontend.
+ */
 Notifications = function (minion, request, response) {
     this._minion   = minion;
     this._request  = request;
