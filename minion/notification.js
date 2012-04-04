@@ -139,6 +139,8 @@ Notification.prototype.makeCalls = function (calls) {
                             response.append(new Twiml.Say(self._subject));
                             response.append(new Twiml.Hangup());
                             response.send();
+                           
+                            self.log(recipient.getPhoneNumber(), self._subject, true);
                         }
                     );
                 }
