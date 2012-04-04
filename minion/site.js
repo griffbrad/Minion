@@ -384,7 +384,7 @@ Site.prototype.handleResponse = function (error, response, body) {
     if (200 !== response.statusCode) {
         this.updateStatus(
             Site.STATUS_FAIL, 
-            'Non-200 response status'
+            response.statusCode + ' response status'
         );
         return;
     }
