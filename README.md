@@ -17,6 +17,7 @@ Dependencies
     * mongodb-node-native
     * Handlebars
     * forever
+    * twilio
 
 
 Roadmap
@@ -26,7 +27,7 @@ Roadmap
 
 0. ~~Notification log and monitoring log in the web frontend~~.
 0. npm.
-0. Support for Twilio API for SMS and phone notifications.
+0. Support for Twilio API for SMS and ~~phone notifications~~.
 0. More options for HTTP check, including ability to specify an alternate path and POST fields.
 0. ~~Ability to adjust notifications and check intervals on a per-site basis.~~
 
