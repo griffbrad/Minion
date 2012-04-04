@@ -27,8 +27,11 @@
  * THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-var https       = require('https'),
-    querystring = require('querystring');
+var https        = require('https'),
+    querystring  = require('querystring'),
+    TwilioClient = require('twilio').Client,
+    Twiml        = require('twilio').Twiml,
+    util         = require('util');
 
 /**
  * The object manages the sending and logging of event notifications.  Currently,
@@ -78,7 +81,8 @@ Notification.prototype.setBody = function (body) {
  * @return Notification
  */
 Notification.prototype.send = function () {
-    this._recipients.forEach(function(recipient) {
+    // Send emails
+    this._recipients.forEach(function (recipient) {
         if (this._minion.isDebug()) {
             console.log('Sending notification to ' + recipient.getEmailAddress());
             return;
@@ -87,7 +91,60 @@ Notification.prototype.send = function () {
         this.sendToRecipient(recipient.getEmailAddress());
     }, this);
 
+    // Make calls
+    var calls = [];
+
+    this._recipients.forEach(function (recipient) {
+        if (recipient.getAllowCalls()) {
+            if (this._minion.isDebug()) {
+                console.log('Calling ' + recipient.getPhoneNumber());
+            }
+            
+            calls.push(recipient);
+        }
+    }, this);
+
+    this.makeCalls(calls);
+
     return this;
+};
+
+Notification.TwilioClient = null;
+
+Notification.prototype.makeCalls = function (calls) {
+    var config    = this._minion.getConfig().twilio,
+        self      = this;
+
+    if (null === Notification.TwilioClient) {
+        Notification.TwilioClient = new TwilioClient(
+            config.accountSid,
+            config.authToken,
+            config.hostname
+        );
+    }
+
+    var phone = Notification.TwilioClient.getPhoneNumber(config.phoneNumber);
+
+    phone.setup(function () {
+        calls.forEach(function (recipient) {
+            phone.makeCall(
+                '+1' + recipient.getPhoneNumber(),
+                null,
+                function (call) {
+                    call.on(
+                        'answered',
+                        function (params, response) {
+                            response.append(new Twiml.Say('This is your website monitoring system.'));
+                            response.append(new Twiml.Say('Please listen to this important status update:'));
+                            response.append(new Twiml.Say(self._subject));
+                            response.append(new Twiml.Hangup());
+                            response.send();
+                        }
+                    );
+                }
+            );
+        });
+    });
 };
 
 /**

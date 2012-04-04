@@ -5,5 +5,12 @@ config.sendGrid = {
     apiKey:  'yoursendgridpassword'
 };
 
+config.twilio = {
+    accountSid:  'youraccountsid',
+    authToken:   'yourauthtoken',
+    hostname:    'yourhostname
+    phoneNumber: '+1xxxxxxxxxx'
+};
+
 module.exports = config;
 
