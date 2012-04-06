@@ -57,11 +57,12 @@ Index.prototype.getTemplateData = function () {
 
     this._minion.getSites().forEach(function (site) {
         sites.push({
-            url:       site.getUrl(),
-            id:        site.getId(),
-            status:    site.getStatus(),
-            repeats:   site.getRepeats(),
-            lastError: site.getLastError()
+            url:          site.getUrl(),
+            id:           site.getId(),
+            status:       site.getStatus(),
+            repeats:      site.getRepeats(),
+            responseTime: site.getResponseTime(),
+            lastError:    site.getLastError()
         });
     }, this);
 
@@ -74,6 +75,7 @@ Index.prototype.getTemplateData = function () {
     });
 
     this.registerHelper('status', this.renderStatus);
+    this.registerHelper('responseTime', this.renderResponseTime);
     this.registerHelper('lastError', this.renderLastError);
     
     return {
@@ -109,3 +111,12 @@ Index.prototype.renderLastError = function (site) {
     }
 };
 
+Index.prototype.renderResponseTime = function (responseTime) {
+    if (responseTime) {
+        return responseTime + 'ms';
+    } else {
+        return new Handlebars.SafeString(
+            '<span class="all_clear">Not Available</span>'
+        );
+    }
+};

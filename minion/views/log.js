@@ -68,7 +68,8 @@ Log.prototype.getTemplateName = function () {
 };
 
 Log.prototype.getTemplateData = function () {
-    this.registerHelper('status', this.renderStatus);
+    this.registerHelper('status', this.renderStatus)
+        .registerHelper('responseTime', this.renderResponseTime);
 
     return {
         entries: this._entries,
@@ -85,6 +86,16 @@ Log.prototype.renderStatus = function (result) {
     } else {
         return new Handlebars.SafeString(
             '<span class="error">' + result.reason + '</span>'
+        );
+    }
+};
+
+Log.prototype.renderResponseTime = function (responseTime) {
+    if (responseTime) {
+        return responseTime + 'ms';
+    } else {
+        return new Handlebars.SafeString(
+            '<span class="all_clear">Not Available</span>'
         );
     }
 };

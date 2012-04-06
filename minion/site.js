@@ -43,6 +43,7 @@ var request      = require('request'),
 var Site = function (options, minion) {
     this._contentString             = '';
     this._repeatsBeforeNotification = 5;
+    this._responseTime              = null;
     this._status                    = Site.STATUS_SUCCESS;
     this._repeats                   = 6;
     this._interval                  = 60000; // 60 Seconds
@@ -204,6 +205,23 @@ Site.prototype.getRepeatsBeforeNotification = function () {
 };
 
 /**
+ * @param integer responseTime
+ * @return Site
+ */
+Site.prototype.setResponseTime = function (responseTime) {
+    this._responseTime = responseTime;
+
+    return this;
+};
+
+/**
+ * @return integer
+ */
+Site.prototype.getResponseTime = function () {
+    return this._responseTime;
+};
+
+/**
  * @param String url
  * @return Site
  */
@@ -330,15 +348,18 @@ Site.prototype.getContacts = function () {
  * object's "interval" property has passed.
  */
 Site.prototype.check = function () {
-    var self    = this, 
-        options = this.getRequestOptions();
+    var self      = this, 
+        options   = this.getRequestOptions(),
+        startTime = (new Date).getTime();
 
     if (this._minion.isDebug()) {
         console.log('Checking ' + this._url);
     }
 
     request(options, function (error, response, body) {
-        self.handleResponse.call(self, error, response, body); 
+        var responseTime = (new Date).getTime() - startTime;
+
+        self.handleResponse(error, response, body, responseTime); 
     });
 
     setTimeout(
@@ -367,8 +388,9 @@ Site.prototype.getRequestOptions = function () {
  * @param Object error
  * @param Response response
  * @param String body
+ * @param integer responseTime
  */
-Site.prototype.handleResponse = function (error, response, body) {
+Site.prototype.handleResponse = function (error, response, body, responseTime) {
     if ('undefined' === typeof response) {
         if (this._minion.isDebug()) {
             console.log('No response: ' + error);
@@ -376,7 +398,8 @@ Site.prototype.handleResponse = function (error, response, body) {
 
         this.updateStatus(
             Site.STATUS_FAIL,
-            'No response received'
+            'No response received',
+            responseTime
         );
         return;
     }
@@ -384,7 +407,8 @@ Site.prototype.handleResponse = function (error, response, body) {
     if (200 !== response.statusCode) {
         this.updateStatus(
             Site.STATUS_FAIL, 
-            response.statusCode + ' response status'
+            response.statusCode + ' response status',
+            responseTime
         );
         return;
     }
@@ -396,7 +420,8 @@ Site.prototype.handleResponse = function (error, response, body) {
 
         this.updateStatus(
             Site.STATUS_FAIL, 
-            'Empty response body'
+            'Empty response body',
+            responseTime
         );
         return;
     }
@@ -408,12 +433,13 @@ Site.prototype.handleResponse = function (error, response, body) {
 
         this.updateStatus(
             Site.STATUS_FAIL, 
-            'Reponse body did not contain specified string'
+            'Reponse body did not contain specified string',
+            responseTime
         );
         return;
     }
 
-    this.updateStatus(Site.STATUS_SUCCESS, 'Success');
+    this.updateStatus(Site.STATUS_SUCCESS, 'Success', responseTime);
 };
 
 /**
@@ -438,9 +464,10 @@ Site.prototype.responseContainsContentString = function (body) {
  *
  * @param boolean value
  * @param String reason
+ * @param integer responseTime
  * @return Site
  */
-Site.prototype.updateStatus = function (value, reason) {
+Site.prototype.updateStatus = function (value, reason, responseTime) {
     if (this._minion.isDebug()) {
         console.log(this._url + ' status set to ' + value + ' because "' + reason + '"');
     }
@@ -463,9 +490,10 @@ Site.prototype.updateStatus = function (value, reason) {
         this._lastError = new Date();
     }
 
-    this._status   = value;
-    this._repeats += 1;
-    this._reason   = reason;
+    this._status       = value;
+    this._repeats     += 1;
+    this._reason       = reason;
+    this._responseTime = responseTime;
 
     if (this._repeatsBeforeNotification === this._repeats) {
         this.sendNotifications();
@@ -516,12 +544,13 @@ Site.prototype.syncDb = function () {
             { url: self._url },
             {
                 $set: {
-                    repeats: self._repeats,
+                    repeats:                   self._repeats,
                     repeatsBeforeNotification: self._repeatsBeforeNotification,
-                    status: self._status,
-                    reason: self._reason,
-                    lastError: self._lastError,
-                    contentString: self._contentString
+                    status:                    self._status,
+                    responseTime:              self._responseTime,
+                    reason:                    self._reason,
+                    lastError:                 self._lastError,
+                    contentString:             self._contentString
                 }
             },
             { safe: true },
@@ -532,12 +561,13 @@ Site.prototype.syncDb = function () {
 
     this._minion.getDb().collection('log', function(err, collection) {
         collection.insert({
-            url: self._url,
-            siteId: self._id,
-            repeats: self._repeats,
-            status: self._status,
-            reason: self._reason,
-            dateChecked: new Date()
+            url:          self._url,
+            siteId:       self._id,
+            repeats:      self._repeats,
+            responseTime: self._responseTime,
+            status:       self._status,
+            reason:       self._reason,
+            dateChecked:  new Date()
         });
     });
 };

@@ -8,7 +8,7 @@ config.sendGrid = {
 config.twilio = {
     accountSid:  'youraccountsid',
     authToken:   'yourauthtoken',
-    hostname:    'yourhostname
+    hostname:    'yourhostname',
     phoneNumber: '+1xxxxxxxxxx'
 };
 
