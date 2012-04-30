@@ -14,10 +14,11 @@ Dependencies
 * Node.js 0.6.x
 * Node.js Modules
     * request
-    * mongodb-node-native
+    * mongodb
     * Handlebars
     * forever
     * twilio
+    * express
 
 
 Roadmap
@@ -45,5 +46,3 @@ Usage
 0. Run minion either directly with `node minion.js` or, preferably, with `forever start minion.js`.
 
 Checks will be performed every minute.
-
-
