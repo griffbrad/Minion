@@ -1,5 +1,6 @@
 {
     "name":         "minion",
+    "version":      "0.1.0",
     "main":         "./minion",
     "url":          "https://github.com/griffbrad/Minion",
     "description":  "A simple website monitoring tool.",
@@ -8,7 +9,8 @@
         "request":    ">= 2.9.0",
         "mongodb":    ">= 0.9.9",
         "handlebars": ">= 1.0.0",
-        "forever":    ">= 0.8.0"
+        "forever":    ">= 0.8.0",
+        "twilio":     ">= 0.4.0"
     },
     "keywords":     ["monitoring", "qa", "mongodb", "operations"],
     "engines":      { "node": ">=0.6.0" }
