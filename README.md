@@ -18,7 +18,6 @@ Dependencies
     * Handlebars
     * forever
     * twilio
-    * express
 
 
 Roadmap
