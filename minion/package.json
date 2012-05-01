@@ -10,8 +10,8 @@
         "mongodb":    ">= 0.9.9",
         "handlebars": ">= 1.0.0",
         "forever":    ">= 0.8.0",
-        "express":    ">= 2.5.9",
         "twilio":     ">= 0.4.0"
     },
+    "keywords":     ["monitoring", "qa", "mongodb", "operations"],
     "engines":      { "node": ">=0.6.0" }
 }
