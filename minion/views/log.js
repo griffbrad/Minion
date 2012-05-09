@@ -56,10 +56,14 @@ Log.prototype.init = function () {
     }
 
     this._minion.getDb().collection('log', function (err, collection) {
-        collection.find({siteId: self._site.getId()}).sort('dateChecked', 'desc').toArray(function (err, items) {
-            self._entries = items;
-            self.initComplete();
-        });
+        collection
+            .find({siteId: self._site.getId()})
+            .limit(5000)
+            .sort('dateChecked', 'desc')
+            .toArray(function (err, items) {
+                self._entries = items;
+                self.initComplete();
+            });
     });
 };
 

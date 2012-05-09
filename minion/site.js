@@ -377,8 +377,9 @@ Site.prototype.check = function () {
  */
 Site.prototype.getRequestOptions = function () {
     return {
-        uri: 'http://' + this._url + '/',
-    }
+        uri:     'http://' + this._url + '/',
+        timeout: 18000
+    };
 };
 
 /**
