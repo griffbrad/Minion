@@ -30,7 +30,8 @@
 var request      = require('request'),
     util         = require('util'),
     DataObject   = require('./data-object'),
-    Notification = require('./notification');
+    Notification = require('./notification'),
+    ObjectID     = require('mongodb').ObjectID;
 
 /**
  * A DataObject to manage a website.  Currently, the Site object also contains
@@ -469,15 +470,35 @@ Site.prototype.responseContainsContentString = function (body) {
  * @return Site
  */
 Site.prototype.updateStatus = function (value, reason, responseTime) {
+    var self = this;
+
+    this._minion.getDb().collection('sites', function(err, collection) {
+        collection.findOne({_id: new ObjectID(self.getId())}, function (err, data) {
+            self._updateStatusInternal(data, value, reason, responseTime);
+        });
+    });
+
+    return this;
+};
+
+Site.prototype._updateStatusInternal = function (data, value, reason, responseTime) {
+    this._status                    = data.status;
+    this._repeats                   = data.repeats;
+    this._repeatsBeforeNotification = data.repeatsBeforeNotification;
+    this._lastError                 = data.lastError;
+    this._contentString             = data.contentString;
+
+    var threshold = parseInt(this._repeatsBeforeNotification, 10);
+
     if (this._minion.isDebug()) {
         console.log(this._url + ' status set to ' + value + ' because "' + reason + '"');
     }
 
     if (this._status !== value) {
         if (Site.STATUS_FAIL === this._status
-            && this._repeats < this._repeatsBeforeNotification
+            && this._repeats < threshold
         ) {
-            this._repeats = this._repeatsBeforeNotification;
+            this._repeats = threshold;
 
             if (this._minion.isDebug()) {
                 console.log('Skipping notification.  Flapping.');
@@ -496,13 +517,11 @@ Site.prototype.updateStatus = function (value, reason, responseTime) {
     this._reason       = reason;
     this._responseTime = responseTime;
 
-    if (this._repeatsBeforeNotification === this._repeats) {
+    if (threshold === this._repeats) {
         this.sendNotifications();
     }
 
     this.syncDb();
-
-    return this;
 };
 
 /**

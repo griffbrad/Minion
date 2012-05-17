@@ -1,5 +1,19 @@
 var config = {};
 
+config.mongoServers = [
+    {
+        hostname: "host-one.example.org"
+    },
+    {
+        hostname: "host-two.example.org",
+        port:     5000
+    },
+    {
+        hostname: "host-three.example.org",
+        arbiter:  true
+    }
+];
+
 config.sendGrid = {
     apiUser: 'yoursendgridusername',
     apiKey:  'yoursendgridpassword'

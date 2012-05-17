@@ -86,9 +86,20 @@ Minion.prototype.isDebug = function () {
  * @return void
  */
 Minion.prototype.run = function () {
-    var server = new mongo.Server('localhost', 27017, { auto_reconnect: true }),
-        db     = new mongo.Db('minion', server),
-        self   = this;
+    var servers = [];
+
+    this._config.mongoServers.forEach(function (server) {
+        servers.push(new mongo.Server(
+            server.hostname,
+            server.port || 27017,
+            server.options || { auto_reconnect: true }
+        ));
+    }, this);
+
+    var replica = new mongo.ReplSetServers(servers);
+    
+    var db   = new mongo.Db('minion', replica),
+        self = this;
 
     this._db = db;
 

@@ -26,7 +26,7 @@ Roadmap
 ### Next Month
 
 0. ~~Notification log and monitoring log in the web frontend~~.
-0. npm.
+0. npm (partially done).
 0. Support for Twilio API for SMS and ~~phone notifications~~.
 0. More options for HTTP check, including ability to specify an alternate path and POST fields.
 0. ~~Ability to adjust notifications and check intervals on a per-site basis.~~
@@ -34,7 +34,7 @@ Roadmap
 ### 2-3 Months
 
 0. Additional checks, including SSL certificate verification, custom HTTP checks, and TCP connectivity checks.
-0. Support for multiple monitoring locations.
+0. Support for multiple monitoring locations (partially done).
 
 
 Usage
