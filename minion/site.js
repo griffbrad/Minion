@@ -586,6 +586,7 @@ Site.prototype.syncDb = function () {
             repeats:      self._repeats,
             responseTime: self._responseTime,
             status:       self._status,
+            location:     self._minion.getNode().title,
             reason:       self._reason,
             dateChecked:  new Date()
         });

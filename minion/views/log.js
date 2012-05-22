@@ -58,7 +58,7 @@ Log.prototype.init = function () {
     this._minion.getDb().collection('log', function (err, collection) {
         collection
             .find({siteId: self._site.getId()})
-            .limit(5000)
+            .limit(1000)
             .sort('dateChecked', 'desc')
             .toArray(function (err, items) {
                 self._entries = items;

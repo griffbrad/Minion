@@ -7,6 +7,7 @@
 <table cellspacing="0">
     <thead>
         <th>Time</th>
+        <th>Location</th>
         <th>Response Time</th>
         <th>Status</th>
     </thead>
@@ -14,6 +15,7 @@
         {{#entries}}
         <tr>
             <td>{{{this.dateChecked}}}</td>
+            <td>{{{this.location}}}</td>
             <td>{{{responseTime this.responseTime}}}</td>
             <td>{{{status this}}}</td>
         </tr>

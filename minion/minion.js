@@ -41,6 +41,8 @@ var Site    = require('./site'),
  * @param Object config
  */
 var Minion = function (config) {
+    var nodeIndex;
+
     this._config   = config;
     this._debug    = false;
     this._sites    = [];
@@ -53,6 +55,18 @@ var Minion = function (config) {
         this._debug = true;
         console.log('Debugging enabled...');
     }
+
+    if (-1 === process.argv.indexOf('--node')) {
+        throw "Must specify node name with --node flag";
+    } else {
+        nodeIndex = process.argv.indexOf('--node');
+
+        this._nodeKey = process.argv.splice(nodeIndex + 1, 1).pop();
+
+        if ('undefined' === typeof this._config.nodes[this._nodeKey]) {
+            throw 'No node defined with with name "' + this._nodeKey + '"';
+        }
+    }
 };
 
 module.exports = Minion;
@@ -62,6 +76,10 @@ module.exports = Minion;
  */
 Minion.prototype.getConfig = function () {
     return this._config;
+};
+
+Minion.prototype.getNode = function () {
+    return this._config.nodes[this._nodeKey];
 };
 
 /**
@@ -86,15 +104,21 @@ Minion.prototype.isDebug = function () {
  * @return void
  */
 Minion.prototype.run = function () {
-    var servers = [];
+    var servers = [],
+        nodeKey,
+        node;
 
-    this._config.mongoServers.forEach(function (server) {
-        servers.push(new mongo.Server(
-            server.hostname,
-            server.port || 27017,
-            server.options || { auto_reconnect: true }
-        ));
-    }, this);
+    for (nodeKey in this._config.nodes) {
+        if (this._config.nodes.hasOwnProperty(nodeKey)) {
+            node = this._config.nodes[nodeKey];
+
+            servers.push(new mongo.Server(
+                node.hostname,
+                node.port || 27017,
+                node.options || { auto_reconnect: true }
+            ));
+        }
+    }
 
     var replica = new mongo.ReplSetServers(servers);
     
