@@ -45,10 +45,11 @@ var Handlebars  = require('handlebars'),
  * @param Response response
  */
 var View = function (minion, request, response) {
-    this._minion   = minion;
-    this._response = response;
-    this._request  = request;
-    this._post     = {};
+    this._minion       = minion;
+    this._response     = response;
+    this._request      = request;
+    this._post         = {};
+    this._renderLayout = true;
 };
 
 module.exports = View;
@@ -229,15 +230,21 @@ View.prototype.get = function () {
 
         stream.on('end', function () {
             var page = Handlebars.compile(content);
-            
-            Handlebars.registerPartial('page', page);
+           
+            if (!view._renderLayout) {
+                view._response.write(
+                    page(view.getTemplateData())
+                );
+            } else {
+                Handlebars.registerPartial('page', page);
 
-            layout = Handlebars.compile(layout);
+                layout = Handlebars.compile(layout);
 
-            view._response.write(
-                layout(view.getTemplateData())
-            );
-
+                view._response.write(
+                    layout(view.getTemplateData())
+                );
+            }
+                
             view._response.end();
         });
     });

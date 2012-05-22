@@ -36,9 +36,7 @@ var View       = require('./abstract'),
  * Implements a simple dashboard that displays the latest status for all checks.
  */
 Index = function(minion, request, response) {
-    this._minion   = minion;
-    this._response = response;
-    this._request  = request;
+    View.apply(this, arguments);
 };
 
 util.inherits(Index, View);

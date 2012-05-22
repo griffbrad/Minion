@@ -38,9 +38,7 @@ var View       = require('./abstract'),
  * notifications via the web frontend.
  */
 Notifications = function (minion, request, response) {
-    this._minion   = minion;
-    this._request  = request;
-    this._response = response;
+    View.apply(this, arguments);
 };
 
 util.inherits(Notifications, View);

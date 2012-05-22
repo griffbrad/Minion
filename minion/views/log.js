@@ -34,9 +34,7 @@ var View       = require('./abstract'),
     Log;
 
 Log = function (minion, request, response) {
-    this._minion   = minion;
-    this._request  = request;
-    this._response = response;
+    View.apply(this, arguments);
 };
 
 util.inherits(Log, View);
@@ -44,21 +42,50 @@ util.inherits(Log, View);
 module.exports = Log;
 
 Log.prototype.init = function () {
-    var id   = this.getQuery('id'),
-        self = this;
+    var id             = this.getQuery('id'),
+        onlyFailures   = this.getQuery('onlyFailures'),
+        dataOnly       = this.getQuery('data'),
+        page           = parseInt(this.getQuery('page'), 10),
+        filterCriteria = {},
+        self           = this;
 
     if (id) {
         this._site = this._minion.findSiteById(id);
+    }
+
+    if (page <= 0) {
+        page = 1;
+    }
+
+    if (parseInt(onlyFailures, 10)) {
+        this._onlyFailures = true;
+    } else {
+        this._onlyFailures = false;
+    }
+
+    if (!parseInt(dataOnly, 10)) {
+        this._dataOnly     = false;
+        this._renderLayout = true;
+    } else {
+        this._dataOnly     = true;
+        this._renderLayout = false;
     }
 
     if (!this._site) {
         this.redirect('/');
     }
 
+    filterCriteria.siteId = this._site.getId();
+
+    if (this._onlyFailures) {
+        filterCriteria.status = false;
+    }
+
     this._minion.getDb().collection('log', function (err, collection) {
         collection
-            .find({siteId: self._site.getId()})
-            .limit(1000)
+            .find(filterCriteria)
+            .limit(200)
+            .skip((page - 1) * 200)
             .sort('dateChecked', 'desc')
             .toArray(function (err, items) {
                 self._entries = items;
@@ -68,11 +95,16 @@ Log.prototype.init = function () {
 };
 
 Log.prototype.getTemplateName = function () {
-    return 'log';
+    if (this._dataOnly) {
+        return 'log-body';
+    } else {
+        return 'log';
+    }
 };
 
 Log.prototype.getTemplateData = function () {
     this.registerHelper('status', this.renderStatus)
+        .registerHelper('onlyFailures', this.renderOnlyFailuresCheckbox)
         .registerHelper('responseTime', this.renderResponseTime);
 
     return {
@@ -92,6 +124,18 @@ Log.prototype.renderStatus = function (result) {
             '<span class="error">' + result.reason + '</span>'
         );
     }
+};
+
+Log.prototype.renderOnlyFailuresCheckbox = function () {
+    var out = '<input type="checkbox" name="onlyFailures" id="onlyFailures" value="1" ';
+
+    if (this._onlyFailures) {
+        out += 'checked="checked"';
+    }
+
+    out += ' />';
+
+    return new Handlebars.SafeString(out);
 };
 
 Log.prototype.renderResponseTime = function (responseTime) {

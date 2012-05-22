@@ -204,6 +204,11 @@ legend {
     margin-bottom: 12px;
 }
 
+.toolbar .options {
+    display: inline-block;
+    margin-left: 12px;
+}
+
 .checkbox_list {
     padding: 0;
     margin: 0;
@@ -223,4 +228,20 @@ legend {
     color: #666;
     font-size: 12px;
     padding-left: 22px;
+}
+
+#loading {
+    background: #eee;
+    color: #333;
+    -moz-border-radius: 6px;
+    -webkit-border-radius: 6px;
+    -o-border-radius: 6px;
+    -ms-border-radius: 6px;
+    border-radius: 6px;
+    margin: 12px auto;
+    width: 300px;
+    text-align: center;
+    display: none;
+    padding: 4px;
+    font-size: 12px;
 }

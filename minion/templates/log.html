@@ -2,6 +2,11 @@
 
 <div class="toolbar">
     <a class="primary_button" href="edit?id={{id}}">Edit Check</a>
+
+    <div class="options">
+        {{onlyFailures}}
+        <label for="onlyFailures">Only Show Failures</label>
+    </div>
 </div>
 
 <table cellspacing="0">
@@ -11,7 +16,7 @@
         <th>Response Time</th>
         <th>Status</th>
     </thead>
-    <tbody>
+    <tbody id="logBody">
         {{#entries}}
         <tr>
             <td>{{{this.dateChecked}}}</td>
@@ -22,3 +27,14 @@
         {{/entries}}
     </tbody>
 </table>
+
+<div id="loading">Loading.  Please wait...</div>
+
+<script type="text/javascript" src="static/js/utilities.js"></script>
+<script type="text/javascript" src="static/js/log.js"></script>
+
+<script type="text/javascript">
+    var log = new MINION.Log('{{id}}');
+
+    log.init();
+</script>
