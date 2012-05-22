@@ -85,6 +85,7 @@ h1 {
     width: 80%;
     margin: 0 10%;
     text-align: center;
+    text-decoration: none;
     box-sizing: border-box;
 }
 
@@ -244,4 +245,32 @@ legend {
     display: none;
     padding: 4px;
     font-size: 12px;
+}
+
+.log-detail-fields th,
+.log-detail-fields td {
+    background: #fff;
+    padding: 3px 12px 3px 6px;
+}
+
+.log-detail-fields th {
+    color: #666;
+    font-weight: bold;
+    text-align: right;
+    white-space: nowrap;
+    width: 240px;
+}
+
+.log-detail-fields .error {
+    max-width: 300px;
+    margin: 0;
+}
+
+.none {
+    margin: 12px 0;
+    border: 1px solid #ccc;
+    background: #eee;
+    color: #666;
+    padding: 12em 0;
+    text-align: center;
 }

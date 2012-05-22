@@ -28,58 +28,41 @@
  */
 
 var View       = require('./abstract'),
-    util       = require('util'),
-    url        = require('url'),
     Handlebars = require('handlebars'),
-    Notifications;
+    util       = require('util'),
+    ObjectID   = require('mongodb').ObjectID,
+    LogError;
 
-/**
- * Implements a simple log of notifications to allow for auditing of 
- * notifications via the web frontend.
- */
-Notifications = function (minion, request, response) {
+LogError = function (minion, request, response) {
     View.apply(this, arguments);
 };
 
-util.inherits(Notifications, View);
+util.inherits(LogError, View);
 
-module.exports = Notifications;
+module.exports = LogError;
 
-Notifications.prototype.init = function () {
-    var self = this;
+LogError.prototype.init = function () {
+    var id   = this.getQuery('id'),
+        self = this,
+        site;
 
-    this._minion.getDb().collection('notifications', function (err, collection) {
+    if (!id) {
+        this.redirect('/');
+    } else {
+        site = this._minion.findSiteById(id);
+    }
+    
+    this._minion.getDb().collection('log', function (err, collection) {
         collection
-            .find()
-            .limit(500)
-            .sort({dateSent: -1})
+            .find({siteId: site.getId(), status: false})
+            .limit(1)
+            .sort({dateChecked: -1})
             .toArray(function (err, items) {
-                self._entries = items;
-                self.initComplete();
+                if (items.length) {
+                    self.redirect('/log-details?id=' + String(items.pop()._id));
+                } else {
+                    self.redirect('/');
+                }
             });
     });
-};
-
-Notifications.prototype.getTemplateName = function () {
-    return 'notifications';
-};
-
-Notifications.prototype.getTemplateData = function () {
-    this.registerHelper('status', this.renderStatus);
-
-    return {
-        entries: this._entries
-    };
-};
-
-Notifications.prototype.renderStatus = function (result) {
-    if (result.status) {
-        return new Handlebars.SafeString(
-            '<span class="all_clear">Sent Successfully</span>'
-        );
-    } else {
-        return new Handlebars.SafeString(
-            '<span class="error">Failed to Send</span>'
-        );
-    }
 };

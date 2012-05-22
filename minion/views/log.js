@@ -117,13 +117,17 @@ Log.prototype.getTemplateData = function () {
 };
 
 Log.prototype.renderStatus = function (result) {
+    var id;
+
     if (result.status) {
         return new Handlebars.SafeString(
             '<span class="all_clear">No Errors</span>'
         );
     } else {
+        id = String(result._id);
+
         return new Handlebars.SafeString(
-            '<span class="error">' + result.reason + '</span>'
+            '<a href="/log-details?id=' + id + '" class="error">' + result.reason + '</a>'
         );
     }
 };

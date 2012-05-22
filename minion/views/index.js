@@ -94,7 +94,7 @@ Index.prototype.renderStatus = function (site) {
         }
 
         return new Handlebars.SafeString(
-            '<span class="error">Failed ' + site.repeats + ' Time' + suffix + '</span>'
+            '<a href="/log-error?id=' + site.id + '" class="error">Failed ' + site.repeats + ' Time' + suffix + '</a>'
         );
     }
 };

@@ -88,7 +88,7 @@ Notification.prototype.send = function () {
             return;
         }
 
-        this.sendToRecipient(recipient.getEmailAddress());
+        this.sendToRecipient(recipient);
     }, this);
 
     // Make calls
@@ -137,10 +137,16 @@ Notification.prototype.makeCalls = function (calls) {
                             response.append(new Twiml.Say('This is your website monitoring system.'));
                             response.append(new Twiml.Say('Please listen to this important status update:'));
                             response.append(new Twiml.Say(self._subject));
+                            response.append(new Twiml.Say('Good bye'));
                             response.append(new Twiml.Hangup());
                             response.send();
                            
-                            self.log(recipient.getPhoneNumber(), self._subject, true);
+                            self.log(
+                                'Phone Call',
+                                recipient.getTitle() + ' (' + recipient.getPhoneNumber() + ')', 
+                                self._subject, 
+                                true
+                            );
                         }
                     );
                 }
@@ -173,7 +179,7 @@ Notification.prototype.sendToRecipient = function (recipient) {
         subject:  this._subject,
         text:     this._body,
         from:     'minion@deltasys.com',
-        to:       recipient
+        to:       recipient.getEmailAddress()
     };
 
     postData = querystring.stringify(postData);
@@ -196,7 +202,12 @@ Notification.prototype.sendToRecipient = function (recipient) {
             status = false; 
         }
 
-        self.log(recipient, self._subject, status);
+        self.log(
+            'Email', 
+            recipient.getTitle() + ' <' + recipient.getEmailAddress() + '>', 
+            self._subject, 
+            status
+        );
     });
 
     postReq.write(postData);
@@ -213,13 +224,17 @@ Notification.prototype.sendToRecipient = function (recipient) {
  * @param String subject
  * @param boolean status
  */
-Notification.prototype.log = function (recipient, subject, status) {
+Notification.prototype.log = function (type, recipient, subject, status) {
+    var self = this;
+
     this._minion.getDb().collection('notifications', function (err, collection) {
         collection.insert({
             dateSent:  new Date(),
             status:    status,
+            type:      type,
             subject:   subject,
-            recipient: recipient
+            recipient: recipient,
+            location:  self._minion.getNode().title
         });
     });
 };

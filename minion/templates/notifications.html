@@ -4,7 +4,9 @@
     <thead>
         <th>Time</th>
         <th>Recipient</th>
+        <th>Type</th>
         <th>Subject</th>
+        <th>Sent From</th>
         <th>Status</th>
     </thead>
     <tbody>
@@ -12,7 +14,9 @@
         <tr>
             <td>{{{this.dateSent}}}</td>
             <td>{{{this.recipient}}}</td>
+            <td>{{{this.type}}}</td>
             <td>{{{this.subject}}}</td>
+            <td>{{{this.location}}}</td>
             <td>{{{status this}}}</td>
         </tr>
         {{/entries}}

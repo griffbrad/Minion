@@ -393,6 +393,8 @@ Site.prototype.getRequestOptions = function () {
  * @param integer responseTime
  */
 Site.prototype.handleResponse = function (error, response, body, responseTime) {
+    var details = null;
+
     if ('undefined' === typeof response) {
         if (this._minion.isDebug()) {
             console.log('No response: ' + error);
@@ -406,15 +408,34 @@ Site.prototype.handleResponse = function (error, response, body, responseTime) {
         return;
     }
 
+    details = {
+        status: {
+            title:  'Response Status',
+            data:   response.statusCode,
+            format: 'field'
+        },
+        headers: {
+            title:  'Headers',
+            data:   response.headers,
+            format: 'grid'
+        },
+        body: { 
+            title: 'Body',
+            data:   body,
+            format: 'html'
+        }
+    };
+
     if (200 !== response.statusCode) {
         this.updateStatus(
             Site.STATUS_FAIL, 
             response.statusCode + ' response status',
-            responseTime
+            responseTime,
+            details        
         );
         return;
     }
-    
+  
     if (!body) {
         if (this._minion.isDebug()) {
             console.log('Empty response body for ' + this._url);
@@ -423,7 +444,8 @@ Site.prototype.handleResponse = function (error, response, body, responseTime) {
         this.updateStatus(
             Site.STATUS_FAIL, 
             'Empty response body',
-            responseTime
+            responseTime,
+            details
         );
         return;
     }
@@ -436,7 +458,8 @@ Site.prototype.handleResponse = function (error, response, body, responseTime) {
         this.updateStatus(
             Site.STATUS_FAIL, 
             'Reponse body did not contain specified string',
-            responseTime
+            responseTime,
+            details        
         );
         return;
     }
@@ -469,19 +492,19 @@ Site.prototype.responseContainsContentString = function (body) {
  * @param integer responseTime
  * @return Site
  */
-Site.prototype.updateStatus = function (value, reason, responseTime) {
+Site.prototype.updateStatus = function (value, reason, responseTime, details) {
     var self = this;
 
     this._minion.getDb().collection('sites', function(err, collection) {
         collection.findOne({_id: new ObjectID(self.getId())}, function (err, data) {
-            self._updateStatusInternal(data, value, reason, responseTime);
+            self._updateStatusInternal(data, value, reason, responseTime, details);
         });
     });
 
     return this;
 };
 
-Site.prototype._updateStatusInternal = function (data, value, reason, responseTime) {
+Site.prototype._updateStatusInternal = function (data, value, reason, responseTime, details) {
     this._status                    = data.status;
     this._repeats                   = data.repeats;
     this._repeatsBeforeNotification = data.repeatsBeforeNotification;
@@ -521,7 +544,7 @@ Site.prototype._updateStatusInternal = function (data, value, reason, responseTi
         this.sendNotifications();
     }
 
-    this.syncDb();
+    this.syncDb(details);
 };
 
 /**
@@ -556,7 +579,7 @@ Site.prototype.sendNotifications = function () {
  * Sync this Site's property with MongoDB.  Also, this method will log the 
  * results of the most recent check.
  */
-Site.prototype.syncDb = function () {
+Site.prototype.syncDb = function (details) {
     var self = this;
 
     this._minion.getDb().collection('sites', function(err, collection) {
@@ -588,6 +611,7 @@ Site.prototype.syncDb = function () {
             status:       self._status,
             location:     self._minion.getNode().title,
             reason:       self._reason,
+            details:      details,
             dateChecked:  new Date()
         });
     });
