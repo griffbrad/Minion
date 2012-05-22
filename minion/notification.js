@@ -31,7 +31,8 @@ var https        = require('https'),
     querystring  = require('querystring'),
     TwilioClient = require('twilio').Client,
     Twiml        = require('twilio').Twiml,
-    util         = require('util');
+    util         = require('util'),
+    os           = require('os');
 
 /**
  * The object manages the sending and logging of event notifications.  Currently,
@@ -119,7 +120,7 @@ Notification.prototype.makeCalls = function (calls) {
         Notification.TwilioClient = new TwilioClient(
             config.accountSid,
             config.authToken,
-            config.hostname
+            os.hostname()
         );
     }
 
