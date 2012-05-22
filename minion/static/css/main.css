@@ -274,3 +274,8 @@ legend {
     padding: 12em 0;
     text-align: center;
 }
+
+.note {
+    color: #999;
+    font-size: 12px;
+}

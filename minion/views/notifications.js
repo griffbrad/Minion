@@ -65,7 +65,8 @@ Notifications.prototype.getTemplateName = function () {
 };
 
 Notifications.prototype.getTemplateData = function () {
-    this.registerHelper('status', this.renderStatus);
+    this.registerHelper('status', this.renderStatus)
+        .registerHelper('notificationDate', this.renderDate);
 
     return {
         entries: this._entries
@@ -82,4 +83,8 @@ Notifications.prototype.renderStatus = function (result) {
             '<span class="error">Failed to Send</span>'
         );
     }
+};
+
+Notifications.prototype.renderDate = function (date) {
+    return date;
 };
