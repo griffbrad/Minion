@@ -86,7 +86,7 @@ Log.prototype.init = function () {
             .find(filterCriteria)
             .limit(200)
             .skip((page - 1) * 200)
-            .sort({$natural: -1})
+            .sort({dateChecked: -1})
             .toArray(function (err, items) {
                 self._entries = items;
                 self.initComplete();
