@@ -47,6 +47,7 @@ Log.prototype.init = function () {
         dataOnly       = this.getQuery('data'),
         page           = parseInt(this.getQuery('page'), 10),
         filterCriteria = {},
+        sortCriteria   = {$natural: -1},
         self           = this;
 
     if (id) {
@@ -79,6 +80,7 @@ Log.prototype.init = function () {
 
     if (this._onlyFailures) {
         filterCriteria.status = false;
+        sortCriteria = {dateChecked: -1};
     }
 
     this._minion.getDb().collection('log', function (err, collection) {
@@ -86,7 +88,7 @@ Log.prototype.init = function () {
             .find(filterCriteria)
             .limit(200)
             .skip((page - 1) * 200)
-            .sort({dateChecked: -1})
+            .sort(sortCriteria)
             .toArray(function (err, items) {
                 self._entries = items;
                 self.initComplete();
