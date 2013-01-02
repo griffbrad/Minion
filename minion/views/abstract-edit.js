@@ -361,9 +361,9 @@ AbstractEdit.prototype.renderErrors = function (field) {
  *
  * @return String
  */
-AbstractEdit.prototype.renderForm = function (fn) {
+AbstractEdit.prototype.renderForm = function (options) {
     var out = '<form method="post">';
-    out += fn();
+    out += options.fn();
     out += '</form>';
     return out;
 };
@@ -384,7 +384,7 @@ AbstractEdit.prototype.renderForm = function (fn) {
  * @param Function fn 
  * @return String
  */
-AbstractEdit.prototype.renderField = function (id, title, note, fn) {
+AbstractEdit.prototype.renderField = function (id, title, note, options) {
     var out = '';
 
     out += '<div class="field ' + this.renderErrorClass(id) + '">';
@@ -394,7 +394,7 @@ AbstractEdit.prototype.renderField = function (id, title, note, fn) {
     out += '</label>';
 
     out += '<div class="field_content">';
-    out += fn(id, title, note);
+    out += options.fn(id, title, note);
     out += '</div>';
 
     if (note) {
