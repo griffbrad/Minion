@@ -48,7 +48,7 @@ LogDetails.prototype.init = function () {
     var id   = this.getQuery('id'),
         self = this;
 
-    this._minion.getDb().collection('log', function(err, collection) {
+    this._minion.getDb().collection('log', function (err, collection) {
         collection
             .findOne({_id: new ObjectID(id)}, function (err, data) {
                 self._data = data;

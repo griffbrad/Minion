@@ -51,6 +51,18 @@ var Site = function (options, minion) {
     this._contacts                  = [];
     this._lastError                 = null;
 
+    this._performanceIntervals = [
+        100,
+        250,
+        500,
+        1000,
+        2000,
+        3000,
+        5000,
+        7000,
+        10000
+    ];
+
     DataObject.apply(this, arguments);
 };
 
@@ -474,7 +486,7 @@ Site.prototype.handleResponse = function (error, response, body, responseTime) {
  * @return boolean
  */
 Site.prototype.responseContainsContentString = function (body) {
-    if (null === this._contentString) {
+    if (this._contentString) {
         return true;
     }
 
@@ -580,7 +592,12 @@ Site.prototype.sendNotifications = function () {
  * results of the most recent check.
  */
 Site.prototype.syncDb = function (details) {
-    var self = this;
+    var self = this,
+        date = new Date(),
+        intervalKey,
+        i,
+        interval,
+        incrementFields = {};
 
     this._minion.getDb().collection('sites', function(err, collection) {
         collection.update(
@@ -612,7 +629,51 @@ Site.prototype.syncDb = function (details) {
             location:     self._minion.getNode().title,
             reason:       self._reason,
             details:      details,
-            dateChecked:  new Date()
+            dateChecked:  date
         });
     });
+
+    if (this._status) {
+        date.setMinutes(0);
+        date.setHours(0);
+        date.setSeconds(0);
+        date.setMilliseconds(0);
+
+        intervalKey = null;
+
+        for (i = 0; i < this._performanceIntervals.length; i++) {
+            interval = this._performanceIntervals[i];
+
+            if (this._responseTime <= interval) {
+                intervalKey = String(interval);
+                break;
+            }
+        }
+
+        if (intervalKey) {
+            intervalKey = 'intervals.' + intervalKey;
+        } else {
+            intervalKey = 'intervals.' + this._performanceIntervals.pop();
+        }
+
+        incrementFields[intervalKey]  = 1;
+        incrementFields['checkCount'] = 1;
+        incrementFields['totalMs']    = this._responseTime;
+
+        this._minion.getDb().collection('performance', function (err, collection) {
+            collection
+                .update(
+                    {
+                        siteId: self._id,
+                        date:   date
+                    },
+                    {
+                        $inc: incrementFields
+                    },
+                    {
+                        upsert: true
+                    }
+                );
+        });
+    }
 };

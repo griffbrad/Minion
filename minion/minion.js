@@ -41,9 +41,10 @@ var Site    = require('./site'),
  * @param Object config
  */
 var Minion = function (config) {
-    var nodeIndex;
+    var nodeIndex,
+        envIndex,
+        env;
 
-    this._config   = config;
     this._debug    = false;
     this._sites    = [];
     this._contacts = [];
@@ -54,6 +55,15 @@ var Minion = function (config) {
     if (-1 !== process.argv.indexOf('--debug')) {
         this._debug = true;
         console.log('Debugging enabled...');
+    }
+
+    if (-1 === process.argv.indexOf('--env')) {
+        throw "Must specify configuration environment with --env flag";
+    } else {
+        envIndex = process.argv.indexOf('--env');
+        env      = process.argv.splice(envIndex + 1, 1).pop();
+
+        this._config = config[env];
     }
 
     if (-1 === process.argv.indexOf('--node')) {
@@ -106,30 +116,54 @@ Minion.prototype.isDebug = function () {
 Minion.prototype.run = function () {
     var servers = [],
         nodeKey,
-        node;
+        node,
+        nodeCount = 0;
 
     for (nodeKey in this._config.nodes) {
         if (this._config.nodes.hasOwnProperty(nodeKey)) {
-            node = this._config.nodes[nodeKey];
-
-            servers.push(new mongo.Server(
-                node.hostname,
-                node.port || 27017,
-                node.options || { auto_reconnect: true }
-            ));
+            nodeCount += 1;
         }
     }
 
-    var replica = new mongo.ReplSetServers(servers);
-    
-    var db   = new mongo.Db('minion', replica),
-        self = this;
+    if (1 === nodeCount) {
+        for (nodeKey in this._config.nodes) {
+            if (this._config.nodes.hasOwnProperty(nodeKey)) {
+                node = this._config.nodes[nodeKey];
+
+                var db = new mongo.Db(
+                    'minion', 
+                    new mongo.Server(
+                        node.hostname,
+                        node.port || 27017,
+                        node.options || { auto_reconnect: true }
+                    )
+                );
+            }
+        }
+    } else {
+        for (nodeKey in this._config.nodes) {
+            if (this._config.nodes.hasOwnProperty(nodeKey)) {
+                node = this._config.nodes[nodeKey];
+
+                servers.push(new mongo.Server(
+                    node.hostname,
+                    node.port || 27017,
+                    node.options || { auto_reconnect: true }
+                ));
+            }
+        }
+
+        var replica = new mongo.ReplSetServers(servers),
+            db      = new mongo.Db('minion', replica);
+    }
+        
+    var self = this;
 
     this._db = db;
 
     db.open(function (err, db) {
         if (err) {
-            console.log('Could not connect to MongoDB');
+            console.log('Could not connect to MongoDB: ' + err);
             return;
         }
 
