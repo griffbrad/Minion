@@ -65,13 +65,17 @@ Dash.prototype.findMonthlyNotificationStats = function (date) {
     var self  = this,
         month = new Date(date.getTime()),
         next;
-   
-    month.setDate(0);
+  
+    // First set to middle of month so "month + 1" works consitently
+    month.setDate(15);
     
     next = new Date(month.getTime());
-    next.setMonth(month.getMonth() + 1);
+    next.setMonth(next.getMonth() + 1);
     next.setDate(0);
 
+    // Now set back to first of month to get full range.  JS dates ... ugh
+    month.setDate(0);
+    
     this._minion.getDb().collection('notifications', function (err, collection) {
         collection
             .find({
