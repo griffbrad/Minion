@@ -370,6 +370,10 @@ Site.prototype.check = function () {
     }
 
     request(options, function (error, response, body) {
+        if (error) {
+            console.log(error);
+        }
+
         var responseTime = (new Date).getTime() - startTime;
 
         self.handleResponse(error, response, body, responseTime); 
@@ -389,9 +393,12 @@ Site.prototype.check = function () {
  * @return Object
  */
 Site.prototype.getRequestOptions = function () {
+    var url = this._url + '/';
+    
     return {
-        uri:     'http://' + this._url + '/',
-        timeout: 18000
+        uri:     'http://' + url,
+        timeout: 18000,
+        jar:     false
     };
 };
 
@@ -439,6 +446,8 @@ Site.prototype.handleResponse = function (error, response, body, responseTime) {
     };
 
     if (200 !== response.statusCode) {
+        console.log(response);
+
         this.updateStatus(
             Site.STATUS_FAIL, 
             response.statusCode + ' response status',
